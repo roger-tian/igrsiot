@@ -1,0 +1,118 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+.tab-nav.tabs{
+	display: none;
+}
+.content_wrap {
+	width: 100%;
+	overflow: hidden;
+	padding-top: 10px;
+	margin: 0 auto;
+	margin-top: 44px;
+}
+a {
+	text-decoration: none;
+	color: #444;
+}
+a:hover{
+	text-decoration: none;
+}
+a:focus{
+	color: #444;
+	text-decoration: none;
+}
+.row{
+	margin: 0;
+	padding: 0;
+	overflow: auto;
+}
+li{
+	list-style: none;
+}
+.daohang a{
+	background: #ddd;
+	border-radius: 10px 10px 0 0;
+	text-align: center;
+	color: #444;
+}
+.daohang .current{
+	background: #8F8F8F;
+	color: #fff;
+}
+.content{
+	width: 100%;
+	overflow: hidden;
+	padding: 0 10px;
+}
+.tab{
+	overflow: auto;
+	display: none;
+}
+.show{
+	display: block;
+}
+.switch{
+	width: 100%;
+	overflow: hidden;
+	padding: 5px 0;
+}
+.btn_switch{
+	font-size:1em;
+	line-height: 34px;
+	margin-left: 5px;
+}
+.xinhaoyuan{
+	padding: 0;
+	padding-left: 5px;
+}
+.qiehuan{
+	padding: 5px;
+	background: #ddd;
+}
+.btn-default{
+	width: 1.5em;
+	height: 1.5em;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+.yinliang span,.yinliangshow,.yinliang div{
+	float: left;
+	line-height: 34px;
+}
+.sensor
+{
+  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse:collapse;
+}
+
+.sensor td, .sensor th
+{
+  font-size:1.1em;
+  border:1px solid #98bf21;
+  padding:3px 7px 2px 7px;
+}
+
+.sensor th
+{
+  font-size:1.1em;
+  text-align:left;
+  padding-top:5px;
+  padding-bottom:4px;
+  background-color:#A7C942;
+  color:#ffffff;
+}
+
+.sensor tr.alt td
+{
+  color:#000000;
+  background-color:#EAF2D3;
+}
+label{
+	font-weight: 400;
+}
+.switchname{
+	margin-top: 6px;
+}

@@ -1,0 +1,208 @@
+<ion-view  view-title="教育展会演示" hide-nav-bar="true" hide-tabs="true">
+	<ion-content overflow-scroll="true"	style="overflow:scroll;-webkit-overflow-scrolling:touch;">
+		<div class="content_wrap">
+			<div class="col-lg-7 col-md-8 col-sm-10 col-xs-12">
+				<div class="row daohang">
+					<li class="current col"><a href="#" title="tab1" >总开关</a></li>
+			        <li class="col"><a href="#" title="tab2">一体机</a></li>
+			        <li class="col"><a href="#" title="tab3">智能灯</a></li>
+			        <li class="col"><a href="#" title="tab4">历史数据</a></li>
+			        <li class="col"><a href="#" title="tab5">操作记录</a></li>
+				</div>
+			</div>
+			<div class="content">
+				<div id="tab1" class="tab show">
+					<div class="switch">
+						<div class="testswitch">
+			                <input class="testswitch-checkbox" id="onoffswitch_all" type="checkbox">
+			                <label class="testswitch-label" for="onoffswitch_all">
+			                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
+			                    <span class="testswitch-switch"></span>
+			                </label>
+			            </div>
+			            <label class="btn_switch">系统总开关</label>
+					</div>
+					<div id="canvasDiv1" style="overflow: auto;clear: both;"></div>
+					<div style="width: 100%;overflow: auto;">
+			            <table id="sensor">
+			                <tr>
+			                    <th style="text-align:center;">CO2（ppm）</th>
+			                    <th style="text-align:center;">TVOC（μg/m3）</th>
+			                    <th style="text-align:center;">温度（摄氏度）</th>
+			                    <th style="text-align:center;">湿度（%RH）</th>
+			                    <th style="text-align:center;">甲醛（ppm）</th>
+			                </tr>
+			                <tr>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                </tr>
+			            </table>
+			        </div>
+				</div>
+				<div id="tab2" class="tab">
+					<div class="switch">
+						<div class="testswitch">
+			                <input class="testswitch-checkbox" id="onoffswitch_machine" type="checkbox">
+			                <label class="testswitch-label" for="onoffswitch_machine">
+			                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
+			                    <span class="testswitch-switch"></span>
+			                </label>
+			            </div>
+			            <label class="btn_switch">开关</label>
+			           	<div class="xinhao col-xs-12 col-lg-7 col-md-8 col-sm-10" style="clear: both;padding: 0;">
+		           			<div class="xinhaoyuan col-lg-4 col-xs-4" >
+		           				<input type="radio" name="sigSource" value='android'/><label>信号源1</label>
+		           			</div>
+		           			<div class="xinhaoyuan col-lg-4 col-xs-4" >
+				            	<input  name="sigSource" checked type="radio" value="pc"/><label>信号源2</label>
+				            </div>
+				            <div class="xinhaoyuan col-lg-4 col-xs-4" >
+				            	<input name="sigSource" checked type="radio" value="pc"/><label>信号源3</label>
+				            </div>
+				            <div class="xinhaoyuan col-lg-4 col-xs-4" >
+		           				<input name="sigSource" checked type="radio" value="pc"/><label>信号源4</label>
+		           			</div>
+				            <div class="col-xs-12" style="padding: 0;padding-left: 5px;">
+				            	<button id="switch" class="btn qiehuan" @click="machineSwitch()">切换</button>
+				            </div>
+			           	</div>
+			           	<div class="yinliang col-xs-12" style="padding: 0;">
+			           		<span>音量</span>
+				            <progress class="yinliangshow" value="80" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
+				            <div>
+				            	<button id="switch" class="btn btn-default" @click="machineSwitch()">+</button>
+				            	<button id="switch" class="btn btn-default" @click="machineSwitch()">-</button>
+				            </div>
+			           	</div>
+		            </div>
+		            <div id="canvasDiv2" style="overflow: auto;clear: both;"></div>
+		            <div style="width: 100%;overflow: auto;">
+			            <table id="sensor">
+			                <tr>
+			                    <th style="text-align:center;">CO2（ppm）</th>
+			                    <th style="text-align:center;">TVOC（μg/m3）</th>
+			                    <th style="text-align:center;">温度（摄氏度）</th>
+			                    <th style="text-align:center;">湿度（%RH）</th>
+			                    <th style="text-align:center;">甲醛（ppm）</th>
+			                </tr>
+			                <tr>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                </tr>
+			            </table>
+			        </div>
+		        </div>
+		        <div id="tab3" class="tab ">
+		            <div class="switch">
+			            <div class="testswitch">
+			                <input class="testswitch-checkbox" id="onoffswitch_led1" type="checkbox">
+			                <label class="testswitch-label" for="onoffswitch_led1">
+			                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
+			                    <span class="testswitch-switch"></span>
+			                </label>
+			            </div>
+			            <label class="btn_switch">第一路灯开关</label>
+			        </div>   
+			        <div class="switch">
+			            <div class="testswitch">
+			                <input class="testswitch-checkbox" id="onoffswitch_led2" type="checkbox">
+			                <label class="testswitch-label" for="onoffswitch_led2">
+			                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
+			                    <span class="testswitch-switch"></span>
+			                </label>
+			            </div>
+			            <label class="btn_switch">第二路灯开关</label>
+		            </div>
+		            <div id="canvasDiv3" style="overflow: auto;clear: both;"></div>
+		            <div style="width: 100%;overflow: auto;">
+			            <table id="sensor">
+			                <tr>
+			                    <th style="text-align:center;">CO2（ppm）</th>
+			                    <th style="text-align:center;">TVOC（μg/m3）</th>
+			                    <th style="text-align:center;">温度（摄氏度）</th>
+			                    <th style="text-align:center;">湿度（%RH）</th>
+			                    <th style="text-align:center;">甲醛（ppm）</th>
+			                </tr>
+			                <tr>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                    <td style="text-align:center;color:green;">50</td>
+			                </tr>
+			            </table>
+		        	</div>
+		        </div>
+		        <div id="tab4" class="tab ">
+		        	<div id="canvasDiv4" style="overflow: auto;clear: both;"></div>
+		            <div class="col-xs-12 col-lg-6 col-md-6 col-sm-8" style="clear: both;padding: 0;">
+	           			<div class="xinhaoyuan col-lg-4 col-xs-4" >
+				            <input type="radio" name="sigSource" value='android'/><label>PM2.5</label>&nbsp;&nbsp;&nbsp;&nbsp;
+			            </div>
+			            <div class="xinhaoyuan col-lg-4 col-xs-4" >
+				            <input name="sigSource" checked type="radio" value="pc"/><label>CO2</label>
+				        </div>
+			            <div class="xinhaoyuan col-lg-4 col-xs-4" >
+			            	<input name="sigSource" checked type="radio" value="pc"/><label>TVOC</label>
+						</div>
+			            <div class="xinhaoyuan col-lg-4 col-xs-4" >
+				            <input name="sigSource" checked type="radio" value="pc"/><label>温度</label>
+				        </div>
+			            <div class="xinhaoyuan col-lg-4 col-xs-4" >
+			            	<input name="sigSource" checked type="radio" value="pc"/><label>湿度</label>
+				        </div>
+			            <div class="xinhaoyuan col-lg-4 col-xs-4" >
+			            	<input name="sigSource" checked type="radio" value="pc"/><label>甲醛</label>
+			            </div>
+		        	</div>
+       			</div>
+		        <div id="tab5" class="tab">
+		        	<div style="width: 100%;overflow: auto;padding: 5px;">
+			            <table id="sensor">
+			                <tr>
+			                    <th style="text-align:center;">用户名</th>
+			                    <th style="text-align:center;">操作时间</th>
+			                    <th style="text-align:center;">操作设备id</th>
+			                    <th style="text-align:center;">操作指令</th>
+			                </tr>
+			                <tr>
+			                    <td style="text-align:center;color:green;">admin</td>
+			                    <td style="text-align:center;color:green;">2018-04-15 09:06:16</td>
+			                    <td style="text-align:center;color:green;">12345678</td>
+			                    <td style="text-align:center;color:green;">开机</td>
+			                </tr>
+			                <tr>
+			                    <td style="text-align:center;color:green;">admin</td>
+			                    <td style="text-align:center;color:green;">2018-04-15 09:06:16</td>
+			                    <td style="text-align:center;color:green;">12345678</td>
+			                    <td style="text-align:center;color:green;">开机</td>
+			                </tr>
+			                <tr>
+			                    <td style="text-align:center;color:green;">admin</td>
+			                    <td style="text-align:center;color:green;">2018-04-15 09:06:16</td>
+			                    <td style="text-align:center;color:green;">12345678</td>
+			                    <td style="text-align:center;color:green;">开机</td>
+			                </tr>
+			                <tr>
+			                    <td style="text-align:center;color:green;">admin</td>
+			                    <td style="text-align:center;color:green;">2018-04-15 09:06:16</td>
+			                    <td style="text-align:center;color:green;">12345678</td>
+			                    <td style="text-align:center;color:green;">开机</td>
+			                </tr>
+			            </table>
+		           	</div>
+		            <ul class="pagination">
+		                <li><a href="#">❮</a></li>
+		                <li><a href="#">❯</a></li>
+		            </ul>
+		        </div>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

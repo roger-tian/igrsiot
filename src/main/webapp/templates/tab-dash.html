@@ -1,0 +1,423 @@
+﻿<ion-view  view-title="教育展会演示" hide-nav-bar="true" hide-tabs="true">
+	<ion-content overflow-scroll="true"	style="overflow:scroll;-webkit-overflow-scrolling:touch;">
+		<div class="content_wrap">
+			<div class="col-lg-8 col-md-9 col-sm-10 col-xs-12">
+				<div class="row daohang">
+					<a class="current col" href="#" title="tab1" >总开关</a>
+					<a class="col" href="#" title="tab2">一体机</a>
+			        <a class="col" href="#" title="tab3">智能灯</a>
+			        <a class="col" href="#" title="tab4">净化器</a>
+			        <a class="col" href="#" title="tab5">历史数据</a>
+			       	<a class="col" href="#" title="tab6">操作记录</a>
+				</div>
+			</div>
+			<div class="content">
+				<div id="tab1" class="tab show row">
+					<div class="col-sm-7" style="padding: 0;">
+						<div class="col">
+							<div class="switch col">
+								<div class="testswitch">
+					                <input class="testswitch-checkbox" id="onoffswitch_all" type="checkbox">
+					                <label class="testswitch-label" for="onoffswitch_all">
+					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
+					                    <span class="testswitch-switch"></span>
+					                </label>
+					            </div>
+					            <label class="btn_switch">系统总开关</label>
+							</div>
+							<div class="col" style="border: 1px solid #ececec;padding: 0 0 10px 0;">
+								<div class="row" style="background: #0FCECE;">
+									<div class="col">
+										<span style="float: left;margin: 5px;">智能空调</span>
+										<label class="toggle toggle-balanced">
+					                    	<input type="checkbox">
+						                    <div class="track">
+						                        <div class="handle"></div>
+						                    </div>
+						                </label>
+									</div>
+								</div>
+								<div class="row" style="border-bottom: none;margin-top: 0;">
+				            		<div class="col col-33"><input type="radio" name="radio"/>制冷</div>
+									<div class="col col-33"><input type="radio" name="radio"/>制热</div>
+									<div class="col col-33"><input type="radio" name="radio"/>除湿</div>
+				            	</div>
+								<div class="row" style="margin-top: 0;">
+									<div class="col col-33"><input type="radio" name="radio"/>送风</div>
+									<div class="col col-33"><input type="radio" name="radio"/>自动</div>
+				            	</div>
+				            	<div class="row">
+				            		<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">
+						            	<button id="switchSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						            </div>
+				            	</div>
+							</div>
+							<div class="col" style="border: 1px solid #ececec;padding: 0 0 10px 0;margin-top: 10px;">
+								<div class="row" style="background: #0FCECE;">
+									<div class="col">
+										<span style="float: left;margin: 5px;">智能热水器</span>
+										<label class="toggle toggle-balanced">
+					                    	<input type="checkbox">
+						                    <div class="track">
+						                        <div class="handle"></div>
+						                    </div>
+						                </label>
+									</div>
+								</div>
+								<div class="row" style="border-bottom: none;margin-top: 0;">
+				            		<div class="col col-33"><input type="radio" name="radio"/>中温</div>
+									<div class="col col-33"><input type="radio" name="radio"/>增容</div>
+									<div class="col col-33"><input type="radio" name="radio"/>即时加热</div>
+				            	</div>
+								<div class="row" style="margin-top: 0;">
+									<div class="col col-33"><input type="radio" name="radio"/>夜电</div>
+				            	</div>
+				            	<div class="row">
+				            		<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">
+						            	<button id="switchSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						            </div>
+				            	</div>
+							</div>
+							<div class="col" style="border: 1px solid #ececec;padding: 0 0 10px 0;margin-top: 10px;">
+								<div class="row" style="background: #0FCECE;">
+									<div class="col">
+										<span style="float: left;margin: 5px;">智能冰箱</span>
+										<label class="toggle toggle-balanced">
+					                    	<input type="checkbox">
+						                    <div class="track">
+						                        <div class="handle"></div>
+						                    </div>
+						                </label>
+									</div>
+								</div>
+								<div class="row" >
+									<div class="yinliang col-xs-12" style="padding: 0;padding: 10px;">
+						           		<span>温度调节</span>
+							            <progress class="yinliangshow" id="volume3" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
+							            <div>
+							            	<button id="switchDecrease1" class="btn btn-default" @click="machineSwitchDecrease()">-</button>
+							            	<button id="switchIncrease1" class="btn btn-default" @click="machineSwitchIncrease()">+</button>
+							            </div>
+						           	</div>
+								</div>
+								<div class="row">
+									<div class="col" style="border-top: 1px solid #ececec;">
+										<div class="row" >
+						            		<div class="col">
+						            			模式控制
+						            		</div>
+						            	</div>
+						            	<div class="row" style="border-bottom: none;margin-top: 0;">
+						            		<div class="col"><input type="radio" name="radio"/>人工智能</div>
+											<div class="col"><input type="radio" name="radio"/>速冻</div>
+											<div class="col"><input type="radio" name="radio"/>速冷</div>
+						            	</div>
+						            	<div class="row">
+				            		        <div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">
+						            	    <button id="switchSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						                </div>
+				            	</div>
+									</div>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-5" style="padding: 0;">
+						<div class="col">
+							<div class="col">
+								空气质量
+							</div>
+							<div id="canvasDiv1" style="overflow:auto;-webkit-overflow-scrolling:auto;clear: both;"></div>
+							<div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;">
+					            <table class="sensor" name="sensor">
+					                <tr>
+					                    <th style="text-align:center;">CO2（ppm）</th>
+					                    <th style="text-align:center;">TVOC（μg/m3）</th>
+					                    <th style="text-align:center;">温度（摄氏度）</th>
+					                    <th style="text-align:center;">湿度（%RH）</th>
+					                    <th style="text-align:center;">甲醛（ppm）</th>
+					                </tr>
+					                <tr>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                </tr>
+					            </table>
+					      	</div>	
+					    </div>
+					</div>
+				</div>
+				<div id="tab2" class="tab">
+					<div class="col-sm-7" style="padding: 0;">
+						<div class="col">
+							<div class="switch">
+								<div class="testswitch">
+					                <input class="testswitch-checkbox" id="onoffswitch_machine" type="checkbox">
+					                <label class="testswitch-label" for="onoffswitch_machine">
+					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
+					                    <span class="testswitch-switch"></span>
+					                </label>
+					            </div>
+					            <label class="btn_switch">开关</label>
+					           	<div class="xinhao col-xs-12" style="clear: both;border: 1px solid #ececec;padding: 15px 10px;margin: 10px 0;">
+				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
+				           				<input type="radio" name="radio" value='1' checked="" /><label>主页</label>
+				           			</div>
+				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
+						            	<input  name="radio" type="radio" value="2" checked=""/><label>HDMI2.0</label>
+						            </div>
+						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
+						            	<input name="radio" type="radio" value="3" checked=""/><label>HDMI1.4</label>
+						            </div>
+						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
+				           				<input name="radio" type="radio" value="4" checked=""/><label>内置电脑</label>
+				           			</div>
+						            <div class="col-xs-12" style="padding: 0;padding-left: 5px;margin-top: 10px;">
+						            	<button id="machineSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						            </div>
+					           	</div>
+					           	<div class="yinliang col-xs-12" style="padding: 0;border: 1px solid #ececec;padding: 10px;">
+					           		<span>音量</span>
+						            <progress class="yinliangshow" id="volume" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
+						            <div>
+						            	<button id="switchDecrease" class="btn btn-default" @click="machineSwitchDecrease()">-</button>
+						            	<button id="switchIncrease" class="btn btn-default" @click="machineSwitchIncrease()">+</button>
+						            </div>
+					           	</div>
+				            </div>
+						</div>
+					</div>
+					<div class="col-sm-5" style="padding: 0;">
+						<div class="col">
+							<div class="col">
+								空气质量
+							</div>
+							<div id="canvasDiv2" style="overflow:auto;-webkit-overflow-scrolling:auto;clear: both;"></div>
+							<div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;">
+					            <table class="sensor" name="sensor">
+					                <tr>
+					                    <th style="text-align:center;">CO2（ppm）</th>
+					                    <th style="text-align:center;">TVOC（μg/m3）</th>
+					                    <th style="text-align:center;">温度（摄氏度）</th>
+					                    <th style="text-align:center;">湿度（%RH）</th>
+					                    <th style="text-align:center;">甲醛（ppm）</th>
+					                </tr>
+					                <tr>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                </tr>
+					            </table>
+					      	</div>	
+					    </div>
+					</div>
+		        </div>
+		        <div id="tab3" class="tab">
+		        	<div class="col-sm-7" style="padding: 0;">
+		        		<div class="col">
+		        			<div class="switch">
+					            <div class="testswitch">
+					                <input class="testswitch-checkbox" id="onoffswitch_led1" type="checkbox">
+					                <label class="testswitch-label" for="onoffswitch_led1">
+					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
+					                    <span class="testswitch-switch"></span>
+					                </label>
+					            </div>
+					            <label class="btn_switch">第一路灯开关</label>
+					        </div>   
+					        <div class="switch">
+					            <div class="testswitch">
+					                <input class="testswitch-checkbox" id="onoffswitch_led2" type="checkbox">
+					                <label class="testswitch-label" for="onoffswitch_led2">
+					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
+					                    <span class="testswitch-switch"></span>
+					                </label>
+					            </div>
+					            <label class="btn_switch">第二路灯开关</label>
+				            </div>
+				            <div class="col">
+								<div class="row" style="border: 1px solid #ececec;">
+									<div class="yinliang col-xs-12" style="padding: 0;padding: 10px;">
+						           		<span>亮度调节</span>
+							            <progress class="yinliangshow" id="volume1" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
+							            <div>
+							            	<button id="switchDecrease" class="btn btn-default" @click="machineSwitchDecrease()">-</button>
+							            	<button id="switchIncrease" class="btn btn-default" @click="machineSwitchIncrease()">+</button>
+							            </div>
+						           	</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="row" style="border: 1px solid #ececec;">
+									<div class="yinliang col-xs-12" style="padding: 0;padding: 10px;">
+						           		<span>色温调节</span>
+							            <progress class="yinliangshow" id="volume2" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
+							            <div>
+							            	<button id="switchDecrease2" class="btn btn-default" @click="machineSwitchDecrease()">-</button>
+							            	<button id="switchIncrease2" class="btn btn-default" @click="machineSwitchIncrease()">+</button>
+							            </div>
+						           	</div>
+								</div>
+							</div>
+		        		</div>
+		        	</div>
+		        	<div class="col-sm-5" style="padding: 0;">
+		        		<div class="col">
+		        			<div id="canvasDiv3" style="overflow:auto;-webkit-overflow-scrolling:auto;clear: both;"></div>
+				            <div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;">
+					            <table class="sensor" name="sensor">
+					                <tr>
+					                    <th style="text-align:center;">CO2（ppm）</th>
+					                    <th style="text-align:center;">TVOC（μg/m3）</th>
+					                    <th style="text-align:center;">温度（摄氏度）</th>
+					                    <th style="text-align:center;">湿度（%RH）</th>
+					                    <th style="text-align:center;">甲醛（ppm）</th>
+					                </tr>
+					                <tr>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                </tr>
+					            </table>
+				        	</div>
+		        		</div>
+		        	</div>
+		            
+		        </div>
+		        <div id="tab4" class="tab ">
+		            <div class="col-sm-7" style="padding: 0;">
+		        		<div class="col">
+		        			<div class="switch">
+					            <div class="testswitch">
+					                <input class="testswitch-checkbox" id="onoffswitch_purifier" type="checkbox">
+					                <label class="testswitch-label" for="onoffswitch_purifier">
+					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
+					                    <span class="testswitch-switch"></span>
+					                </label>
+					            </div>
+					            <label class="btn_switch">总开关</label>
+					        </div>   
+				            <div class="col" style="border: 1px solid #ececec;">
+				            	<div class="row" >
+				            		<div class="col">
+				            			模式控制
+				            		</div>
+				            	</div>
+				            	<div class="row" style="border-bottom: none;margin-top: 0;">
+				            		<div class="col"><input type="radio" name="radio"/>童锁</div>
+									<div class="col"><input type="radio" name="radio"/>睡眠</div>
+									<div class="col"><input type="radio" name="radio"/>自动</div>
+				            	</div>
+								<div class="row" style="margin-top: 0;">
+									<div class="col"><input type="radio" name="radio"/>负离子</div>
+									<div class="col"><input type="radio" name="radio"/>UV</div>
+									<div class="col"><input type="radio" name="radio"/>定时</div>
+				            	</div>
+				            	<div class="row">
+				            		<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">
+						            	<button id="switchSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						            </div>
+				            	</div>
+							</div>
+							<div class="col" style="border: 1px solid #ececec;margin-top: 10px;">
+				            	<div class="row" >
+				            		<div class="col">
+				            			风速控制
+				            		</div>
+				            	</div>
+				            	<div class="row" style="border-bottom: none;margin-top: 0;">
+				            		<div class="col"><input type="radio" name="radio"/>高速</div>
+									<div class="col"><input type="radio" name="radio"/>中速</div>
+									<div class="col"><input type="radio" name="radio"/>低速</div>
+				            	</div>
+				            	<div class="row">
+				            		<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">
+						            	<button id="switchSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						            </div>
+				            	</div>
+							</div>
+		        		</div>
+		        	</div>
+		        	<div class="col-sm-5" style="padding: 0;">
+		        		<div class="col">
+		        			<div id="canvasDiv4" style="overflow:auto;-webkit-overflow-scrolling:auto;clear: both;"></div>
+				            <div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;">
+					            <table class="sensor" name="sensor">
+					                <tr>
+					                    <th style="text-align:center;">CO2（ppm）</th>
+					                    <th style="text-align:center;">TVOC（μg/m3）</th>
+					                    <th style="text-align:center;">温度（摄氏度）</th>
+					                    <th style="text-align:center;">湿度（%RH）</th>
+					                    <th style="text-align:center;">甲醛（ppm）</th>
+					                </tr>
+					                <tr>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                    <td style="text-align:center;color:green;">50</td>
+					                </tr>
+					            </table>
+				        	</div>
+		        		</div>
+		        	</div>
+       			</div>
+		        <div id="tab5" class="tab ">
+		        	<div id="canvasDiv5" style="overflow:auto;-webkit-overflow-scrolling:auto;clear: both;"></div>
+		        	<div class="col-lg-7 col-md-9 col-xs-12 " style="border: 1px solid #ececec;margin-top: 10px;">
+		            	<div class="row" style="border-bottom: none;margin-top: 0;">
+		            		<div class="col">
+		            			<input type="radio" name="sensorTypeRadio" value='pm25'/><label>PM2.5</label>
+		            		</div>
+							<div class="col">
+								<input name="sensorTypeRadio" checked type="radio" value="co2"/><label>CO2</label>
+							</div>
+							<div class="col">
+								<input name="sensorTypeRadio" checked type="radio" value="tvoc"/><label>TVOC</label>
+							</div>
+		            	</div>
+						<div class="row" style="margin-top: 0;">
+							<div class="col">
+								<input name="sensorTypeRadio" checked type="radio" value="temperature"/><label>温度</label>
+							</div>
+							<div class="col">
+								<input name="sensorTypeRadio" checked type="radio" value="humidity"/><label>湿度</label>
+							</div>
+							<div class="col">
+								<input name="sensorTypeRadio" checked type="radio" value="formaldehyde"/><label>甲醛</label>
+							</div>
+		            	</div>
+		            	<div class="row">
+		            		<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">
+				            	<button id="sensorDataSwitch" class="btn qiehuan" @click="machineSwitch()">切换</button>
+				            </div>
+		            	</div>
+					</div>
+       			</div>
+		        <div id="tab6" class="tab">
+		        	<div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;padding: 5px;">
+			            <table class="sensor" id="operate" name="operate">
+			                <tr>
+			                    <th style="text-align:center;">用户名</th>
+			                    <th style="text-align:center;">操作时间</th>
+			                    <th style="text-align:center;">操作设备id</th>
+			                    <th style="text-align:center;">操作指令</th>
+			                </tr>
+			            </table>
+		           	</div>
+		            <ul class="pagination">
+		                <li><a href="#">❮</a></li>
+		                <li><a href="#">❯</a></li>
+		            </ul>
+		        </div>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

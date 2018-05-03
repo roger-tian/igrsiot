@@ -1,5 +1,7 @@
 package com.igrs.igrsiot.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,6 +13,9 @@ import java.util.List;
 public class IgrsSensor {
     @RequestMapping("/sensor")
     public String getSensorData() {
+        System.out.println("---------getSensorData---------");
+        logger.info("getSensorData");
+
         return "SUCCESS";
     }
 
@@ -20,4 +25,6 @@ public class IgrsSensor {
 
         return list;
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(IgrsSensor.class);
 }

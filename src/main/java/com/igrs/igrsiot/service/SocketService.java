@@ -1,5 +1,8 @@
 package com.igrs.igrsiot.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -24,23 +27,32 @@ public class SocketService implements ServletContextListener {
                         }
                         if (sk.isReadable()) {
                             sc = (SocketChannel) sk.channel();
-                            System.out.println("-----------socket accept" + sc);
                             ByteBuffer buff = ByteBuffer.allocate(1024);
                             String content = "";
                             try {
-                                while (sc.read(buff) > 0) {
+                                int len = sc.read(buff);
+                                if (len > 0) {
                                     buff.flip();
                                     content += charset.decode(buff);
+                                    logger.info("recv: {}", content);
+
+                                    sk.interestOps(SelectionKey.OP_READ);
+//                                    //cmdHandler(content);
+//                                    //cb.cmdHandler(content);
+                                    cmdSend(content);
                                 }
-                                System.out.println("==========" + content + sc);
-                                sk.interestOps(SelectionKey.OP_READ);
-                                //cmdHandler(content);
-                                cb.cmdHandler(content);
+                                else if (len == -1) {
+                                    logger.info("client closed socket");
+                                    sc.close();
+                                }
+                                else {
+
+                                }
                             }
                             catch (IOException e) {
                                 sk.cancel();
-                                if (sk.channel() != null) {
-                                    sk.channel().close();
+                                if (sc != null) {
+                                    sc.close();
                                 }
                             }
                         }
@@ -55,7 +67,8 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+//            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
             server.socket().bind(isa);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT);
@@ -103,4 +116,6 @@ public class SocketService implements ServletContextListener {
     private SocketChannel sc;
 
     private ICmdCallback cb = null;
+
+    private static final Logger logger = LoggerFactory.getLogger(SocketService.class);
 }

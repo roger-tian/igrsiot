@@ -18,6 +18,7 @@ public class IgrsOperate {
 
     @RequestMapping("/status")
     public String getDeviceStatus() {
+
         return "SUCCESS";
     }
 

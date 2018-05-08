@@ -1,6 +1,8 @@
 package com.igrs.igrsiot.controller;
 
 import com.igrs.igrsiot.service.SocketService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +20,8 @@ public class StatusController {
 
         String sql;
         ResultSet rs;
+
+        logger.debug("getDeviceStatus: {}");
 
         stmt = SocketService.getStmt();
 
@@ -67,9 +71,12 @@ public class StatusController {
         }
 
         result = String.format("%s,%s,%s,%s,%s", switchMachine, machineSigSource, machineVolume, switchLed1, switchLed2);
+        logger.debug("result: {}", result);
 
         return result;
     }
 
     private Statement stmt;
+
+    private static final Logger logger = LoggerFactory.getLogger(StatusController.class);
 }

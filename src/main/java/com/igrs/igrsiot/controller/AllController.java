@@ -82,5 +82,5 @@ public class AllController {
     private String cmd;
     private Statement stmt;
 
-    private static final Logger LOG = LoggerFactory.getLogger(AllController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AllController.class);
 }

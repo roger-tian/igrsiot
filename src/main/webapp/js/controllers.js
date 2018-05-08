@@ -51,12 +51,16 @@ angular.module('starter.controllers', [])
         }
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/all?onOff=' + onOff,
-//                data: 'deviceId=' + onOff,
-//                data: {"deviceId" : "1"},
-//                dataType:"json",
-            processData : false,
-            contentType : false,
+            // url:'/igrsiot/control/all?onOff=' + onOff,
+            // processData : false,
+            // contentType : false,
+            url:'/igrsiot/control/all',
+            data:{
+                onOff:onOff
+            },
+            // dataType:'json',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
             error: function(result) {
                 console.log(result);
             },
@@ -103,10 +107,13 @@ angular.module('starter.controllers', [])
         }
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/machine?onOff=' + onOff,
-            data: 'onOff=' + onOff,
-            processData : false,
-            contentType : false,
+            url:'/igrsiot/control/machine',
+            data:{
+                onOff:onOff
+            },
+            // dataType:'json',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
             error: function(result) {
                 console.log(result);
             },
@@ -159,10 +166,13 @@ angular.module('starter.controllers', [])
 
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/machineSig?sigSource=' + sigSource,
-//                data: 'onOff=' + onOff,
-            processData : false,
-            contentType : false,
+            url:'/igrsiot/control/machineSig',
+            data:{
+                sigSource:sigSource
+            },
+            // dataType:'json',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
             error: function(result) {
                 console.log(result);
             },
@@ -190,10 +200,13 @@ angular.module('starter.controllers', [])
     var machineSwitchIncrease = function() {
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/machineVol?volume=1',
-//                data: 'onOff=' + onOff,
-            processData : false,
-            contentType : false,
+            url:'/igrsiot/control/machineVol',
+            data:{
+                volume:1
+            },
+            // dataType:'json',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
             error: function(result) {
                 console.log(result);
             },
@@ -224,10 +237,13 @@ angular.module('starter.controllers', [])
     var machineSwitchDecrease = function() {
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/machineVol?volume=0',
-//                data: 'onOff=' + onOff,
-            processData : false,
-            contentType : false,
+            url:'/igrsiot/control/machineVol',
+            data:{
+                volume:0
+            },
+            // dataType:'json',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
             error: function(result) {
                 console.log(result);
             },
@@ -280,10 +296,13 @@ angular.module('starter.controllers', [])
         }
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/led1?onOff=' + onOff,
-            data: 'onOff=' + onOff,
-            processData : false,
-            contentType : false,
+            url:'/igrsiot/control/led1',
+            data:{
+                onOff:onOff
+            },
+            // dataType:'json',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
             error: function(result) {
                 console.log(result);
             },
@@ -334,10 +353,13 @@ angular.module('starter.controllers', [])
         }
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/led2?onOff=' + onOff,
-            data: 'onOff=' + onOff,
-            processData : false,
-            contentType : false,
+            url:'/igrsiot/control/led2',
+            data:{
+                onOff:onOff
+            },
+            // dataType:'json',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
             error: function(result) {
                 console.log(result);
             },
@@ -395,9 +417,9 @@ angular.module('starter.controllers', [])
 
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/sensor/history?type=' + sensorType,
-            processData : false,
-            contentType : false,
+            url:'/igrsiot/control/sensor/history',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
             error: function(result) {
                 console.log(result);
             },
@@ -429,9 +451,7 @@ angular.module('starter.controllers', [])
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/sensor',
-            processData : false,
-            contentType : false,
-            async:false,
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
             error: function(result) {
                 console.log(result);
             },
@@ -468,11 +488,7 @@ angular.module('starter.controllers', [])
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/status',
-//                data: 'deviceId=' + onOff,
-//                data: {"deviceId" : "1"},
-//                dataType:"json",
-            processData : false,
-            contentType : false,
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
             async:false,
             error: function(result) {
                 console.log(result);
@@ -516,8 +532,7 @@ angular.module('starter.controllers', [])
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/sensor',
-            processData : false,
-            contentType : false,
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
             async:false,
             error: function(result) {
                 console.log(result);
@@ -555,8 +570,7 @@ angular.module('starter.controllers', [])
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/operate',
-            processData : false,
-            contentType : false,
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
             async:false,
             error: function(result) {
                 console.log(result);

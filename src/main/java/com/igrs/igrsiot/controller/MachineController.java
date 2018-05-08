@@ -1,6 +1,8 @@
 package com.igrs.igrsiot.controller;
 
 import com.igrs.igrsiot.service.SocketService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,8 +56,12 @@ public class MachineController {
 
     @RequestMapping("/machineSig")
     public String machineSigSource(String sigSource) throws SQLException {
+//        String sigSource = request.getParameter("sigSource");
+
         String cmd = "{ch_12:" + sigSource + "}";
         SocketService.cmdSend(cmd);
+
+        logger.debug("sigSource: {}", sigSource);
 
         String sql;
         ResultSet rs;
@@ -149,4 +155,6 @@ public class MachineController {
     }
 
     private Statement stmt;
+
+    private static final Logger logger = LoggerFactory.getLogger(MachineController.class);
 }

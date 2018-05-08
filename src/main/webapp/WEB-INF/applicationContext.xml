@@ -3,7 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
 
     <!-- 加载配置JDBC文件 -->
     <context:property-placeholder location="classpath:db.properties" />
@@ -16,28 +17,26 @@
     </bean>
 
     <!-- 开启注解配置 即Autowried -->
-    <!-- <context:annotation-config/> -->
+     <!--<context:annotation-config/>-->
     <!--其实component-scan 就有了annotation-config的功能即把需要的类注册到了spring容器中 -->
 
     <!-- 在使用mybatis时 spring使用sqlsessionFactoryBean 来管理mybatis的sqlsessionFactory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
-        <!-- mybatis配置文件路径 -->
-        <property name="configLocation" value="" />
-        <!-- 实体类映射文件路径,这里只有一个就写死了，多个可以使用mybatis/*.xml来替代 -->
-        <!--<property name="mapperLocations" value="classpath:com/igrs/igrsiot/mybatis" />-->
+        <!--<property name="configLocation" value="classpath:com/igrs/igrsiot/mapper/*Mapper.xml" />-->
+        <property name="mapperLocations" value="classpath:com/igrs/igrsiot/mapper/*Mapper.xml" />
+        <property name="typeAliasesPackage" value="com.igrs.igrsiot.domain" />
     </bean>
 
-    <!-- <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate"> <constructor-arg index="0"> <ref bean="sqlSessionFactory"/>
-            </constructor-arg> </bean> -->
+    <!--&lt;!&ndash; 配置SqlSessionTemplate &ndash;&gt;-->
+    <!--<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">-->
+        <!--<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />-->
+    <!--</bean>-->
 
     <!--动态代理实现 不用写dao的实现 -->
-    <bean id="MapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <!-- 这里的basePackage 指定了dao层接口路劲，这里的dao接口不用自己实现 -->
-        <property name="basePackage" value="com.igrs.igrsiot.dao" />
-        <!-- 如果只有一个数据源的话可以不用指定，但是如果有多个数据源的话必须要指定 -->
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
-        <!--直接指定了sqlsessionTemplate名称，这个和上面的其实是一样的 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="classpath:com.igrs.igrsiot.mapper" />
+        <!--<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />-->
         <!-- <property name="sqlSessionTemplateBeanName" value="sqlSession" /> -->
     </bean>
 
@@ -45,6 +44,10 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
-    <!-- 使用全注释事务 -->
-    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <context:component-scan base-package="com.igrs.igrsiot.service" />
+
+    <tx:annotation-driven/>
+
+    <mybatis:scan base-package="com.igrs.igrsiot.mapper" />
 </beans>

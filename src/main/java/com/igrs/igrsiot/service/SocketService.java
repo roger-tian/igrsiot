@@ -1,16 +1,20 @@
 package com.igrs.igrsiot.service;
 
+import com.igrs.igrsiot.controller.CmdHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
-
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SocketService implements ServletContextListener {
     public class socketThread extends Thread {
@@ -37,9 +41,21 @@ public class SocketService implements ServletContextListener {
                                     logger.info("recv: {}", content);
 
                                     sk.interestOps(SelectionKey.OP_READ);
-//                                    //cmdHandler(content);
-//                                    //cb.cmdHandler(content);
-                                    cmdSend(content);
+//                                    cmdSend(content);
+
+                                    final String buf = content;
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            CmdHandler cmdHandler = new CmdHandler();
+                                            try {
+                                                cmdHandler.cmdHandler(buf);
+                                            }
+                                            catch (SQLException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }).start();
                                 }
                                 else if (len == -1) {
                                     logger.info("client closed socket");
@@ -75,7 +91,7 @@ public class SocketService implements ServletContextListener {
         }
     }
 
-    public int cmdSend(String buf) {
+    public static int cmdSend(String buf) {
         try {
             for (SelectionKey key : selector.keys()) {
                 Channel targetChannel = key.channel();
@@ -95,12 +111,22 @@ public class SocketService implements ServletContextListener {
     @Override
     public  void contextInitialized(ServletContextEvent sce) {
         // TODO Auto-generated method stub
+        final String DB_URL = "jdbc:mysql://localhost:3306/igrsiot";
+        final String USER = "root";
+        final String PASS = "root";
+
         try {
             socketThread thread = new socketThread();
             thread.init();
             thread.start();
+
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
         }
         catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -110,12 +136,16 @@ public class SocketService implements ServletContextListener {
 
     }
 
+    public static Statement getStmt() {
+        return stmt;
+    }
+
     private static Charset charset = Charset.forName("UTF-8");
     private ServerSocketChannel server;
-    private Selector selector;
+    private static Selector selector;
     private SocketChannel sc;
 
-    private ICmdCallback cb = null;
+    private static Statement stmt = null;
 
     private static final Logger logger = LoggerFactory.getLogger(SocketService.class);
 }

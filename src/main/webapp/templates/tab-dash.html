@@ -164,7 +164,7 @@
 					            <label class="btn_switch">开关</label>
 					           	<div class="xinhao col-xs-12" style="clear: both;border: 1px solid #ececec;padding: 15px 10px;margin: 10px 0;">
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
-				           				<input type="radio" name="radio" value='1' checked="" /><label>主页</label>
+				           				<input type="radio" name="radio" value='1' checked=""/><label>主页</label>
 				           			</div>
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
 						            	<input  name="radio" type="radio" value="2" checked=""/><label>HDMI2.0</label>
@@ -302,7 +302,7 @@
 					                    <span class="testswitch-switch"></span>
 					                </label>
 					            </div>
-					            <label class="btn_switch">总开关</label>
+					            <label class="btn_switch">开关（30秒后自动关闭）</label>
 					        </div>   
 				            <div class="col" style="border: 1px solid #ececec;">
 				            	<div class="row" >
@@ -311,20 +311,20 @@
 				            		</div>
 				            	</div>
 				            	<div class="row" style="border-bottom: none;margin-top: 0;">
-				            		<div class="col"><input type="radio" name="radio"/>童锁</div>
-									<div class="col"><input type="radio" name="radio"/>睡眠</div>
-									<div class="col"><input type="radio" name="radio"/>自动</div>
+				            		<div class="col"><input type="checkbox" id="purifierLcCheck" disabled="disabled"/>童锁</div>
+									<div class="col"><input type="checkbox" id="purifierSlCheck" disabled="disabled"/>睡眠</div>
+									<div class="col"><input type="checkbox" id="purifierMoCheck" disabled="disabled"/>自动</div>
 				            	</div>
 								<div class="row" style="margin-top: 0;">
-									<div class="col"><input type="radio" name="radio"/>负离子</div>
-									<div class="col"><input type="radio" name="radio"/>UV</div>
-									<div class="col"><input type="radio" name="radio"/>定时</div>
+									<div class="col"><input type="checkbox" id="purifierIoCheck" disabled="disabled"/>负离子</div>
+									<div class="col"><input type="checkbox" id="purifierUvCheck" disabled="disabled"/>UV</div>
+									<div class="col"><input type="checkbox" id="purifierTiCheck" disabled="disabled"/>定时</div>
 				            	</div>
-				            	<div class="row">
-				            		<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">
-						            	<button id="switchSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
-						            </div>
-				            	</div>
+				            	<!--<div class="row">-->
+				            		<!--<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">-->
+						            	<!--<button id="switchSig" class="btn qiehuan" @click="machineSwitch()">切换</button>-->
+						            <!--</div>-->
+				            	<!--</div>-->
 							</div>
 							<div class="col" style="border: 1px solid #ececec;margin-top: 10px;">
 				            	<div class="row" >
@@ -333,15 +333,15 @@
 				            		</div>
 				            	</div>
 				            	<div class="row" style="border-bottom: none;margin-top: 0;">
-				            		<div class="col"><input type="radio" name="radio"/>高速</div>
-									<div class="col"><input type="radio" name="radio"/>中速</div>
-									<div class="col"><input type="radio" name="radio"/>低速</div>
+				            		<div class="col"><input type="radio" name="purifierRadio" value="3" checked="" disabled="disabled"/>高速</div>
+									<div class="col"><input type="radio" name="purifierRadio" value="2" checked="" disabled="disabled"/>中速</div>
+									<div class="col"><input type="radio" name="purifierRadio" value="1" checked="" disabled="disabled"/>低速</div>
 				            	</div>
-				            	<div class="row">
-				            		<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">
-						            	<button id="switchSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
-						            </div>
-				            	</div>
+				            	<!--<div class="row">-->
+				            		<!--<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">-->
+						            	<!--<button id="switchSig" class="btn qiehuan" @click="machineSwitch()">切换</button>-->
+						            <!--</div>-->
+				            	<!--</div>-->
 							</div>
 		        		</div>
 		        	</div>

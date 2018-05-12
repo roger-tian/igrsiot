@@ -73,7 +73,7 @@ public class AllController {
         // insert into igrs_operate
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"总开关\",\"%s\")",time,instruction);
+        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"总开关\",\"%s\")", time, instruction);
         stmt.executeUpdate(sql);
 
         return "SUCCESS";

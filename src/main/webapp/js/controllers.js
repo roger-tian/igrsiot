@@ -497,7 +497,6 @@ angular.module('starter.controllers', [])
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
             async:false,
             error: function(result) {
-                console.log(result);
             },
             success: function(data) {
                 console.log(data);
@@ -529,7 +528,6 @@ angular.module('starter.controllers', [])
             url:'/igrsiot/control/sensor',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
             error: function(result) {
-                console.log(result);
             },
             success: function(data) {
                 console.log(data);
@@ -627,7 +625,6 @@ angular.module('starter.controllers', [])
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
             async:false,
             error: function(result) {
-                console.log(result);
             },
             success: function(data) {
                 console.log(data);

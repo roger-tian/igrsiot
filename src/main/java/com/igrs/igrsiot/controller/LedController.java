@@ -45,7 +45,7 @@ public class LedController {
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"智能灯一\",\"%s\")",time,instruction);
+        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"智能灯一\",\"%s\")", time, instruction);
         stmt.executeUpdate(sql);
 
         return "SUCCESS";
@@ -83,7 +83,7 @@ public class LedController {
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"智能灯二\",\"%s\")",time,instruction);
+        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"智能灯二\",\"%s\")", time, instruction);
         stmt.executeUpdate(sql);
 
         return "SUCCESS";

@@ -430,26 +430,28 @@ angular.module('starter.controllers', [])
                 var results = data.split(",");
                 for (var i=0; i<results.length; i++) {
                     result = results[i].split("::");
-                    if (result[0] == "lc") {
-                        lc = result[1];
-                    }
-                    else if (result[0] == "sl") {
-                        sl = result[1];
-                    }
-                    else if (result[0] == "mo") {
-                        mo = result[1];
-                    }
-                    else if (result[0] == "io") {
-                        io = result[1];
-                    }
-                    else if (result[0] == "uv") {
-                        uv = result[1];
-                    }
-                    else if (result[0] == "ti") {
-                        ti = result[1];
-                    }
-                    else if (result[0] == "fa") {
-                        fa = result[1];
+                    switch (result[0]) {
+                        case 'lc':
+                            lc = result[1];
+                            break;
+                        case 'sl':
+                            sl = result[1];
+                            break;
+                        case 'mo':
+                            mo = result[1];
+                            break;
+                        case 'io':
+                            io = result[1];
+                            break;
+                        case 'uv':
+                            uv = result[1];
+                            break;
+                        case 'ti':
+                            ti = result[1];
+                            break;
+                        case 'fa':
+                            fa = result[1];
+                            break;
                     }
                 }
                 console.log(lc + '-' + sl + '-' + mo + '-' + io + '-' + uv + '-' + ti + '-' + fa);
@@ -591,46 +593,48 @@ angular.module('starter.controllers', [])
                 console.log(str);
                 // var pw, lc, sl, mo, io, uv, ti, fa; // 开关, 童锁, 睡眠, 模式, 负离子, UV, 定时, 风速,
                 var result;
-                var results = data.split(",");
+                var results = str.split(",");
                 for (var i=0; i<results.length; i++) {
                     result = results[i].split("::");
-                    if (result[0] == "pw") {
-                        var check = document.getElementById("onoffswitch_purifier");
-                        check.checked = (result[1] == '10') ? true : false;
-                    }
-                    else if (result[0] == "lc") {
-                        var check = document.getElementById("purifierLcCheck");
-                        check.checked = (result[1] == '10') ? true : false;
-                    }
-                    else if (result[0] == "sl") {
-                        var check = document.getElementById("purifierSlCheck");
-                        check.checked = (result[1] == '10') ? true : false;
-                    }
-                    else if (result[0] == "mo") {
-                        var check = document.getElementById("purifierMoCheck");
-                        check.checked = (result[1] == '10') ? true : false;
-                    }
-                    else if (result[0] == "io") {
-                        var check = document.getElementById("purifierIoCheck");
-                        check.checked = (result[1] == '10') ? true : false;
-                    }
-                    else if (result[0] == "uv") {
-                        var check = document.getElementById("purifierUvCheck");
-                        check.checked = (result[1] == '10') ? true : false;
-                    }
-                    else if (result[0] == "ti") {
-                        var lcCheck = document.getElementById("purifierTiCheck");
-                        lcCheck.checked = (result[1] != '000') ? true : false;
-                    }
-                    else if (result[0] == "fa") {
-                        var radio = document.getElementsByName("purifierRadio");
-                        var faValue = result[1][0];
-                        for (var j=0; j<radio.length; j++) {
-                            if (radio[j].value == faValue) {
-                                radio[j].checked = true;
-                                break;
+                    switch (result[0]) {
+                        case 'pw':
+                            var check = document.getElementById("onoffswitch_purifier");
+                            check.checked = (result[1] == '10') ? true : false;
+                            break;
+                        case 'lc':
+                            var check = document.getElementById("purifierLcCheck");
+                            check.checked = (result[1] == '10') ? true : false;
+                            break;
+                        case 'sl':
+                            var check = document.getElementById("purifierSlCheck");
+                            check.checked = (result[1] == '10') ? true : false;
+                            break;
+                        case 'mo':
+                            var check = document.getElementById("purifierMoCheck");
+                            check.checked = (result[1] == '10') ? true : false;
+                            break;
+                        case 'io':
+                            var check = document.getElementById("purifierIoCheck");
+                            check.checked = (result[1] == '10') ? true : false;
+                            break;
+                        case 'uv':
+                            var check = document.getElementById("purifierUvCheck");
+                            check.checked = (result[1] == '10') ? true : false;
+                            break;
+                        case 'ti':
+                            var lcCheck = document.getElementById("purifierTiCheck");
+                            lcCheck.checked = (result[1] != '000') ? true : false;
+                            break;
+                        case 'fa':
+                            var radio = document.getElementsByName("purifierRadio");
+                            var faValue = result[1][0];
+                            for (var j=0; j<radio.length; j++) {
+                                if (radio[j].value == faValue) {
+                                    radio[j].checked = true;
+                                    break;
+                                }
                             }
-                        }
+                            break;
                     }
                 }
                 // console.log(lc + '-' + sl + '-' + mo + '-' + io + '-' + uv + '-' + ti + '-' + fa);

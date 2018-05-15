@@ -85,14 +85,20 @@ public class SensorController {
     }
 
     @RequestMapping("/sensor/history")
-    public List<String> getSensorHistoryData(String type) throws SQLException {
+    public List<String> getSensorHistoryData(String date, String type) throws SQLException {
         String sql;
         ResultSet rs;
         List<String> list = new ArrayList<>();
 
         stmt = SocketService.getStmt();
 
-        sql = String.format("select avg(value) as value from igrs_sensor_detail where type = \"%s\" group by left(time,13) order by time", type);
+        if (date.length() == 0) {
+            sql = String.format("select avg(value) as value from igrs_sensor_detail where type = \"%s\" group by left(time,13) order by time", type);
+        }
+        else {
+            sql = String.format("select value from igrs_sensor where left(date,10) = \"%s\" and type = \"%s\" order by hour", date, type);
+        }
+        logger.debug("sql: {}", sql);
         rs = stmt.executeQuery(sql);
         while (rs.next()) {
             String value = new String();
@@ -101,6 +107,7 @@ public class SensorController {
 
             list.add(value);
         }
+        logger.debug("sensor list: {}", list);
 
         return list;
     }

@@ -461,49 +461,69 @@ angular.module('starter.controllers', [])
         sensorDataSwitch();
     });
     var sensorDataSwitch = function() {
+        var date;
         var sensorType;
         var title;
+        var dateObj = document.getElementById("sensorDate");
+        date = dateObj.value;
         var objSig = document.getElementsByName("sensorTypeRadio");
         for (var i=0; i<objSig.length; i++) {
             if (objSig[i].checked) {
                 sensorType = objSig[i].value;
             }
         }
-        if (sensorType == "pm25") {
-            title = "PM2.5";
-        }
-        else if (sensorType == "co2") {
-            title = "CO2";
-        }
-        else if (sensorType == "tvoc") {
-            title = "TVOC";
-        }
-        else if (sensorType == "temperature") {
-            title = "温度";
-        }
-        else if (sensorType == "humidity") {
-            title = "湿度";
-        }
-        else if (sensorType == "formaldehyde") {
-            title = "甲醛";
-        }
-        else {
-
-        }
-
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/sensor/history',
+            data:{
+                date:date,
+                type:sensorType
+            },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
             async:false,
             error: function(result) {
             },
             success: function(data) {
                 console.log(data);
-
                 var value = [];
+                var buf;
                 for (var i=0; i<data.length; i++) {
-                    value.push(data[i]);
+                    switch (sensorType) {
+                        case 'pm25':
+                            title = "PM2.5";
+                            buf = data[i].split('.');
+                            value.push(buf[0]);
+                            break;
+                        case 'co2':
+                            title = "CO2";
+                            buf = data[i].split('.');
+                            value.push(buf[0]);
+                            break;
+                        case 'tvoc':
+                            title = "TVOC";
+                            buf = data[i].split('.');
+                            var buff = data[i].substring(0, buf[0].length+4);
+                            value.push(buff);
+                            break;
+                        case 'temperature':
+                            title = "温度";
+                            buf = data[i].split('.');
+                            var buff = data[i].substring(0, buf[0].length+2);
+                            value.push(buff);
+                            break;
+                        case 'humidity':
+                            title = "湿度";
+                            buf = data[i].split('.');
+                            var buff = data[i].substring(0, buf[0].length+2);
+                            value.push(buff);
+                            break;
+                        case 'formaldehyde':
+                            title = "甲醛";
+                            buf = data[i].split('.');
+                            var buff = data[i].substring(0, buf[0].length+4);
+                            value.push(buff);
+                            break;
+                    }
                 }
                 console.log(value);
                 DrawSensor('canvasDiv5', title, value);
@@ -543,10 +563,10 @@ angular.module('starter.controllers', [])
                     var co2 = result[1].split('.');
                     cells[0].innerHTML = co2[0];
                     cells[1].innerHTML = result[2];
-                    var temp = result[3].substring(0, result[3].length-2);
-                    cells[2].innerHTML = temp;
-                    var hum = result[4].substring(0, result[4].length-2);
-                    cells[3].innerHTML = hum;
+                    var temp = result[3].split('.');
+                    cells[2].innerHTML = result[3].substring(0, temp[0].length+2);
+                    var hum = result[4].split('.');
+                    cells[3].innerHTML = result[4].substring(0, hum[0].length+2);
                     cells[4].innerHTML = result[5];
                 }
 

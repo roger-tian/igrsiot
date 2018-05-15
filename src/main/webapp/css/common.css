@@ -93,6 +93,7 @@ li{
   font-size:1.1em;
   border:1px solid #98bf21;
   padding:3px 7px 2px 7px;
+  white-space: nowrap;
 }
 
 .sensor th

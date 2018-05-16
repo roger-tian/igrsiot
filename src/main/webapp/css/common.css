@@ -99,3 +99,27 @@ label{
 .switchname{
 	margin-top: 6px;
 }
+.navi_wrap{
+	position: fixed;
+	height: 100%;
+	width: 245px;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	background: rgba(0,0,0,.3);
+	z-index: 10;
+}
+#navibtn1{
+	display: block;
+}
+#navibtn2{
+	display: none;
+}
+@media (min-width:767px) {
+	#navibtn2{
+		display: block;
+	}
+	#navibtn1{
+		display: none;
+	}
+}

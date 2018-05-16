@@ -19,10 +19,11 @@
 		<script src="js/angular.min.js"></script>
 	</head>
 	<body ng-app="starter">
-		<ion-side-menus>
+		<ion-side-menus id="slidemenu">
 			<ion-side-menu-content drag-content=false>
 				<div class="bar bar-header">
-		            <button class="button icon ion-android-menu" menu-toggle="left" style="background-color: #FFFFFF;"></button>
+		            <button class="button icon ion-android-menu" id="navibtn1"  menu-toggle="left" style="background-color: #FFFFFF;"></button>
+		            <button class="button icon ion-android-menu" id="navibtn2" style="background-color: #FFFFFF;"></button>
 		            <h1 class="title"></h1>
 		        </div>
 				<ion-nav-view></ion-nav-view>
@@ -35,8 +36,56 @@
 		            <ion-item nav-clear menu-close href="#/tab/room1">
 		              room1
 		            </ion-item>
-		          </ion-list>
+		        </ion-list>
 			</ion-side-menu>
 		</ion-side-menus>
+		<div class="navi_wrap" style="display: none;" title="none">
+			<ion-list>
+	            <ion-item nav-clear menu-close href="#/tab/dash">
+	              dash
+	            </ion-item>
+	            <ion-item nav-clear menu-close href="#/tab/room1">
+	              room1
+	            </ion-item>
+	        </ion-list>
+		</div>
+		<script>
+			var nowwidth
+			var nowleft
+			var navistate
+			$("#navibtn2").click(function(){
+				navistate=$(".navi_wrap").attr("title")
+				if(navistate=="none"){
+					navishow()
+				}else{
+					navihide()
+				}
+			})
+			var navishow=function(){
+				nowwidth=$(document).width()-245+"px";
+				nowleft=245+"px";
+				$(".navi_wrap").show();
+				$(".navi_wrap").attr("title","block");
+				$("#slidemenu").css({"width":nowwidth,"left":nowleft});
+			}
+			var navihide=function(){
+				nowwidth=100+"%";
+				nowleft=0;
+				$(".navi_wrap").hide();
+				$(".navi_wrap").attr("title","none");
+				$("#slidemenu").css({"width":"100%","left":nowleft});
+			}
+			$(".navi_wrap").click(function(){
+				navihide();
+			})
+			$(window).resize(function () {  
+				if(navistate=="none"){
+					nowwidth=$(document).width()-245+"px";
+				}else{
+					nowwidth=100+"%";
+				}
+				$("#slidemenu").css({"width":nowwidth,"left":nowleft});
+			});
+		</script>
 	</body>
 </html>

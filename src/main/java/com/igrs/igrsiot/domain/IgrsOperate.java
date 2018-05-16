@@ -41,9 +41,18 @@ public class IgrsOperate {
         this.instruction = instruction;
     }
 
+    public String getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(String totalPage) {
+        this.totalPage = totalPage;
+    }
+
     private String id;
     private String user;
     private String operateTime;
     private String deviceId;
     private String instruction;
+    private String totalPage;
 }

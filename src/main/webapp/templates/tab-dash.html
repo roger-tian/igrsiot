@@ -462,18 +462,18 @@
 					<div class="row" style="margin-top: -1px;" ng-repeat="x in data">
 						<div class="col-lg-6 col-md-8 col-sm-6 col-xs-12">
 							<div class="row sensor">
-								<div class="col" ng-bind="x.user"></div>
-								<div class="col" ng-bind="x.operateTime"></div>
-								<div class="col" ng-bind="x.deviceId"></div>
-								<div class="col" ng-bind="x.instruction"></div>
+								<div class="col" ng-bind="x.user">{{x.user}}</div>
+								<div class="col" ng-bind="x.operateTime">{{x.operateTime}}</div>
+								<div class="col" ng-bind="x.deviceId">{{x.deviceId}}</div>
+								<div class="col" ng-bind="x.instruction">{{x.instruction}}</div>
 							</div>
 						</div>
 					</div>
 					<!--<div id="operate"></div>-->
 					<ul class="pagination">
-		                <li><a href="#">❮</a></li>
-						<li><a href="#">共5页</a></li>
-		                <li><a href="#">❯</a></li>
+		                <li><a href="javascript:void(0)" ng-click="prevPage()">❮</a></li>
+						<li><a href="javascript:void(0)" id="paginationText">1/1</a></li>
+		                <li><a href="javascript:void(0)" ng-click="nextPage()">❯</a></li>
 		            </ul>
 		        </div>
 			</div>

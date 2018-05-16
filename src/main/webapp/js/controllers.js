@@ -22,6 +22,9 @@ angular.module('starter.controllers', [])
 })
 
 .controller('DashCtrl', function($scope,$state) {
+    var totalPage = 1;
+    var curPageNo = 1;
+
     $("#onoffswitch_all").on('click', function(){
         clickSwitch_all();
     });
@@ -726,37 +729,74 @@ angular.module('starter.controllers', [])
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/operate',
+            data: {
+                pageNo:curPageNo
+            },
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
+            error: function(result) {
+            },
+            success: function(data) {
+                console.log(data + data[0].totalPage);
+                totalPage = data[0].totalPage;
+                var paginationTextObj = document.getElementById("paginationText");
+                paginationTextObj.innerText = curPageNo + '/' + totalPage;
+                $scope.data = data;
+            }
+        });
+    });
+
+    $scope.prevPage = function () {
+        if (curPageNo == 1) {
+            return;
+        }
+        curPageNo --;
+
+        $.ajax({
+            type: 'POST',
+            url:'/igrsiot/control/operate',
+            data: {
+                pageNo:curPageNo
+            },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
             async:false,
             error: function(result) {
             },
             success: function(data) {
                 console.log(data);
+                totalPage = data[0].totalPage;
+                var paginationTextObj = document.getElementById("paginationText");
+                paginationTextObj.innerText = curPageNo + '/' + totalPage;
                 $scope.data = data;
-                // var rowData;
-                // for (var i=0; i<data.length; i++) {
-                    // rowData = "<tr>";
-                    // rowData += "<td style=\"text-align:center;color:green;\">" + data[i].user + "</td>";
-                    // rowData += "<td style=\"text-align:center;color:green;\">" + data[i].operateTime + "</td>";
-                    // rowData += "<td style=\"text-align:center;color:green;\">" + data[i].deviceId + "</td>";
-                    // rowData += "<td style=\"text-align:center;color:green;\">" + data[i].instruction + "</td>";
-                    // rowData += "</tr>";
-                    // $("#operate").append(rowData);
-                    // rowData = '<div class="row" style="margin-top: -1px;">
-                    //     <div class="col-lg-6 col-md-8 col-sm-6 col-xs-12">
-                    //         <div class="row sensor">
-                    //             <div class="col">' + data[i].user + '</div>
-                    //             <div class="col">' + data[i].operateTime + '</div>
-                    //             <div class="col">' + data[i].deviceId + '</div>
-                    //             <div class="col">' + data[i].instruction + '</div>
-                    //         </div>
-                    //     </div>
-                    // </div>'
-                    // $("#operate").append(rowData);
-                // }
             }
         });
-    });
+    }
+
+    $scope.nextPage = function () {
+        if (curPageNo == totalPage) {
+            return;
+        }
+        curPageNo ++;
+
+        $.ajax({
+            type: 'POST',
+            url:'/igrsiot/control/operate',
+            data: {
+                pageNo:curPageNo
+            },
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
+            error: function(result) {
+            },
+            success: function(data) {
+                console.log(data);
+                totalPage = data[0].totalPage;
+                var paginationTextObj = document.getElementById("paginationText");
+                paginationTextObj.innerText = curPageNo + '/' + totalPage;
+                $scope.data = data;
+            }
+        });
+    }
 })
 
 .controller('Room1Ctrl', function($scope,$state) {

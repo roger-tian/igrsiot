@@ -86,30 +86,12 @@ li{
 {
   font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse:collapse;
+  font-size: 10px;
+  border: 1px solid #dee5e7;
+  border-right: none;
 }
-
-.sensor td, .sensor th
-{
-  font-size:1.1em;
-  border:1px solid #98bf21;
-  padding:3px 7px 2px 7px;
-  white-space: nowrap;
-}
-
-.sensor th
-{
-  font-size:1.1em;
-  text-align:left;
-  padding-top:5px;
-  padding-bottom:4px;
-  background-color:#A7C942;
-  color:#ffffff;
-}
-
-.sensor tr.alt td
-{
-  color:#000000;
-  background-color:#EAF2D3;
+.sensor div{
+	border-right: 1px solid #dee5e7;
 }
 label{
 	font-weight: 400;

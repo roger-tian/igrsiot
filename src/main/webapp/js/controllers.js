@@ -374,7 +374,7 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#onoffswitch_purifier").on('click', function(){
+    $("#onoffswitch_purifier").on('click', function() {
         clickSwitch_purifier();
     });
     var clickSwitch_purifier = function() {
@@ -732,16 +732,28 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
-                var rowData;
-                for (var i=0; i<data.length; i++) {
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + data[i].user + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + data[i].operateTime + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + data[i].deviceId + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + data[i].instruction + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
-                }
+                $scope.data = data;
+                // var rowData;
+                // for (var i=0; i<data.length; i++) {
+                    // rowData = "<tr>";
+                    // rowData += "<td style=\"text-align:center;color:green;\">" + data[i].user + "</td>";
+                    // rowData += "<td style=\"text-align:center;color:green;\">" + data[i].operateTime + "</td>";
+                    // rowData += "<td style=\"text-align:center;color:green;\">" + data[i].deviceId + "</td>";
+                    // rowData += "<td style=\"text-align:center;color:green;\">" + data[i].instruction + "</td>";
+                    // rowData += "</tr>";
+                    // $("#operate").append(rowData);
+                    // rowData = '<div class="row" style="margin-top: -1px;">
+                    //     <div class="col-lg-6 col-md-8 col-sm-6 col-xs-12">
+                    //         <div class="row sensor">
+                    //             <div class="col">' + data[i].user + '</div>
+                    //             <div class="col">' + data[i].operateTime + '</div>
+                    //             <div class="col">' + data[i].deviceId + '</div>
+                    //             <div class="col">' + data[i].instruction + '</div>
+                    //         </div>
+                    //     </div>
+                    // </div>'
+                    // $("#operate").append(rowData);
+                // }
             }
         });
     });
@@ -772,23 +784,26 @@ function getNowFormatDate() {
 }
 
 function DrawPm25(render, value) {
-    var Width = 370
-    var Height = 240
-    var Fontsize = 14
+    var Width = 280;
+    var Height = 200;
+    var Fontsize = 14;
     var screenwidth = document.body.clientWidth
-    if (screenwidth >= 970) {
-        Width = 500
-        Height = 300
-        Fontsize = 20
-    }
-    else if (screenwidth<970 && screenwidth>750) {
-        Fontsize = 16
-    }
-    else {
-        Width = 300;
-        Height = 200;
-        Fontsize = 12
-    }
+    console.log(screenwidth);
+    // if (screenwidth >= 970) {
+    //     Width = 300
+    //     Height = 300
+    //     Fontsize = 20
+    // }
+    // else if (screenwidth<970 && screenwidth>750) {
+    //     Width = 280;
+    //     Height = 200;
+    //     Fontsize = 12
+    // }
+    // else {
+    //     Width = 280;
+    //     Height = 200;
+    //     Fontsize = 10
+    // }
 
     var text = 'PM 2.5\n' + value + '(μg/m3)';
 
@@ -814,7 +829,7 @@ function DrawPm25(render, value) {
             fontsize:Fontsize
         },
         data: data,
-        offsetx:-60,
+        offsetx:40,
         shadow:true,
         background_color:'white',
         separate_angle:0,//分离角度
@@ -824,7 +839,7 @@ function DrawPm25(render, value) {
             showType:'fixed'
         },
         legend : {
-            enable : true,
+            enable : false,
             shadow:true,
             background_color:null,
             border:true,
@@ -911,4 +926,3 @@ function DrawSensor(render, type, value) {
     });
     chart.draw();
 }
-

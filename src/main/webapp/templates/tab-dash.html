@@ -1,13 +1,13 @@
 ﻿<ion-view  view-title="教育展会演示" hide-nav-bar="true" hide-tabs="true">
 	<ion-content overflow-scroll="true"	style="overflow:scroll;-webkit-overflow-scrolling:touch;">
 		<div class="content_wrap">
-			<div class="col-lg-8 col-md-9 col-sm-10 col-xs-12">
+			<div class="col-sm-7">
 				<div class="row daohang">
 					<a class="current col" href="#" title="tab1" >总开关</a>
 					<a class="col" href="#" title="tab2">一体机</a>
 			        <a class="col" href="#" title="tab3">智能灯</a>
 			        <a class="col" href="#" title="tab4">净化器</a>
-			        <a class="col" href="#" title="tab5">历史数据</a>
+			        <!--<a class="col" href="#" title="tab5">历史数据</a>-->
 			       	<a class="col" href="#" title="tab6">操作记录</a>
 				</div>
 			</div>
@@ -129,24 +129,33 @@
 								空气质量
 							</div>
 							<div id="canvasDiv1" style="overflow:auto;-webkit-overflow-scrolling:auto;clear: both;"></div>
-							<div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;">
-					            <table class="sensor" name="sensor">
-					                <tr>
-					                    <th style="text-align:center;">CO2（ppm）</th>
-					                    <th style="text-align:center;">TVOC（μg/m3）</th>
-					                    <th style="text-align:center;">温度（摄氏度）</th>
-					                    <th style="text-align:center;">湿度（%RH）</th>
-					                    <th style="text-align:center;">甲醛（ppm）</th>
-					                </tr>
-					                <tr>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                </tr>
-					            </table>
-					      	</div>	
+					      	<div class="row text-center sensor">
+					      		<div class="col">
+					      			<span>CO2</span><br />
+					      			<span>（ppm）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>TVOC</span><br />
+					      			<span>（μg/m3）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>温度</span><br />
+					      			<span>（℃）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>湿度</span><br />
+					      			<span>（%RH）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>甲醛</span><br />
+					      			<span>（ppm）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      	</div>
 					    </div>
 					</div>
 				</div>
@@ -196,24 +205,33 @@
 								空气质量
 							</div>
 							<div id="canvasDiv2" style="overflow:auto;-webkit-overflow-scrolling:auto;clear: both;"></div>
-							<div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;">
-					            <table class="sensor" name="sensor">
-					                <tr>
-					                    <th style="text-align:center;">CO2（ppm）</th>
-					                    <th style="text-align:center;">TVOC（μg/m3）</th>
-					                    <th style="text-align:center;">温度（摄氏度）</th>
-					                    <th style="text-align:center;">湿度（%RH）</th>
-					                    <th style="text-align:center;">甲醛（ppm）</th>
-					                </tr>
-					                <tr>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                </tr>
-					            </table>
-					      	</div>	
+							<div class="row text-center sensor">
+					      		<div class="col">
+					      			<span>CO2</span><br />
+					      			<span>（ppm）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>TVOC</span><br />
+					      			<span>（μg/m3）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>温度</span><br />
+					      			<span>（℃）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>湿度</span><br />
+					      			<span>（%RH）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>甲醛</span><br />
+					      			<span>（ppm）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      	</div>
 					    </div>
 					</div>
 		        </div>
@@ -269,24 +287,33 @@
 		        	<div class="col-sm-5" style="padding: 0;">
 		        		<div class="col">
 		        			<div id="canvasDiv3" style="overflow:auto;-webkit-overflow-scrolling:auto;clear: both;"></div>
-				            <div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;">
-					            <table class="sensor" name="sensor">
-					                <tr>
-					                    <th style="text-align:center;">CO2（ppm）</th>
-					                    <th style="text-align:center;">TVOC（μg/m3）</th>
-					                    <th style="text-align:center;">温度（摄氏度）</th>
-					                    <th style="text-align:center;">湿度（%RH）</th>
-					                    <th style="text-align:center;">甲醛（ppm）</th>
-					                </tr>
-					                <tr>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                </tr>
-					            </table>
-				        	</div>
+				            <div class="row text-center sensor">
+					      		<div class="col">
+					      			<span>CO2</span><br />
+					      			<span>（ppm）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>TVOC</span><br />
+					      			<span>（μg/m3）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>温度</span><br />
+					      			<span>（℃）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>湿度</span><br />
+					      			<span>（%RH）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>甲醛</span><br />
+					      			<span>（ppm）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      	</div>
 		        		</div>
 		        	</div>
 		            
@@ -348,24 +375,33 @@
 		        	<div class="col-sm-5" style="padding: 0;">
 		        		<div class="col">
 		        			<div id="canvasDiv4" style="overflow:auto;-webkit-overflow-scrolling:auto;clear: both;"></div>
-				            <div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;">
-					            <table class="sensor" name="sensor">
-					                <tr>
-					                    <th style="text-align:center;">CO2（ppm）</th>
-					                    <th style="text-align:center;">TVOC（μg/m3）</th>
-					                    <th style="text-align:center;">温度（摄氏度）</th>
-					                    <th style="text-align:center;">湿度（%RH）</th>
-					                    <th style="text-align:center;">甲醛（ppm）</th>
-					                </tr>
-					                <tr>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                    <td style="text-align:center;color:green;">50</td>
-					                </tr>
-					            </table>
-				        	</div>
+				            <div class="row text-center sensor">
+					      		<div class="col">
+					      			<span>CO2</span><br />
+					      			<span>（ppm）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>TVOC</span><br />
+					      			<span>（μg/m3）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>温度</span><br />
+					      			<span>（℃）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>湿度</span><br />
+					      			<span>（%RH）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      		<div class="col">
+					      			<span>甲醛</span><br />
+					      			<span>（ppm）</span><br />
+					      			<span>50</span>
+					      		</div>
+					      	</div>
 		        		</div>
 		        	</div>
        			</div>
@@ -403,18 +439,40 @@
 					</div>
        			</div>
 		        <div id="tab6" class="tab">
-		        	<div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;padding: 5px;">
-			            <table class="sensor" id="operate" name="operate">
-			                <tr>
-			                    <th style="text-align:center;">用户名</th>
-			                    <th style="text-align:center;">操作时间</th>
-			                    <th style="text-align:center;">操作设备id</th>
-			                    <th style="text-align:center;">操作指令</th>
-			                </tr>
-			            </table>
-		           	</div>
-		            <ul class="pagination">
+		        	<!--<div style="width: 100%;overflow:auto;-webkit-overflow-scrolling:auto;padding: 5px;">-->
+			            <!--<table class="sensor" id="operate" name="operate">-->
+			                <!--<tr>-->
+			                    <!--<th style="text-align:center;">用户名</th>-->
+			                    <!--<th style="text-align:center;">操作时间</th>-->
+			                    <!--<th style="text-align:center;">操作设备id</th>-->
+			                    <!--<th style="text-align:center;">操作指令</th>-->
+			                <!--</tr>-->
+			            <!--</table>-->
+		           	<!--</div>-->
+					<div class="row" style="margin-top: 10px;margin-left: 0;">
+						<div class="col-lg-6 col-md-8 col-sm-6 col-xs-12">
+							<div class="row sensor">
+								<div class="col">用户名</div>
+								<div class="col">操作时间</div>
+								<div class="col">操作设备id</div>
+								<div class="col">操作指令</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" style="margin-top: -1px;" ng-repeat="x in data">
+						<div class="col-lg-6 col-md-8 col-sm-6 col-xs-12">
+							<div class="row sensor">
+								<div class="col" ng-bind="x.user"></div>
+								<div class="col" ng-bind="x.operateTime"></div>
+								<div class="col" ng-bind="x.deviceId"></div>
+								<div class="col" ng-bind="x.instruction"></div>
+							</div>
+						</div>
+					</div>
+					<!--<div id="operate"></div>-->
+					<ul class="pagination">
 		                <li><a href="#">❮</a></li>
+						<li><a href="#">共5页</a></li>
 		                <li><a href="#">❯</a></li>
 		            </ul>
 		        </div>

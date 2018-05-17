@@ -25,33 +25,41 @@ angular.module('starter.controllers', [])
     var totalPage = 1;
     var curPageNo = 1;
 
-    $("#onoffswitch_all").on('click', function(){
+    // $("#onoffswitch_all").on('click', function(){
+    //     clickSwitch_all();
+    // });
+    // $scope.toggleState = false;
+    $scope.onSwitchAllClick = function() {
+        $scope.toggleAllState = !$scope.toggleAllState;
+        console.log($scope.toggleAllState);
+        // console.log($scope.toggleState)
         clickSwitch_all();
-    });
+    };
     var clickSwitch_all = function() {
         var switch_machine = document.getElementById("onoffswitch_machine");
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
-        var onOff;
-        var instruction;
-        if ($("#onoffswitchall").is(':checked')) {
-            onOff = "1";
-
+        var switch_purifier = document.getElementById("onoffswitch_purifier");
+        // var onOff;
+        // var instruction;
+        if ($scope.toggleAllState) {
             switch_machine.checked = true;
             switch_led1.checked = true;
             switch_led2.checked = true;
+            switch_purifier.checked = true;
 
             instruction = "总开关开启";
         }
         else {
-            onOff = "0";
-
             switch_machine.checked = false;
             switch_led1.checked = false;
             switch_led2.checked = false;
+            switch_purifier.checked = false;
 
             instruction = "总开关关闭";
         }
+        var onOff = $scope.toggleAllState;
+        onOff = onOff ? "on" : "off";
         $.ajax({
             type: 'POST',
             // url:'/igrsiot/control/all?onOff=' + onOff,
@@ -63,7 +71,7 @@ angular.module('starter.controllers', [])
             },
             // dataType:'json',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -82,9 +90,14 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#onoffswitch_machine").on('click', function(){
+    // $("#onoffswitch_machine").on('click', function(){
+    //     clickSwitch_machine();
+    // });
+    $scope.onSwitchMachineClick = function() {
+        $scope.toggleMachineState = !$scope.toggleMachineState;
+        // console.log($scope.toggleState)
         clickSwitch_machine();
-    });
+    };
     var clickSwitch_machine = function() {
         var switch_all = document.getElementById("onoffswitch_all");
         var switch_led1 = document.getElementById("onoffswitch_led1");
@@ -115,7 +128,7 @@ angular.module('starter.controllers', [])
             },
             // dataType:'json',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -173,7 +186,7 @@ angular.module('starter.controllers', [])
             },
             // dataType:'json',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -206,7 +219,7 @@ angular.module('starter.controllers', [])
             },
             // dataType:'json',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -242,7 +255,7 @@ angular.module('starter.controllers', [])
             },
             // dataType:'json',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -266,9 +279,14 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#onoffswitch_led1").on('click', function(){
+    // $("#onoffswitch_led1").on('click', function(){
+    //     clickSwitch_led1();
+    // });
+    $scope.onSwitchLed1Click = function() {
+        $scope.toggleLed1State = !$scope.toggleLed1State;
+        // console.log($scope.toggleState)
         clickSwitch_led1();
-    });
+    };
     var clickSwitch_led1 = function() {
         var switch_all = document.getElementById("onoffswitch_all");
         var switch_machine = document.getElementById("onoffswitch_machine");
@@ -300,7 +318,7 @@ angular.module('starter.controllers', [])
             },
             // dataType:'json',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -321,9 +339,14 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#onoffswitch_led2").on('click', function(){
+    // $("#onoffswitch_led2").on('click', function(){
+    //     clickSwitch_led2();
+    // });
+    $scope.onSwitchLed2Click = function() {
+        $scope.toggleLed2State = !$scope.toggleLed2State;
+        // console.log($scope.toggleState)
         clickSwitch_led2();
-    });
+    };
     var clickSwitch_led2 = function() {
         var onOff;
         var instruction;
@@ -356,7 +379,7 @@ angular.module('starter.controllers', [])
             },
             // dataType:'json',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -377,9 +400,16 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#onoffswitch_purifier").on('click', function() {
+    // $("#onoffswitch_purifier").on('click', function() {
+    //     clickSwitch_purifier();
+    // });
+    // $scope.toggleState=false;
+    $scope.onSwitchPurifierClick = function() {
+        // $scope.toggleState=!$scope.toggleState;
+        $scope.togglePurifierState = !$scope.togglePurifierState;
+        // console.log($scope.toggleState)
         clickSwitch_purifier();
-    });
+    };
     var clickSwitch_purifier = function() {
         // var switch_all = document.getElementById("onoffswitch_all");
         // var switch_machine = document.getElementById("onoffswitch_machine");
@@ -403,13 +433,15 @@ angular.module('starter.controllers', [])
         //
         //     instruction = "开关关闭";
         // }
-        var onOff;
-        if ($("#onoffswitch_purifier").is(':checked')) {
-            onOff = "on";
-        }
-        else {
-            onOff = "off";
-        }
+        var onOff = $scope.togglePurifierState;
+        // if ($("#onoffswitch_purifier").is(':checked')) {
+        //     onOff = "on";
+        // }
+        // else {
+        //     onOff = "off";
+        // }
+        onOff = onOff ? "on" : "off";
+        // alert('---------------purifier control-----------------');
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/purifier/control',
@@ -422,7 +454,7 @@ angular.module('starter.controllers', [])
             },
             // dataType:'json',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -485,7 +517,7 @@ angular.module('starter.controllers', [])
                 type:sensorType
             },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -632,6 +664,7 @@ angular.module('starter.controllers', [])
                         case 'pw':
                             var check = document.getElementById("onoffswitch_purifier");
                             check.checked = (result[1] == '10') ? true : false;
+                            $scope.togglePurifierState = check.checked;
                             break;
                         case 'lc':
                             var check = document.getElementById("purifierLcCheck");
@@ -672,14 +705,14 @@ angular.module('starter.controllers', [])
                 // console.log(lc + '-' + sl + '-' + mo + '-' + io + '-' + uv + '-' + ti + '-' + fa);
             }
         });
-    }, 15000);
+    }, 2000);
 
     $(document).ready(function() {
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/status',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -701,7 +734,6 @@ angular.module('starter.controllers', [])
                 switchMachine.checked = (result[0] == "1") ? true : false;
                 for (var i=0; i<machineSig.length; i++) {
                     if (machineSig[i].value == result[1]) {
-                        console.log(i + "---");
                         machineSig[i].checked = true;
                         break;
                     }
@@ -722,7 +754,7 @@ angular.module('starter.controllers', [])
             type: 'POST',
             url:'/igrsiot/control/sensor',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -791,11 +823,11 @@ angular.module('starter.controllers', [])
                 pageNo:curPageNo
             },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
-                console.log(data + data[0].totalPage);
+                console.log(data);
                 totalPage = data[0].totalPage;
                 var paginationTextObj = document.getElementById("paginationText");
                 paginationTextObj.innerText = curPageNo + '/' + totalPage;
@@ -817,7 +849,7 @@ angular.module('starter.controllers', [])
                 pageNo:curPageNo
             },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -843,7 +875,7 @@ angular.module('starter.controllers', [])
                 pageNo:curPageNo
             },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
+            async:true,
             error: function(result) {
             },
             success: function(data) {
@@ -886,21 +918,21 @@ function DrawPm25(render, value) {
     var Height = 200;
     var Fontsize = 14;
     var screenwidth = document.body.clientWidth
-    console.log(screenwidth);
+    // console.log(screenwidth);
     // if (screenwidth >= 970) {
-    //     Width = 300
-    //     Height = 300
-    //     Fontsize = 20
+    //     Width = 300;
+    //     Height = 300;
+    //     Fontsize = 20;
     // }
     // else if (screenwidth<970 && screenwidth>750) {
     //     Width = 280;
     //     Height = 200;
-    //     Fontsize = 12
+    //     Fontsize = 12;
     // }
     // else {
     //     Width = 280;
     //     Height = 200;
-    //     Fontsize = 10
+    //     Fontsize = 10;
     // }
 
     var text = 'PM 2.5\n' + value + '(μg/m3)';
@@ -937,7 +969,7 @@ function DrawPm25(render, value) {
             showType:'fixed'
         },
         legend : {
-            enable : false,
+            enable:false,
             shadow:true,
             background_color:null,
             border:true,
@@ -975,7 +1007,6 @@ function DrawPm25(render, value) {
                 .textBaseline('middle')
                 .textFont('600 24px 微软雅黑')
                 .fillText('',100,y,false,'#6d869f', 'tb',26,false,0,'middle');
-
         }
     }));
 
@@ -983,22 +1014,22 @@ function DrawPm25(render, value) {
 }
 
 function DrawSensor(render, type, value) {
-    var Width = 370
-    var Height = 240
-    var Fontsize = 14
+    var Width = 370;
+    var Height = 240;
+    var Fontsize = 14;
     var screenwidth = document.body.clientWidth
     if (screenwidth >= 970) {
-        Width = 500
-        Height = 300
-        Fontsize = 20
+        Width = 500;
+        Height = 300;
+        Fontsize = 20;
     }
     else if (screenwidth<970 && screenwidth>750) {
-        Fontsize = 16
+        Fontsize = 16;
     }
     else {
         Width = 300;
         Height = 200;
-        Fontsize = 12
+        Fontsize = 12;
     }
 
     var data = [
@@ -1022,5 +1053,6 @@ function DrawSensor(render, type, value) {
         },
         labels:["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"]
     });
+
     chart.draw();
 }

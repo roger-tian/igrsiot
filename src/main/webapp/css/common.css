@@ -99,27 +99,42 @@ label{
 .switchname{
 	margin-top: 6px;
 }
-.navi_wrap{
+#navi_wrap3{
 	position: fixed;
-	height: 100%;
-	width: 245px;
-	left: 0;
+	overflow: hidden;
+	width: 100%;
+	background: #000000;
+	z-index: 20;
 	top: 0;
-	bottom: 0;
-	background: rgba(0,0,0,.3);
-	z-index: 10;
-}
-#navibtn1{
-	display: block;
-}
-#navibtn2{
+	left: 0;
 	display: none;
 }
-@media (min-width:767px) {
-	#navibtn2{
-		display: block;
-	}
-	#navibtn1{
-		display: none;
-	}
+.navi_content{
+	width: 100%;
+	/*max-width: 1200px;*/
+	margin: 0 auto;
+}
+.navi_content>div{
+	height: 40px;
+	line-height: 40px;
+	border-bottom: 1px solid #ececec;
+}
+.navi_content a{
+	width: 100%;
+	color: #FFFFFF;
+	float: left;
+}
+.offbtn{
+	width: 30px;
+	height: 30px;
+	font-size: 30px;
+	line-height: 30px;
+	color: #c00;
+	text-align: center;
+	background: #000000;
+	margin-top: 5px;
+	float: right;
+}
+.col input{
+	margin: auto 5px;
 }

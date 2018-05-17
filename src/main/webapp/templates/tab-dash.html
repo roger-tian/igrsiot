@@ -17,11 +17,17 @@
 						<div class="col">
 							<div class="switch col">
 								<div class="testswitch">
-					                <input class="testswitch-checkbox" id="onoffswitch_all" type="checkbox">
-					                <label class="testswitch-label" for="onoffswitch_all">
-					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
-					                    <span class="testswitch-switch"></span>
-					                </label>
+					                <!--<input class="testswitch-checkbox" id="onoffswitch_all" type="checkbox">-->
+					                <!--<label class="testswitch-label" for="onoffswitch_all">-->
+					                    <!--<span class="testswitch-inner" data-on="on" data-off="off"></span>-->
+					                    <!--<span class="testswitch-switch"></span>-->
+					                <!--</label>-->
+									<label class="toggle toggle-balanced" ng-model="toggleAllState" on-release="onSwitchAllClick()">
+										<input type="checkbox" id="onoffswitch_all" ng-bind="onoffswitch_all">
+										<div class="track">
+											<div class="handle"></div>
+										</div>
+									</label>
 					            </div>
 					            <label class="btn_switch">系统总开关</label>
 							</div>
@@ -164,13 +170,19 @@
 						<div class="col">
 							<div class="switch">
 								<div class="testswitch">
-					                <input class="testswitch-checkbox" id="onoffswitch_machine" type="checkbox">
-					                <label class="testswitch-label" for="onoffswitch_machine">
-					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
-					                    <span class="testswitch-switch"></span>
-					                </label>
+					                <!--<input class="testswitch-checkbox" id="onoffswitch_machine" type="checkbox">-->
+					                <!--<label class="testswitch-label" for="onoffswitch_machine">-->
+					                    <!--<span class="testswitch-inner" data-on="on" data-off="off"></span>-->
+					                    <!--<span class="testswitch-switch"></span>-->
+					                <!--</label>-->
+                                    <label class="toggle toggle-balanced" ng-model="toggleMachineState" on-release="onSwitchMachineClick()">
+                                        <input type="checkbox" id="onoffswitch_machine" checked="" ng-bind="onoffswitch_machine">
+                                        <div class="track">
+                                            <div class="handle"></div>
+                                        </div>
+                                    </label>
 					            </div>
-					            <label class="btn_switch">开关</label>
+                                <label class="btn_switch">开关</label>
 					           	<div class="xinhao col-xs-12" style="clear: both;border: 1px solid #ececec;padding: 15px 10px;margin: 10px 0;">
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
 				           				<input type="radio" name="radio" value='1' checked=""/><label>主页</label>
@@ -240,21 +252,33 @@
 		        		<div class="col">
 		        			<div class="switch">
 					            <div class="testswitch">
-					                <input class="testswitch-checkbox" id="onoffswitch_led1" type="checkbox">
-					                <label class="testswitch-label" for="onoffswitch_led1">
-					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
-					                    <span class="testswitch-switch"></span>
-					                </label>
+					                <!--<input class="testswitch-checkbox" id="onoffswitch_led1" type="checkbox">-->
+					                <!--<label class="testswitch-label" for="onoffswitch_led1">-->
+					                    <!--<span class="testswitch-inner" data-on="on" data-off="off"></span>-->
+					                    <!--<span class="testswitch-switch"></span>-->
+					                <!--</label>-->
+                                    <label class="toggle toggle-balanced" ng-model="toggleLed1State" on-release="onSwitchLed1Click()">
+                                        <input type="checkbox" id="onoffswitch_led1">
+                                        <div class="track">
+                                            <div class="handle"></div>
+                                        </div>
+                                    </label>
 					            </div>
 					            <label class="btn_switch">第一路灯开关</label>
 					        </div>   
 					        <div class="switch">
 					            <div class="testswitch">
-					                <input class="testswitch-checkbox" id="onoffswitch_led2" type="checkbox">
-					                <label class="testswitch-label" for="onoffswitch_led2">
-					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
-					                    <span class="testswitch-switch"></span>
-					                </label>
+					                <!--<input class="testswitch-checkbox" id="onoffswitch_led2" type="checkbox">-->
+					                <!--<label class="testswitch-label" for="onoffswitch_led2">-->
+					                    <!--<span class="testswitch-inner" data-on="on" data-off="off"></span>-->
+					                    <!--<span class="testswitch-switch"></span>-->
+					                <!--</label>-->
+                                    <label class="toggle toggle-balanced" ng-model="toggleLed2State" on-release="onSwitchLed2Click()">
+                                        <input type="checkbox" id="onoffswitch_led2">
+                                        <div class="track">
+                                            <div class="handle"></div>
+                                        </div>
+                                    </label>
 					            </div>
 					            <label class="btn_switch">第二路灯开关</label>
 				            </div>
@@ -323,11 +347,18 @@
 		        		<div class="col">
 		        			<div class="switch">
 					            <div class="testswitch">
-					                <input class="testswitch-checkbox" id="onoffswitch_purifier" type="checkbox">
-					                <label class="testswitch-label" for="onoffswitch_purifier">
-					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
-					                    <span class="testswitch-switch"></span>
-					                </label>
+					                <!--<input class="testswitch-checkbox" id="onoffswitch_purifier" type="checkbox">-->
+					                <!--<label class="testswitch-label" for="onoffswitch_purifier">-->
+					                    <!--<span class="testswitch-inner" data-on="on" data-off="off"></span>-->
+					                    <!--<span class="testswitch-switch"></span>-->
+					                <!--</label>-->
+                                    <!--<ion-toggle ng-model="toggleState" on-release="onTestClick()"></ion-toggle>-->
+									<label class="toggle toggle-balanced" ng-model="togglePurifierState" on-release="onSwitchPurifierClick()">
+										<input type="checkbox" id="onoffswitch_purifier">
+										<div class="track">
+											<div class="handle"></div>
+										</div>
+									</label>
 					            </div>
 					            <label class="btn_switch">开关（30秒后自动关闭）</label>
 					        </div>   
@@ -338,14 +369,14 @@
 				            		</div>
 				            	</div>
 				            	<div class="row" style="border-bottom: none;margin-top: 0;">
-				            		<div class="col"><input type="checkbox" id="purifierLcCheck" disabled="disabled"/>童锁</div>
-									<div class="col"><input type="checkbox" id="purifierSlCheck" disabled="disabled"/>睡眠</div>
-									<div class="col"><input type="checkbox" id="purifierMoCheck" disabled="disabled"/>自动</div>
+				            		<div class="col col-33"><input type="checkbox" id="purifierLcCheck" disabled="disabled"/>童锁</div>
+									<div class="col col-33"><input type="checkbox" id="purifierSlCheck" disabled="disabled"/>睡眠</div>
+									<div class="col col-33"><input type="checkbox" id="purifierMoCheck" disabled="disabled"/>自动</div>
 				            	</div>
 								<div class="row" style="margin-top: 0;">
-									<div class="col"><input type="checkbox" id="purifierIoCheck" disabled="disabled"/>负离子</div>
-									<div class="col"><input type="checkbox" id="purifierUvCheck" disabled="disabled"/>UV</div>
-									<div class="col"><input type="checkbox" id="purifierTiCheck" disabled="disabled"/>定时</div>
+									<div class="col col-33"><input type="checkbox" id="purifierIoCheck" disabled="disabled"/>负离子</div>
+									<div class="col col-33"><input type="checkbox" id="purifierUvCheck" disabled="disabled"/>UV</div>
+									<div class="col col-33"><input type="checkbox" id="purifierTiCheck" disabled="disabled"/>定时</div>
 				            	</div>
 				            	<!--<div class="row">-->
 				            		<!--<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">-->
@@ -360,9 +391,9 @@
 				            		</div>
 				            	</div>
 				            	<div class="row" style="border-bottom: none;margin-top: 0;">
-				            		<div class="col"><input type="radio" name="purifierRadio" value="3" checked="" disabled="disabled"/>高速</div>
-									<div class="col"><input type="radio" name="purifierRadio" value="2" checked="" disabled="disabled"/>中速</div>
-									<div class="col"><input type="radio" name="purifierRadio" value="1" checked="" disabled="disabled"/>低速</div>
+				            		<div class="col col-33"><input type="radio" name="purifierRadio" value="3"/>高速</div>
+									<div class="col col-33"><input type="radio" name="purifierRadio" value="2"/>中速</div>
+									<div class="col col-33"><input type="radio" name="purifierRadio" value="1"/>低速</div>
 				            	</div>
 				            	<!--<div class="row">-->
 				            		<!--<div class="col" style="padding: 0;padding-left: 5px;margin-top: 10px;">-->

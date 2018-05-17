@@ -56,4 +56,8 @@
         <description>SocketService</description>
         <listener-class>com.igrs.igrsiot.service.SocketService</listener-class>
     </listener>
+    <!--<listener>-->
+        <!--<description>WebSocket</description>-->
+        <!--<listener-class>com.igrs.igrsiot.service.WebSocketService</listener-class>-->
+    <!--</listener>-->
 </web-app>

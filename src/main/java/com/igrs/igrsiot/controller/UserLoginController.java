@@ -25,7 +25,15 @@ public class UserLoginController {
         sql = String.format("select user,password from igrs_user where user = \"%s\" and password = \"%s\"", userName, password);
         rs = stmt.executeQuery(sql);
         if (rs.next()) {
-            result = "SUCCESS";
+            if ((userName.equals(rs.getString(1))) && password.equals(rs.getString(2))) {
+                return "SUCCESS";
+            }
+            else if (!userName.equals(rs.getString(1))) {
+                return "USER_NOT_EXIST";
+            }
+            else {
+                result = "PASSWORD_INCORRECT";
+            }
         }
         else {
             sql = String.format("select user from igrs_user where user = \"%s\"", userName);

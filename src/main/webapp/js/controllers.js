@@ -935,7 +935,7 @@ function DrawPm25(render, value) {
     //     Fontsize = 10;
     // }
 
-    var text = 'PM 2.5\n' + value + '(μg/m3)';
+    var text = 'PM 2.5\n' + value + '(μg/m³)';
 
     var data = [
         {name : '优',value : 25,color:'#008B00'},

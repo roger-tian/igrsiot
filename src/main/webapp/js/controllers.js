@@ -30,23 +30,27 @@ angular.module('starter.controllers', [])
     // });
     // $scope.toggleState = false;
     $scope.onSwitchAllClick = function() {
-        $scope.toggleAllState = !$scope.toggleAllState;
-        console.log($scope.toggleAllState);
+        // $scope.toggleAllState = !$scope.toggleAllState;
+        // console.log($scope.toggleAllState);
         // console.log($scope.toggleState)
         clickSwitch_all();
     };
     var clickSwitch_all = function() {
+        var switch_all = document.getElementById("onoffswitch_all");
         var switch_machine = document.getElementById("onoffswitch_machine");
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
-        var switch_purifier = document.getElementById("onoffswitch_purifier");
-        // var onOff;
-        // var instruction;
-        if ($scope.toggleAllState) {
+        // var switch_purifier = document.getElementById("onoffswitch_purifier");
+        var onOff;
+        var instruction;
+        console.log(switch_all.checked);
+        console.log($("#onoffswitch_all").is(':checked'));
+        if (!switch_all.checked) {
             switch_machine.checked = true;
             switch_led1.checked = true;
             switch_led2.checked = true;
-            switch_purifier.checked = true;
+            // switch_purifier.checked = true;
+            onOff = "1";
 
             instruction = "总开关开启";
         }
@@ -54,12 +58,11 @@ angular.module('starter.controllers', [])
             switch_machine.checked = false;
             switch_led1.checked = false;
             switch_led2.checked = false;
-            switch_purifier.checked = false;
+            // switch_purifier.checked = false;
+            onOff = "0";
 
             instruction = "总开关关闭";
         }
-        var onOff = $scope.toggleAllState;
-        onOff = onOff ? "on" : "off";
         $.ajax({
             type: 'POST',
             // url:'/igrsiot/control/all?onOff=' + onOff,
@@ -94,17 +97,18 @@ angular.module('starter.controllers', [])
     //     clickSwitch_machine();
     // });
     $scope.onSwitchMachineClick = function() {
-        $scope.toggleMachineState = !$scope.toggleMachineState;
+        // $scope.toggleMachineState = !$scope.toggleMachineState;
         // console.log($scope.toggleState)
         clickSwitch_machine();
     };
     var clickSwitch_machine = function() {
         var switch_all = document.getElementById("onoffswitch_all");
+        var switch_machine = document.getElementById("onoffswitch_machine");
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
         var onOff;
         var instruction;
-        if ($("#onoffswitch_machine").is(':checked')) {
+        if (!switch_machine.checked) {
             onOff = "1";
 
             switch_all.checked = true;
@@ -114,7 +118,7 @@ angular.module('starter.controllers', [])
         else {
             onOff = "0";
 
-            if ((switch_led1.checked==false) && (switch_led2.checked==false)) {
+            if ((!switch_led1.checked) && (!switch_led2.checked)) {
                 switch_all.checked = false;
             }
 
@@ -283,18 +287,19 @@ angular.module('starter.controllers', [])
     //     clickSwitch_led1();
     // });
     $scope.onSwitchLed1Click = function() {
-        $scope.toggleLed1State = !$scope.toggleLed1State;
+        // $scope.toggleLed1State = !$scope.toggleLed1State;
         // console.log($scope.toggleState)
         clickSwitch_led1();
     };
     var clickSwitch_led1 = function() {
         var switch_all = document.getElementById("onoffswitch_all");
         var switch_machine = document.getElementById("onoffswitch_machine");
+        var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
 
         var onOff;
         var instruction;
-        if ($("#onoffswitch_led1").is(':checked')) {
+        if (!switch_led1.checked) {
             onOff = "1";
             switch_all.checked = true;
 
@@ -302,9 +307,7 @@ angular.module('starter.controllers', [])
         }
         else {
             onOff = "0";
-            console.log(switch_machine);
-            console.log(switch_led2);
-            if ((switch_machine.checked==false) && (switch_led2.checked==false)) {
+            if ((!switch_machine.checked) && (!switch_led2.checked)) {
                 switch_all.checked = false;
             }
 
@@ -343,7 +346,7 @@ angular.module('starter.controllers', [])
     //     clickSwitch_led2();
     // });
     $scope.onSwitchLed2Click = function() {
-        $scope.toggleLed2State = !$scope.toggleLed2State;
+        // $scope.toggleLed2State = !$scope.toggleLed2State;
         // console.log($scope.toggleState)
         clickSwitch_led2();
     };
@@ -354,8 +357,9 @@ angular.module('starter.controllers', [])
         var switch_all = document.getElementById("onoffswitch_all");
         var switch_machine = document.getElementById("onoffswitch_machine");
         var switch_led1 = document.getElementById("onoffswitch_led1");
+        var switch_led2 = document.getElementById("onoffswitch_led2");
 
-        if ($("#onoffswitch_led2").is(':checked')) {
+        if (!switch_led2.checked) {
             onOff = "1";
 
             switch_all.checked = true;
@@ -365,7 +369,7 @@ angular.module('starter.controllers', [])
         else {
             onOff = "0";
 
-            if ((switch_machine.checked==false) && (switch_led1.checked==false)) {
+            if ((!switch_machine.checked) && (!switch_led1.checked)) {
                 switch_all.checked = false;
             }
 
@@ -406,7 +410,7 @@ angular.module('starter.controllers', [])
     // $scope.toggleState=false;
     $scope.onSwitchPurifierClick = function() {
         // $scope.toggleState=!$scope.toggleState;
-        $scope.togglePurifierState = !$scope.togglePurifierState;
+        // $scope.togglePurifierState = !$scope.togglePurifierState;
         // console.log($scope.toggleState)
         clickSwitch_purifier();
     };
@@ -433,15 +437,15 @@ angular.module('starter.controllers', [])
         //
         //     instruction = "开关关闭";
         // }
-        var onOff = $scope.togglePurifierState;
-        // if ($("#onoffswitch_purifier").is(':checked')) {
-        //     onOff = "on";
-        // }
-        // else {
-        //     onOff = "off";
-        // }
-        onOff = onOff ? "on" : "off";
-        // alert('---------------purifier control-----------------');
+        // var onOff = $scope.togglePurifierState;
+        var onOff;
+        var switch_purifier = document.getElementById("onoffswitch_purifier");
+        if (!switch_purifier.checked) {
+            onOff = "on";
+        }
+        else {
+            onOff = "off";
+        }
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/purifier/control',
@@ -450,7 +454,7 @@ angular.module('starter.controllers', [])
                 deviceId:"#lemx500s#78b3b912418f",
                 lock:0,
                 power:onOff,
-                duration:600
+                duration:30
             },
             // dataType:'json',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
@@ -577,6 +581,48 @@ angular.module('starter.controllers', [])
     });
 
     setInterval(function () {
+        $.ajax({
+            type: 'POST',
+            url:'/igrsiot/control/status',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
+            error: function(result) {
+            },
+            success: function(data) {
+                console.log(data);
+                var result = data.split(",");
+                var switchAll = document.getElementById("onoffswitch_all");
+                var switchMachine = document.getElementById("onoffswitch_machine");
+                var machineSig = document.getElementsByName("radio");
+                var machineVolume = document.getElementById("volume");
+                var switchLed1 = document.getElementById("onoffswitch_led1");
+                var switchLed2 = document.getElementById("onoffswitch_led2");
+
+                if ((result[0] == "1") || (result[3] == "1") || (result[4] == "1")) {
+                    switchAll.checked = true;
+                    // $scope.toggleAllState = true;
+                }
+                else {
+                    switchAll.checked = false;
+                    // $scope.toggleAllState = false;
+                }
+                switchMachine.checked = (result[0] == "1");
+                for (var i=0; i<machineSig.length; i++) {
+                    if (machineSig[i].value == result[1]) {
+                        machineSig[i].checked = true;
+                        break;
+                    }
+                }
+                machineVolume.value = result[2];
+                switchLed1.checked = (result[3] == "1");
+                switchLed2.checked = (result[4] == "1");
+
+                if (data == 'SUCCESS') {
+                } else {
+                }
+            }
+        });
+
         // var table = document.getElementsByName("sensor");
         // var cells;
 
@@ -663,32 +709,32 @@ angular.module('starter.controllers', [])
                     switch (result[0]) {
                         case 'pw':
                             var check = document.getElementById("onoffswitch_purifier");
-                            check.checked = (result[1] == '10') ? true : false;
+                            check.checked = (result[1] == '10');
                             $scope.togglePurifierState = check.checked;
                             break;
                         case 'lc':
                             var check = document.getElementById("purifierLcCheck");
-                            check.checked = (result[1] == '10') ? true : false;
+                            check.checked = (result[1] == '10');
                             break;
                         case 'sl':
                             var check = document.getElementById("purifierSlCheck");
-                            check.checked = (result[1] == '10') ? true : false;
+                            check.checked = (result[1] == '10');
                             break;
                         case 'mo':
                             var check = document.getElementById("purifierMoCheck");
-                            check.checked = (result[1] == '10') ? true : false;
+                            check.checked = (result[1] == '10');
                             break;
                         case 'io':
                             var check = document.getElementById("purifierIoCheck");
-                            check.checked = (result[1] == '10') ? true : false;
+                            check.checked = (result[1] == '10');
                             break;
                         case 'uv':
                             var check = document.getElementById("purifierUvCheck");
-                            check.checked = (result[1] == '10') ? true : false;
+                            check.checked = (result[1] == '10');
                             break;
                         case 'ti':
                             var lcCheck = document.getElementById("purifierTiCheck");
-                            lcCheck.checked = (result[1] != '000') ? true : false;
+                            lcCheck.checked = (result[1] !== '000');
                             break;
                         case 'fa':
                             var radio = document.getElementsByName("purifierRadio");
@@ -712,7 +758,7 @@ angular.module('starter.controllers', [])
             type: 'POST',
             url:'/igrsiot/control/status',
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:true,
+            async:false,
             error: function(result) {
             },
             success: function(data) {
@@ -727,11 +773,13 @@ angular.module('starter.controllers', [])
 
                 if ((result[0] == "1") || (result[3] == "1") || (result[4] == "1")) {
                     switchAll.checked = true;
+                    // $scope.toggleAllState = true;
                 }
                 else {
                     switchAll.checked = false;
+                    // $scope.toggleAllState = false;
                 }
-                switchMachine.checked = (result[0] == "1") ? true : false;
+                switchMachine.checked = (result[0] == "1");
                 for (var i=0; i<machineSig.length; i++) {
                     if (machineSig[i].value == result[1]) {
                         machineSig[i].checked = true;
@@ -739,8 +787,8 @@ angular.module('starter.controllers', [])
                     }
                 }
                 machineVolume.value = result[2];
-                switchLed1.checked = (result[3] == "1") ? true : false;
-                switchLed2.checked = (result[4] == "1") ? true : false;
+                switchLed1.checked = (result[3] == "1");
+                switchLed2.checked = (result[4] == "1");
 
                 if (data == 'SUCCESS') {
                 } else {
@@ -823,7 +871,7 @@ angular.module('starter.controllers', [])
                 pageNo:curPageNo
             },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:true,
+            async:false,
             error: function(result) {
             },
             success: function(data) {

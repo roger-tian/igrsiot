@@ -31,6 +31,12 @@ a:focus{
 li{
 	list-style: none;
 }
+.daohang {
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+	-webkit-overflow-scrolling: auto;
+}
 .daohang a{
 	background: #ddd;
 	border-radius: 10px 10px 0 0;

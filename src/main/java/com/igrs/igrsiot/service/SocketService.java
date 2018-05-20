@@ -11,8 +11,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -120,15 +118,15 @@ public class SocketService implements ServletContextListener {
             thread.init();
             thread.start();
 
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            stmt = conn.createStatement();
+//            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+//            stmt = conn.createStatement();
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

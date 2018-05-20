@@ -1,10 +1,8 @@
 package com.igrs.igrsiot.service;
 
-import com.igrs.igrsiot.domain.IgrsOperate;
-import com.igrs.igrsiot.mapper.OperateMapper;
+import com.igrs.igrsiot.model.IgrsOperate;
+import com.igrs.igrsiot.dao.OperateMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class OperateService {
@@ -12,12 +10,12 @@ public class OperateService {
     private OperateMapper operateMapper;
 
     public void insertOperate(IgrsOperate operate) {
-        operateMapper.insertOperate(operate);
+//        operateMapper.insertOperate(operate);
     }
 
-    public List<IgrsOperate> getOperates() {
-        return operateMapper.getOperates();
-    }
+//    public List<IgrsOperate> getOperates() {
+//        return operateMapper.getOperates();
+//    }
 
     public String getOneOperate() {
         return operateMapper.getOneOperate();

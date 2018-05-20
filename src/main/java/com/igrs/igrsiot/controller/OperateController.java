@@ -1,6 +1,6 @@
 package com.igrs.igrsiot.controller;
 
-import com.igrs.igrsiot.domain.IgrsOperate;
+import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.service.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

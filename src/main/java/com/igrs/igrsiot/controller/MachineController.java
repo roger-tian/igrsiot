@@ -16,11 +16,20 @@ import java.util.Date;
 @RequestMapping("/control")
 public class MachineController {
     @RequestMapping("/machine")
-    public String machineOnOff(String onOff) throws SQLException {
+    public String machineOnOff(String index, String onOff) throws SQLException {
         String instruction;
 
-        String cmd = "{ch_10:" + onOff + "}";
-        SocketService.cmdSend(cmd);
+        logger.debug("index: {}", index);
+        if (index.equals("1")) {
+            String cmd = "{ch_10:" + onOff + "}";
+            logger.debug("cmd: {}", cmd);
+            SocketService.cmdSend(cmd);
+        }
+        else if (index.equals("2")) {
+            String cmd = "{ch_50:" + onOff + "}";
+            logger.debug("cmd: {}", cmd);
+            SocketService.cmdSend(cmd);
+        }
 
         String sql;
         ResultSet rs;
@@ -55,11 +64,16 @@ public class MachineController {
     }
 
     @RequestMapping("/machineSig")
-    public String machineSigSource(String sigSource) throws SQLException {
+    public String machineSigSource(String index, String sigSource) throws SQLException {
 //        String sigSource = request.getParameter("sigSource");
-
-        String cmd = "{ch_12:" + sigSource + "}";
-        SocketService.cmdSend(cmd);
+        if (index.equals("1")) {
+            String cmd = "{ch_12:" + sigSource + "}";
+            SocketService.cmdSend(cmd);
+        }
+        else if (index.equals("2")) {
+            String cmd = "{ch_52:" + sigSource + "}";
+            SocketService.cmdSend(cmd);
+        }
 
         logger.debug("sigSource: {}", sigSource);
 
@@ -103,9 +117,15 @@ public class MachineController {
     }
 
     @RequestMapping("/machineVol")
-    public String machineVolume(String volume) throws SQLException {
-        String cmd = "{ch_11:" + volume + "}";
-        SocketService.cmdSend(cmd);
+    public String machineVolume(String index, String volume) throws SQLException {
+        if (index.equals("1")) {
+            String cmd = "{ch_11:" + volume + "}";
+            SocketService.cmdSend(cmd);
+        }
+        else if (index.equals("2")) {
+            String cmd = "{ch_51:" + volume + "}";
+            SocketService.cmdSend(cmd);
+        }
 
         String sql;
         ResultSet rs;

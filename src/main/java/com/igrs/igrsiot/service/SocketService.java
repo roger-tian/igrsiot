@@ -81,8 +81,8 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-//            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
-            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
+            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+//            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
             server.socket().bind(isa);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT);
@@ -90,6 +90,7 @@ public class SocketService implements ServletContextListener {
     }
 
     public static int cmdSend(String buf) {
+        logger.debug("-----------buf: {}------------", buf);
         try {
             for (SelectionKey key : selector.keys()) {
                 Channel targetChannel = key.channel();

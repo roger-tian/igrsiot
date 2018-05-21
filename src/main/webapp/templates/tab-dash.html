@@ -19,7 +19,6 @@
 			        <a class="col" href="#" title="tab4">净化器</a>
 			        <!--<a class="col" href="#" title="tab5">历史数据</a>-->
 			       	<a class="col" href="#" title="tab6">操作记录</a>
-					<a class="col" href="#" title="tab8">操作记录</a>
 				</div>
 			</div>
 			<div class="content">
@@ -185,8 +184,8 @@
 					                    <!--<span class="testswitch-inner" data-on="on" data-off="off"></span>-->
 					                    <!--<span class="testswitch-switch"></span>-->
 					                <!--</label>-->
-                                    <label class="toggle toggle-balanced" ng-model="toggleMachineState" on-release="onSwitchMachineClick()">
-                                        <input type="checkbox" id="onoffswitch_machine">
+                                    <label class="toggle toggle-balanced" ng-model="toggleMachineState" on-release="onSwitchMachine1Click()">
+                                        <input type="checkbox" id="onoffswitch_machine1">
                                         <div class="track">
                                             <div class="handle"></div>
                                         </div>
@@ -198,24 +197,24 @@
 				           				<input type="radio" name="radio" value='1' checked=""/><label>主页</label>
 				           			</div>
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
-						            	<input  name="radio" type="radio" value="2" checked=""/><label>HDMI2.0</label>
+						            	<input  name="radio" type="radio" value="2" checked=""/><label>HDMI2</label>
 						            </div>
 						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
-						            	<input name="radio" type="radio" value="3" checked=""/><label>HDMI1.4</label>
+						            	<input name="radio" type="radio" value="3" checked=""/><label>HDMI1</label>
 						            </div>
 						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
 				           				<input name="radio" type="radio" value="4" checked=""/><label>内置电脑</label>
 				           			</div>
 						            <div class="col-xs-12" style="padding: 0;padding-left: 5px;margin-top: 10px;">
-						            	<button id="machineSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						            	<button id="machine1Sig" class="btn qiehuan" @click="machineSwitch()">切换</button>
 						            </div>
 					           	</div>
 					           	<div class="yinliang col-xs-12" style="padding: 0;border: 1px solid #ececec;padding: 10px;">
 					           		<span>音量</span>
 						            <progress class="yinliangshow" id="volume" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
 						            <div>
-						            	<button id="switchDecrease" class="btn btn-default" @click="machineSwitchDecrease()">-</button>
-						            	<button id="switchIncrease" class="btn btn-default" @click="machineSwitchIncrease()">+</button>
+						            	<button id="switch1Decrease" class="btn btn-default" @click="machine1SwitchDecrease()">-</button>
+						            	<button id="switch1Increase" class="btn btn-default" @click="machine1SwitchIncrease()">+</button>
 						            </div>
 					           	</div>
 				            </div>
@@ -228,8 +227,8 @@
 					                    <!--<span class="testswitch-inner" data-on="on" data-off="off"></span>-->
 					                    <!--<span class="testswitch-switch"></span>-->
 					                <!--</label>-->
-                                    <label class="toggle toggle-balanced" ng-model="toggleMachineState" on-release="onSwitchMachineClick()">
-                                        <input type="checkbox" id="onoffswitch_machine">
+                                    <label class="toggle toggle-balanced" ng-model="toggleMachineState" on-release="onSwitchMachine2Click()">
+                                        <input type="checkbox" id="onoffswitch_machine2">
                                         <div class="track">
                                             <div class="handle"></div>
                                         </div>
@@ -238,27 +237,27 @@
                                 <label class="btn_switch">后交互大屏开关</label>
 					           	<div class="xinhao col-xs-12" style="clear: both;border: 1px solid #ececec;padding: 15px 10px;margin: 10px 0;">
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
-				           				<input type="radio" name="radio" value='1' checked=""/><label>主页</label>
+				           				<input type="radio" name="radio2" value='1' checked=""/><label>主页</label>
 				           			</div>
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
-						            	<input  name="radio" type="radio" value="2" checked=""/><label>HDMI2.0</label>
+						            	<input  name="radio2" type="radio" value="2" checked=""/><label>HDMI2</label>
 						            </div>
 						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
-						            	<input name="radio" type="radio" value="3" checked=""/><label>HDMI1.4</label>
+						            	<input name="radio2" type="radio" value="3" checked=""/><label>HDMI1</label>
 						            </div>
 						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
-				           				<input name="radio" type="radio" value="4" checked=""/><label>内置电脑</label>
+				           				<input name="radio2" type="radio" value="4" checked=""/><label>内置电脑</label>
 				           			</div>
 						            <div class="col-xs-12" style="padding: 0;padding-left: 5px;margin-top: 10px;">
-						            	<button id="machineSig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						            	<button id="machine2Sig" class="btn qiehuan" @click="machineSwitch()">切换</button>
 						            </div>
 					           	</div>
 					           	<div class="yinliang col-xs-12" style="padding: 0;border: 1px solid #ececec;padding: 10px;">
 					           		<span>音量</span>
 						            <progress class="yinliangshow" id="volume" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
 						            <div>
-						            	<button id="switchDecrease" class="btn btn-default" @click="machineSwitchDecrease()">-</button>
-						            	<button id="switchIncrease" class="btn btn-default" @click="machineSwitchIncrease()">+</button>
+						            	<button id="switch2Decrease" class="btn btn-default" @click="machine2SwitchDecrease()">-</button>
+						            	<button id="switch2Increase" class="btn btn-default" @click="machine2SwitchIncrease()">+</button>
 						            </div>
 					           	</div>
 				            </div>
@@ -399,11 +398,12 @@
 		        		<div class="col">
 		        			<div class="switch">
 					            <div class="testswitch">
-					                <input class="testswitch-checkbox" id="onoffswitch_led1" type="checkbox">
-					                <label class="testswitch-label" for="onoffswitch_led1">
-					                    <span class="testswitch-inner" data-on="on" data-off="off"></span>
-					                    <span class="testswitch-switch"></span>
-					                </label>
+									<label class="toggle toggle-balanced" on-release="onSwitchCurtainClick()">
+										<input type="checkbox" id="onoffswitch_curtain">
+										<div class="track">
+											<div class="handle"></div>
+										</div>
+									</label>
 					            </div>
 					            <label class="btn_switch">开关</label>
 					        </div>   

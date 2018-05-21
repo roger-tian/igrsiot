@@ -95,6 +95,7 @@ public class CmdHandler {
                 else if (cells[0].contains("co2")) {
                     co2 = cells[1];
                     sql = String.format("insert into igrs_sensor_detail (type,value,time) values(\"co2\",\"%s\",\"%s\")", co2, time);
+                    logger.debug("{}--{}--{}", co2, time, sql);
                     stmt.executeUpdate(sql);
                 }
                 else if (cells[0].contains("voc")) {

@@ -1,75 +1,52 @@
 package com.igrs.igrsiot.controller;
 
 import com.igrs.igrsiot.model.IgrsOperate;
-import com.igrs.igrsiot.service.SocketService;
+import com.igrs.igrsiot.service.IIgrsOperateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/control")
 public class OperateController {
-    @RequestMapping("/operate")
-    public List<IgrsOperate> getOperateData(HttpServletRequest request, HttpServletResponse response) throws SQLException {
-        String sql;
-        ResultSet rs;
-        Date date;
-        List<IgrsOperate> list = new ArrayList<>();
+    @Autowired
+    IIgrsOperateService igrsOperateService;
 
-        String pageNo = request.getParameter("pageNo");
+    @RequestMapping("/operate")
+    public List<IgrsOperate> getOperateData(HttpServletRequest request) throws ParseException {
+        List<IgrsOperate> listResult = new ArrayList<>();
         String totalPage;
+        String pageNo = request.getParameter("pageNo");
         int curRecord = (Integer.parseInt(pageNo) - 1) * 10;
 
-        stmt = SocketService.getStmt();
+        List<IgrsOperate> list = igrsOperateService.getAllOperates();
+        totalPage = String.format("%d", (list.size()-1)/10+1);
 
-        sql = String.format("select user,operate_time,device_id,instruction from igrs_operate order by operate_time");
-        rs = stmt.executeQuery(sql);
-
-        rs.last();
-        int totalRecords = rs.getRow();
-//        if (totalRecords == 0) {
-//            return null;
-//        }
-        totalPage = String.format("%d", (totalRecords-1)/10+1);
-
-        rs.absolute(curRecord);
-//        while (rs.next()) {
-        for (int i=0; i<10; i++) {
-            if (rs.next() == false) {
+        for (int i=curRecord; i<curRecord+10; i++) {
+            if (i >= list.size()) {
                 break;
             }
-
             IgrsOperate operate = new IgrsOperate();
-
-            operate.setUser(rs.getString(1));
-
-            date = rs.getTimestamp(2);
+            operate.setUser(list.get(i).getUser());
+            operate.setDeviceId(list.get(i).getDeviceId());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            operate.setOperateTime(df.format(date));
-
-            operate.setDeviceId(rs.getString(3));
-            operate.setInstruction(rs.getString(4));
-
+            operate.setOperateTime(df.format(df.parse(list.get(i).getOperateTime())));
+            operate.setInstruction(list.get(i).getInstruction());
             operate.setTotalPage(totalPage);
 
-            list.add(operate);
+            listResult.add(operate);
         }
 
-        return list;
+        return listResult;
     }
-
-    private Statement stmt;
 
     private static final Logger logger = LoggerFactory.getLogger(OperateController.class);
 }

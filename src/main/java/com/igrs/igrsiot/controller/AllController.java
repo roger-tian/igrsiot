@@ -1,7 +1,9 @@
 package com.igrs.igrsiot.controller;
 
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
+import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
+import com.igrs.igrsiot.service.IIgrsOperateService;
 import com.igrs.igrsiot.service.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @RestController
 @RequestMapping("/control")
 public class AllController {
     @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
+    @Autowired
+    private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/all")
     public String allOnOff(String onOff) {
@@ -85,11 +92,14 @@ public class AllController {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        // insert into igrs_operate
-//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String time = df.format(new Date());
-//        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"总开关\",\"%s\")", time, instruction);
-//        stmt.executeUpdate(sql);
+        IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setDeviceId("总开关");
+        igrsOperate.setUser("admin");
+        igrsOperate.setInstruction(instruction);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = df.format(new Date());
+        igrsOperate.setOperateTime(time);
+        igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";
     }

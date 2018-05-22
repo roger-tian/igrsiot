@@ -1,11 +1,11 @@
 package com.igrs.igrsiot.model;
 
 public class IgrsOperate {
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -14,7 +14,7 @@ public class IgrsOperate {
     }
 
     public void setUser(String user) {
-        this.user = user;
+        this.user = user == null ? null : user.trim();
     }
 
     public String getOperateTime() {
@@ -30,7 +30,7 @@ public class IgrsOperate {
     }
 
     public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+        this.deviceId = deviceId == null ? null : deviceId.trim();
     }
 
     public String getInstruction() {
@@ -38,7 +38,7 @@ public class IgrsOperate {
     }
 
     public void setInstruction(String instruction) {
-        this.instruction = instruction;
+        this.instruction = instruction == null ? null : instruction.trim();
     }
 
     public String getTotalPage() {
@@ -49,7 +49,7 @@ public class IgrsOperate {
         this.totalPage = totalPage;
     }
 
-    private String id;
+    private Long id;
     private String user;
     private String operateTime;
     private String deviceId;

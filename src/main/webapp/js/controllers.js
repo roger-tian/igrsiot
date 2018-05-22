@@ -994,116 +994,116 @@ angular.module('starter.controllers', [])
     }, 2000000);
 
     $(document).ready(function() {
-        $.ajax({
-            type: 'POST',
-            url:'/igrsiot/control/status',
-            contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
-            error: function(result) {
-            },
-            success: function(data) {
-                console.log(data);
-                var result = data.split(",");
-                var switchAll = document.getElementById("onoffswitch_all");
-                var switchMachine = document.getElementById("onoffswitch_machine");
-                var machineSig = document.getElementsByName("radio");
-                var machineVolume = document.getElementById("volume");
-                var switchLed1 = document.getElementById("onoffswitch_led1");
-                var switchLed2 = document.getElementById("onoffswitch_led2");
-
-                if ((result[0] == "1") || (result[3] == "1") || (result[4] == "1")) {
-                    switchAll.checked = true;
-                    // $scope.toggleAllState = true;
-                }
-                else {
-                    switchAll.checked = false;
-                    // $scope.toggleAllState = false;
-                }
-                switchMachine.checked = (result[0] == "1");
-                for (var i=0; i<machineSig.length; i++) {
-                    if (machineSig[i].value == result[1]) {
-                        machineSig[i].checked = true;
-                        break;
-                    }
-                }
-                machineVolume.value = result[2];
-                switchLed1.checked = (result[3] == "1");
-                switchLed2.checked = (result[4] == "1");
-
-                if (data == 'SUCCESS') {
-                } else {
-                }
-            }
-        });
-
-        // var table = document.getElementsByName("sensor");
-        // var cells;
-        $.ajax({
-            type: 'POST',
-            url:'/igrsiot/control/sensor',
-            contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:true,
-            error: function(result) {
-            },
-            success: function(data) {
-                console.log(data);
-                var result = data.split(",");
-                var pm25 = result[0].split('.');
-                DrawPm25('canvasDiv1', pm25[0]);
-                DrawPm25('canvasDiv2', pm25[0]);
-                DrawPm25('canvasDiv3', pm25[0]);
-                DrawPm25('canvasDiv4', pm25[0]);
-
-                var value = [9,1,12,20,26,30,32,29,22,12,20,6,3,1,12,20,26,30,32,29,22,12,0,6];
-                DrawSensor('canvasDiv5', 'PM2.5', value);
-
-                // for (var i=0; i<table.length; i++) {
-                //     cells = table[i].rows[1].cells;
-                //     var co2 = result[1].split('.');
-                //     cells[0].innerHTML = co2[0];
-                //     cells[1].innerHTML = result[2];
-                //     var temp = result[3].substring(0, result[3].length-2);
-                //     cells[2].innerHTML = temp;
-                //     var hum = result[4].substring(0, result[4].length-2);
-                //     cells[3].innerHTML = hum;
-                //     cells[4].innerHTML = result[5];
-                // }
-
-                var co2Value = document.getElementsByName("co2Value");
-                for (var i=0; i<co2Value.length; i++) {
-                    var co2 = result[1].split('.');
-                    co2Value[i].innerText = co2[0];
-                }
-
-                var tvocValue = document.getElementsByName("tvocValue");
-                for (var i=0; i<tvocValue.length; i++) {
-                    tvocValue[i].innerText = result[2];
-                }
-
-                var temperatureValue = document.getElementsByName("temperatureValue");
-                for (var i=0; i<temperatureValue.length; i++) {
-                    var temp = result[3].substring(0, result[3].length-2);
-                    temperatureValue[i].innerText = temp;
-                }
-
-                var humidityValue = document.getElementsByName("humidityValue");
-                for (var i=0; i<humidityValue.length; i++) {
-                    var hum = result[4].substring(0, result[4].length-2);
-                    humidityValue[i].innerText = hum;
-                }
-
-                var formaldehydeValue = document.getElementsByName("formaldehydeValue");
-                for (var i=0; i<formaldehydeValue.length; i++) {
-                    var co2 = result[1].split('.');
-                    formaldehydeValue[i].innerText = result[5];
-                }
-
-                if (data == 'SUCCESS') {
-                } else {
-                }
-            }
-        });
-
+    //     $.ajax({
+    //         type: 'POST',
+    //         url:'/igrsiot/control/status',
+    //         contentType:'application/x-www-form-urlencoded; charset=utf-8',
+    //         async:false,
+    //         error: function(result) {
+    //         },
+    //         success: function(data) {
+    //             console.log(data);
+    //             var result = data.split(",");
+    //             var switchAll = document.getElementById("onoffswitch_all");
+    //             var switchMachine = document.getElementById("onoffswitch_machine");
+    //             var machineSig = document.getElementsByName("radio");
+    //             var machineVolume = document.getElementById("volume");
+    //             var switchLed1 = document.getElementById("onoffswitch_led1");
+    //             var switchLed2 = document.getElementById("onoffswitch_led2");
+    //
+    //             if ((result[0] == "1") || (result[3] == "1") || (result[4] == "1")) {
+    //                 switchAll.checked = true;
+    //                 // $scope.toggleAllState = true;
+    //             }
+    //             else {
+    //                 switchAll.checked = false;
+    //                 // $scope.toggleAllState = false;
+    //             }
+    //             switchMachine.checked = (result[0] == "1");
+    //             for (var i=0; i<machineSig.length; i++) {
+    //                 if (machineSig[i].value == result[1]) {
+    //                     machineSig[i].checked = true;
+    //                     break;
+    //                 }
+    //             }
+    //             machineVolume.value = result[2];
+    //             switchLed1.checked = (result[3] == "1");
+    //             switchLed2.checked = (result[4] == "1");
+    //
+    //             if (data == 'SUCCESS') {
+    //             } else {
+    //             }
+    //         }
+    //     });
+    //
+    //     // var table = document.getElementsByName("sensor");
+    //     // var cells;
+    //     $.ajax({
+    //         type: 'POST',
+    //         url:'/igrsiot/control/sensor',
+    //         contentType:'application/x-www-form-urlencoded; charset=utf-8',
+    //         async:true,
+    //         error: function(result) {
+    //         },
+    //         success: function(data) {
+    //             console.log(data);
+    //             var result = data.split(",");
+    //             var pm25 = result[0].split('.');
+    //             DrawPm25('canvasDiv1', pm25[0]);
+    //             DrawPm25('canvasDiv2', pm25[0]);
+    //             DrawPm25('canvasDiv3', pm25[0]);
+    //             DrawPm25('canvasDiv4', pm25[0]);
+    //
+    //             var value = [9,1,12,20,26,30,32,29,22,12,20,6,3,1,12,20,26,30,32,29,22,12,0,6];
+    //             DrawSensor('canvasDiv5', 'PM2.5', value);
+    //
+    //             // for (var i=0; i<table.length; i++) {
+    //             //     cells = table[i].rows[1].cells;
+    //             //     var co2 = result[1].split('.');
+    //             //     cells[0].innerHTML = co2[0];
+    //             //     cells[1].innerHTML = result[2];
+    //             //     var temp = result[3].substring(0, result[3].length-2);
+    //             //     cells[2].innerHTML = temp;
+    //             //     var hum = result[4].substring(0, result[4].length-2);
+    //             //     cells[3].innerHTML = hum;
+    //             //     cells[4].innerHTML = result[5];
+    //             // }
+    //
+    //             var co2Value = document.getElementsByName("co2Value");
+    //             for (var i=0; i<co2Value.length; i++) {
+    //                 var co2 = result[1].split('.');
+    //                 co2Value[i].innerText = co2[0];
+    //             }
+    //
+    //             var tvocValue = document.getElementsByName("tvocValue");
+    //             for (var i=0; i<tvocValue.length; i++) {
+    //                 tvocValue[i].innerText = result[2];
+    //             }
+    //
+    //             var temperatureValue = document.getElementsByName("temperatureValue");
+    //             for (var i=0; i<temperatureValue.length; i++) {
+    //                 var temp = result[3].substring(0, result[3].length-2);
+    //                 temperatureValue[i].innerText = temp;
+    //             }
+    //
+    //             var humidityValue = document.getElementsByName("humidityValue");
+    //             for (var i=0; i<humidityValue.length; i++) {
+    //                 var hum = result[4].substring(0, result[4].length-2);
+    //                 humidityValue[i].innerText = hum;
+    //             }
+    //
+    //             var formaldehydeValue = document.getElementsByName("formaldehydeValue");
+    //             for (var i=0; i<formaldehydeValue.length; i++) {
+    //                 var co2 = result[1].split('.');
+    //                 formaldehydeValue[i].innerText = result[5];
+    //             }
+    //
+    //             if (data == 'SUCCESS') {
+    //             } else {
+    //             }
+    //         }
+    //     });
+    //
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/operate',
@@ -1137,7 +1137,7 @@ angular.module('starter.controllers', [])
                 pageNo:curPageNo
             },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:true,
+            async:false,
             error: function(result) {
             },
             success: function(data) {
@@ -1163,7 +1163,7 @@ angular.module('starter.controllers', [])
                 pageNo:curPageNo
             },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:true,
+            async:false,
             error: function(result) {
             },
             success: function(data) {

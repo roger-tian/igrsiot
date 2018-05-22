@@ -15,9 +15,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User getUserByUserName(String userName) {
-        logger.debug("---------getUserById-----------{}++++++++++", userDao);
         User user = userDao.selectByUserName(userName);
-        logger.debug("user: {}-{}", user.getUser(), user.getPassword());
 
         return user;
     }

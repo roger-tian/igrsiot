@@ -1,6 +1,6 @@
 package com.igrs.igrsiot.model;
 
-public class User {
+public class IgrsUser {
     private Long id;
 
     private String user;

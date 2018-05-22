@@ -1,30 +1,33 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsSensorDetail;
+import com.igrs.igrsiot.service.IIgrsSensorDetailService;
 import com.igrs.igrsiot.service.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class CmdHandler {
-    public void cmdHandler(String buff) throws SQLException {
-        String sql;
-        ResultSet rs;
-        stmt = SocketService.getStmt();
+    @Autowired
+    private IIgrsSensorDetailService igrsSensorDetailService;
 
+    public void cmdHandler(String buff) throws InterruptedException {
         String buf;
+
         if (buff.contains("ch_40")) {
-            double temp = 28.1;
-//            sql = String.format("select value from igrs_sensor_detail where type=\"temperature\" order by time desc");
-//            rs = stmt.executeQuery(sql);
-//            if (rs.next()) {
-//                String tem = rs.getString(1);
-//                temp = Float.parseFloat(rs.getString(1));
-//            }
+            float temp;
+            List<IgrsSensorDetail> list = igrsSensorDetailService.getDataByType("temperature");
+            if (list.size() != 0) {
+                temp = Float.parseFloat(list.get(0).getValue());
+            }
+            else {
+                temp = (float) 0.0;
+            }
+
             if (temp < 26.0) {
                 buf = "{ch_30:1}";
                 SocketService.cmdSend(buf);
@@ -34,12 +37,8 @@ public class CmdHandler {
                 SocketService.cmdSend(buf);
             }
 
-            try {
-                Thread.sleep(12000);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(12000);
+
             buf = "{ch_10:1,ch_50:1,ch_20:1,ch_21:1,ch_60:1}";
             SocketService.cmdSend(buf);
         }
@@ -74,49 +73,57 @@ public class CmdHandler {
         else if (buff.contains("pm25")) {
             String results[];
             String cells[];
-            String pm25 = null;
-            String co2 = null;
-            String tvoc = null;
-            String temperature = null;
-            String humidity = null;
-            String formaldehyde = null;
+            String pm25;
+            String co2;
+            String tvoc;
+            String temperature;
+            String humidity;
+            String formaldehyde;
 
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String time = df.format(new Date());
+
+            IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
+            igrsSensorDetail.setTime(time);
 
             results = buff.split(",");
             for (int i=0; i<results.length; i++) {
                 cells = results[i].split(":");
                 if (cells[0].contains("pm25")) {
                     pm25 = cells[1];
-                    sql = String.format("insert into igrs_sensor_detail (type,value,time) values(\"pm25\",\"%s\",\"%s\")", pm25, time);
-                    stmt.executeUpdate(sql);
+                    igrsSensorDetail.setType("pm25");
+                    igrsSensorDetail.setValue(pm25);
+                    igrsSensorDetailService.insert(igrsSensorDetail);
                 }
                 else if (cells[0].contains("co2")) {
                     co2 = cells[1];
-                    sql = String.format("insert into igrs_sensor_detail (type,value,time) values(\"co2\",\"%s\",\"%s\")", co2, time);
-                    logger.debug("{}--{}--{}--{}", co2, time, sql, stmt);
-                    stmt.executeUpdate(sql);
+                    igrsSensorDetail.setType("co2");
+                    igrsSensorDetail.setValue(co2);
+                    igrsSensorDetailService.insert(igrsSensorDetail);
                 }
                 else if (cells[0].contains("voc")) {
                     tvoc = cells[1];
-                    sql = String.format("insert into igrs_sensor_detail (type,value,time) values(\"tvoc\",\"%s\",\"%s\")", tvoc, time);
-                    stmt.executeUpdate(sql);
+                    igrsSensorDetail.setType("tvoc");
+                    igrsSensorDetail.setValue(tvoc);
+                    igrsSensorDetailService.insert(igrsSensorDetail);
                 }
                 else if (cells[0].contains("temp")) {
                     temperature = cells[1];
-                    sql = String.format("insert into igrs_sensor_detail (type,value,time) values(\"temperature\",\"%s\",\"%s\")", temperature, time);
-                    stmt.executeUpdate(sql);
+                    igrsSensorDetail.setType("temperature");
+                    igrsSensorDetail.setValue(temperature);
+                    igrsSensorDetailService.insert(igrsSensorDetail);
                 }
                 else if (cells[0].contains("hum")) {
                     humidity = cells[1];
-                    sql = String.format("insert into igrs_sensor_detail (type,value,time) values(\"humidity\",\"%s\",\"%s\")", humidity, time);
-                    stmt.executeUpdate(sql);
+                    igrsSensorDetail.setType("humidity");
+                    igrsSensorDetail.setValue(humidity);
+                    igrsSensorDetailService.insert(igrsSensorDetail);
                 }
                 else if (cells[0].contains("hcho")) {
                     formaldehyde = cells[1].substring(0, cells[1].length()-2);
-                    sql = String.format("insert into igrs_sensor_detail (type,value,time) values(\"formaldehyde\",\"%s\",\"%s\")", formaldehyde, time);
-                    stmt.executeUpdate(sql);
+                    igrsSensorDetail.setType("formaldehyde");
+                    igrsSensorDetail.setValue(formaldehyde);
+                    igrsSensorDetailService.insert(igrsSensorDetail);
                 }
             }
         }
@@ -126,8 +133,6 @@ public class CmdHandler {
 
         return;
     }
-
-    private Statement stmt;
 
     private static final Logger logger = LoggerFactory.getLogger(CmdHandler.class);
 }

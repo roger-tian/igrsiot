@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.igrs.igrsiot.dao.IgrsSensorDetailMapper" >
+<mapper namespace="com.igrs.igrsiot.dao.IIgrsSensorDetailDao" >
   <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsSensorDetail" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="type" property="type" jdbcType="VARCHAR" />
@@ -27,10 +27,8 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsSensorDetail" >
-    insert into igrs_sensor_detail (id, type, value, 
-      time)
-    values (#{id,jdbcType=BIGINT}, #{type,jdbcType=VARCHAR}, #{value,jdbcType=REAL}, 
-      #{time,jdbcType=TIMESTAMP})
+    insert into igrs_sensor_detail (type, value, time)
+    values (#{type,jdbcType=VARCHAR}, #{value,jdbcType=REAL}, #{time,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.igrs.igrsiot.model.IgrsSensorDetail" >
     insert into igrs_sensor_detail

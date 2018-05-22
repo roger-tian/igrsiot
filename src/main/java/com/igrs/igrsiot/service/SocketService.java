@@ -11,7 +11,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SocketService implements ServletContextListener {
@@ -48,8 +47,7 @@ public class SocketService implements ServletContextListener {
                                             CmdHandler cmdHandler = new CmdHandler();
                                             try {
                                                 cmdHandler.cmdHandler(buf);
-                                            }
-                                            catch (SQLException e) {
+                                            } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
                                         }

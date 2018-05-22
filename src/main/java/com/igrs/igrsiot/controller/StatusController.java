@@ -1,82 +1,119 @@
 package com.igrs.igrsiot.controller;
 
-import com.igrs.igrsiot.service.SocketService;
+import com.igrs.igrsiot.model.IgrsDeviceStatus;
+import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 @RestController
 @RequestMapping("/control")
 public class StatusController {
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
+
     @RequestMapping("/status")
-    public String getDeviceStatus() throws SQLException {
+    public String getDeviceStatus() {
         String result;
-        String switchMachine, switchLed1, switchLed2, machineSigSource, machineVolume;
+//        String[][] = {{"machine1","switch"},{"machine1","sig_source"},{"machine1","volume"}};
 
-        String sql;
-        ResultSet rs;
+        IgrsDeviceStatus status;
+        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
 
-        logger.debug("getDeviceStatus: {}");
-
-        stmt = SocketService.getStmt();
-
-        sql = String.format("select value from igrs_device_status where device_id = \"machine\" and attribute = \"switch\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            switchMachine = rs.getString(1);
+        igrsDeviceStatus.setDeviceId("machine1");
+        igrsDeviceStatus.setAttribute("switch");
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            result = status.getValue();
         }
         else {
-            switchMachine = "0";
+            result = "0";
         }
 
-        sql = String.format("select value from igrs_device_status where device_id = \"machine\" and attribute = \"sig_source\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            machineSigSource = rs.getString(1);
+        igrsDeviceStatus.setDeviceId("machine1");
+        igrsDeviceStatus.setAttribute("sig_source");
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            result += "," + status.getValue();
         }
         else {
-            machineSigSource = "0";
+            result += "," + "0";
         }
 
-        sql = String.format("select value from igrs_device_status where device_id = \"machine\" and attribute = \"volume\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            machineVolume = rs.getString(1);
+        igrsDeviceStatus.setDeviceId("machine1");
+        igrsDeviceStatus.setAttribute("volume");
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            result += "," + status.getValue();
         }
         else {
-            machineVolume = "0";
+            result += "," + "0";
         }
 
-        sql = String.format("select value from igrs_device_status where device_id = \"led1\" and attribute = \"switch\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            switchLed1 = rs.getString(1);
+        igrsDeviceStatus.setDeviceId("machine2");
+        igrsDeviceStatus.setAttribute("switch");
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            result = status.getValue();
         }
         else {
-            switchLed1 = "0";
+            result = "0";
         }
 
-        sql = String.format("select value from igrs_device_status where device_id = \"led2\" and attribute = \"switch\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            switchLed2 = rs.getString(1);
+        igrsDeviceStatus.setDeviceId("machine2");
+        igrsDeviceStatus.setAttribute("sig_source");
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            result += "," + status.getValue();
         }
         else {
-            switchLed2 = "0";
+            result += "," + "0";
         }
 
-        result = String.format("%s,%s,%s,%s,%s", switchMachine, machineSigSource, machineVolume, switchLed1, switchLed2);
-        logger.debug("result: {}", result);
+        igrsDeviceStatus.setDeviceId("machine2");
+        igrsDeviceStatus.setAttribute("volume");
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            result += "," + status.getValue();
+        }
+        else {
+            result += "," + "0";
+        }
+
+        igrsDeviceStatus.setDeviceId("led1");
+        igrsDeviceStatus.setAttribute("switch");
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            result += "," + status.getValue();
+        }
+        else {
+            result += "," + "0";
+        }
+
+        igrsDeviceStatus.setDeviceId("led2");
+        igrsDeviceStatus.setAttribute("switch");
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            result += "," + status.getValue();
+        }
+        else {
+            result += "," + "0";
+        }
+
+        igrsDeviceStatus.setDeviceId("curtain");
+        igrsDeviceStatus.setAttribute("switch");
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            result += "," + status.getValue();
+        }
+        else {
+            result += "," + "0";
+        }
 
         return result;
     }
-
-    private Statement stmt;
 
     private static final Logger logger = LoggerFactory.getLogger(StatusController.class);
 }

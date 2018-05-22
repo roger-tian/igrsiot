@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,7 +23,7 @@ public class CurtainController {
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/curtain")
-    public String curtainOnOff(String onOff) throws SQLException {
+    public String curtainOnOff(String onOff) {
         String instruction;
 
         String cmd = "{ch_60:" + onOff + "}";   // 0,1,2--off,on,pause

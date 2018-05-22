@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class SensorController {
     private IIgrsSensorService igrsSensorService;
 
     @RequestMapping("/sensor")
-    public String getSensorData() throws SQLException {
+    public String getSensorData() {
         String result = "";
         List<IgrsSensorDetail> list;
         String[] type = {"pm25", "co2", "tvoc", "temperature", "humidity", "formaldehyde"};
@@ -52,7 +51,7 @@ public class SensorController {
     }
 
     @RequestMapping("/sensor/history")
-    public List<String> getSensorHistoryData(String date, String type) throws SQLException {
+    public List<String> getSensorHistoryData(String date, String type) {
         List<String> list = new ArrayList<>();
 
         if (date.length() == 0) {

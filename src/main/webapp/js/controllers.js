@@ -490,7 +490,7 @@ angular.module('starter.controllers', [])
     };
     var clickSwitch_led1 = function() {
         var switch_all = document.getElementById("onoffswitch_all");
-        var switch_machine = document.getElementById("onoffswitch_machine");
+        var switch_machine = document.getElementById("onoffswitch_machine1");
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
 
@@ -504,9 +504,9 @@ angular.module('starter.controllers', [])
         }
         else {
             onOff = "0";
-            if ((!switch_machine.checked) && (!switch_led2.checked)) {
-                switch_all.checked = false;
-            }
+            // if ((!switch_machine.checked) && (!switch_led2.checked)) {
+            //     switch_all.checked = false;
+            // }
 
             instruction = "开关关闭";
         }
@@ -566,9 +566,9 @@ angular.module('starter.controllers', [])
         else {
             onOff = "0";
 
-            if ((!switch_machine.checked) && (!switch_led1.checked)) {
-                switch_all.checked = false;
-            }
+            // if ((!switch_machine.checked) && (!switch_led1.checked)) {
+            //     switch_all.checked = false;
+            // }
 
             instruction = "开关关闭";
         }
@@ -1006,7 +1006,7 @@ angular.module('starter.controllers', [])
                 // console.log(lc + '-' + sl + '-' + mo + '-' + io + '-' + uv + '-' + ti + '-' + fa);
             }
         });
-    }, 200000);
+    }, 15000);
 
     $(document).ready(function() {
         $.ajax({

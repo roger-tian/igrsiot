@@ -14,17 +14,17 @@ public class CmdHandler {
     public void cmdHandler(String buff) throws SQLException {
         String sql;
         ResultSet rs;
-        Statement stmt = SocketService.getStmt();
+        stmt = SocketService.getStmt();
 
         String buf;
         if (buff.contains("ch_40")) {
-            double temp = 0;
-            sql = String.format("select value from igrs_sensor_detail where type=\"temperature\" order by time desc");
-            rs = stmt.executeQuery(sql);
-            if (rs.next()) {
-                String tem = rs.getString(1);
-                temp = Float.parseFloat(rs.getString(1));
-            }
+            double temp = 28.1;
+//            sql = String.format("select value from igrs_sensor_detail where type=\"temperature\" order by time desc");
+//            rs = stmt.executeQuery(sql);
+//            if (rs.next()) {
+//                String tem = rs.getString(1);
+//                temp = Float.parseFloat(rs.getString(1));
+//            }
             if (temp < 26.0) {
                 buf = "{ch_30:1}";
                 SocketService.cmdSend(buf);
@@ -40,7 +40,7 @@ public class CmdHandler {
             catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            buf = "{ch_10:1,ch_20:1,ch_21:1}";
+            buf = "{ch_10:1,ch_50:1,ch_20:1,ch_21:1,ch_60:1}";
             SocketService.cmdSend(buf);
         }
         else if (buff.contains("ch_2")) {
@@ -95,7 +95,7 @@ public class CmdHandler {
                 else if (cells[0].contains("co2")) {
                     co2 = cells[1];
                     sql = String.format("insert into igrs_sensor_detail (type,value,time) values(\"co2\",\"%s\",\"%s\")", co2, time);
-                    logger.debug("{}--{}--{}", co2, time, sql);
+                    logger.debug("{}--{}--{}--{}", co2, time, sql, stmt);
                     stmt.executeUpdate(sql);
                 }
                 else if (cells[0].contains("voc")) {
@@ -126,6 +126,8 @@ public class CmdHandler {
 
         return;
     }
+
+    private Statement stmt;
 
     private static final Logger logger = LoggerFactory.getLogger(CmdHandler.class);
 }

@@ -11,6 +11,8 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -110,7 +112,7 @@ public class SocketService implements ServletContextListener {
     @Override
     public  void contextInitialized(ServletContextEvent sce) {
         // TODO Auto-generated method stub
-        final String DB_URL = "jdbc:mysql://localhost:3306/igrsiot";
+        final String DB_URL = "jdbc:mysql://localhost:3306/igrsiot?useUnicode=true&characterEncoding=utf8";
         final String USER = "root";
         final String PASS = "root";
 
@@ -119,15 +121,16 @@ public class SocketService implements ServletContextListener {
             thread.init();
             thread.start();
 
-//            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-//            stmt = conn.createStatement();
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+            logger.debug("stmt: {}", stmt);
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-//        catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

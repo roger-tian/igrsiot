@@ -1,12 +1,6 @@
 package com.igrs.igrsiot.model;
 
 public class IgrsUser {
-    private Long id;
-
-    private String user;
-
-    private String password;
-
     public Long getId() {
         return id;
     }
@@ -30,4 +24,8 @@ public class IgrsUser {
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
     }
+
+    private Long id;
+    private String user;
+    private String password;
 }

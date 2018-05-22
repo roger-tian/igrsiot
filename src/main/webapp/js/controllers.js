@@ -25,49 +25,37 @@ angular.module('starter.controllers', [])
     var totalPage = 1;
     var curPageNo = 1;
 
-    // $("#onoffswitch_all").on('click', function(){
-    //     clickSwitch_all();
-    // });
-    // $scope.toggleState = false;
     $scope.onSwitchAllClick = function() {
-        // $scope.toggleAllState = !$scope.toggleAllState;
-        // console.log($scope.toggleAllState);
-        // console.log($scope.toggleState)
-        clickSwitch_all();
-    };
-    var clickSwitch_all = function() {
         var switch_all = document.getElementById("onoffswitch_all");
-        var switch_machine = document.getElementById("onoffswitch_machine");
+        var switch_machine1 = document.getElementById("onoffswitch_machine1");
+        var switch_machine2 = document.getElementById("onoffswitch_machine2");
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
-        // var switch_purifier = document.getElementById("onoffswitch_purifier");
+        var switch_curtain = document.getElementById("onoffswitch_curtain");
         var onOff;
         var instruction;
-        console.log(switch_all.checked);
-        console.log($("#onoffswitch_all").is(':checked'));
         if (!switch_all.checked) {
-            switch_machine.checked = true;
+            switch_machine1.checked = true;
+            switch_machine2.checked = true;
             switch_led1.checked = true;
             switch_led2.checked = true;
-            // switch_purifier.checked = true;
+            switch_curtain.checked = true;
             onOff = "1";
 
             instruction = "总开关开启";
         }
         else {
-            switch_machine.checked = false;
+            switch_machine1.checked = false;
+            switch_machine2.checked = false;
             switch_led1.checked = false;
             switch_led2.checked = false;
-            // switch_purifier.checked = false;
+            switch_curtain.checked = false;
             onOff = "0";
 
             instruction = "总开关关闭";
         }
         $.ajax({
             type: 'POST',
-            // url:'/igrsiot/control/all?onOff=' + onOff,
-            // processData : false,
-            // contentType : false,
             url:'/igrsiot/control/all',
             data:{
                 onOff:onOff
@@ -80,22 +68,19 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "总开关" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
+                    // var rowData;
+                    // rowData = "<tr>";
+                    // rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
+                    // rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
+                    // rowData += "<td style=\"text-align:center;color:green;\">" + "总开关" + "</td>";
+                    // rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
+                    // rowData += "</tr>";
+                    // $("#operate").append(rowData);
                 }
             }
         });
     };
 
-    // $("#onoffswitch_machine").on('click', function(){
-    //     clickSwitch_machine();
-    // });
     $scope.onSwitchMachine1Click = function() {
         // $scope.toggleMachineState = !$scope.toggleMachineState;
         // console.log($scope.toggleState)
@@ -1006,7 +991,7 @@ angular.module('starter.controllers', [])
                 // console.log(lc + '-' + sl + '-' + mo + '-' + io + '-' + uv + '-' + ti + '-' + fa);
             }
         });
-    }, 15000);
+    }, 2000000);
 
     $(document).ready(function() {
         $.ajax({

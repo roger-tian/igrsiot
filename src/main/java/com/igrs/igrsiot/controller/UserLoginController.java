@@ -16,7 +16,10 @@ public class UserLoginController {
 
     @RequestMapping("/user/login")
     String UserLogin(String userName, String password) {
+//        igrsUserService = new IgrsUserServiceImpl();
+//        logger.debug("igrsUserService: {}", igrsUserService);
         IgrsUser igrsUser = igrsUserService.getUserByUserName(userName);
+        logger.debug("user: {}", igrsUser);
         if (igrsUser != null) {
             if (userName.equals(igrsUser.getUser()) && password.equals(igrsUser.getPassword())) {
                 return "SUCCESS";
@@ -32,6 +35,8 @@ public class UserLoginController {
             return "USER_NOT_EXIST";
         }
     }
+
+//    private IgrsUserServiceImpl igrsUserService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserLoginController.class);
 }

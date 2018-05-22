@@ -1,86 +1,98 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDeviceStatus;
+import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import com.igrs.igrsiot.service.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/control")
 public class AllController {
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
+
     @RequestMapping("/all")
-    public String allOnOff(String onOff) throws SQLException {
+    public String allOnOff(String onOff) {
+        String cmd;
         String instruction;
         if (onOff.equals("1")) {
-            cmd = "{ch_10:1,ch_20:1,ch_21:1}";
+            cmd = "{ch_10:1,ch_50:1,ch_20:1,ch_21:1,ch_60:1}";
             instruction = "总开关打开";
         }
         else {
-            cmd = "{ch_10:0,ch_20:0,ch_21:0}";
+            cmd = "{ch_10:0,ch_50:0,ch_20:0,ch_21:0,ch_60:0}";
             instruction = "总开关关闭";
         }
         SocketService.cmdSend(cmd);
 
-        // insert to db
-        String sql;
-        ResultSet rs;
+        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        IgrsDeviceStatus result;
 
-        stmt = SocketService.getStmt();
-
-        // update switch status of machine
-        sql = String.format("select value from igrs_device_status where device_id = \"machine\" and attribute = \"switch\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            sql = String.format("update igrs_device_status set value = \"%s\" where device_id = \"machine\" and attribute = \"switch\"", onOff);
-            stmt.executeUpdate(sql);
+        //update db
+        igrsDeviceStatus.setAttribute("switch");
+        igrsDeviceStatus.setValue(onOff);
+        //machine1 switch
+        igrsDeviceStatus.setDeviceId("machine1");
+        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (result != null) {
+            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
-            sql = String.format("insert into igrs_device_status (device_id,attribute,value) values(\"machine\",\"switch\",\"%s\")", onOff);
-            stmt.executeUpdate(sql);
+            igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        // update switch status of led1
-        sql = String.format("select value from igrs_device_status where device_id = \"led1\" and attribute = \"switch\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            sql = String.format("update igrs_device_status set value = \"%s\" where device_id = \"led1\" and attribute = \"switch\"", onOff);
-            stmt.executeUpdate(sql);
+        //machine2 switch
+        igrsDeviceStatus.setDeviceId("machine2");
+        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (result != null) {
+            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
-            sql = String.format("insert into igrs_device_status (device_id,attribute,value) values(\"led1\",\"switch\",\"%s\")", onOff);
-            stmt.executeUpdate(sql);
+            igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        // update switch status of led2
-        sql = String.format("select value from igrs_device_status where device_id = \"led2\" and attribute = \"switch\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            sql = String.format("update igrs_device_status set value = \"%s\" where device_id = \"led2\" and attribute = \"switch\"", onOff);
-            stmt.executeUpdate(sql);
+        //led1 switch
+        igrsDeviceStatus.setDeviceId("led1");
+        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (result != null) {
+            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
-            sql = String.format("insert into igrs_device_status (device_id,attribute,value) values(\"led2\",\"switch\",\"%s\")", onOff);
-            stmt.executeUpdate(sql);
+            igrsDeviceStatusService.insert(igrsDeviceStatus);
+        }
+
+        //led2 switch
+        igrsDeviceStatus.setDeviceId("led2");
+        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (result != null) {
+            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+        }
+        else {
+            igrsDeviceStatusService.insert(igrsDeviceStatus);
+        }
+
+        //curtain switch
+        igrsDeviceStatus.setDeviceId("curtain");
+        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (result != null) {
+            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+        }
+        else {
+            igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
         // insert into igrs_operate
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = df.format(new Date());
-        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"总开关\",\"%s\")", time, instruction);
-        stmt.executeUpdate(sql);
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String time = df.format(new Date());
+//        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"总开关\",\"%s\")", time, instruction);
+//        stmt.executeUpdate(sql);
 
         return "SUCCESS";
     }
-
-    private String cmd;
-    private Statement stmt;
 
     private static final Logger logger = LoggerFactory.getLogger(AllController.class);
 }

@@ -8,13 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service("userService")
+@Service
 public class IgrsUserServiceImpl implements IIgrsUserService {
     @Autowired
     private IIgrsUserDao igrsUserDao;
 
     @Override
     public IgrsUser getUserByUserName(String userName) {
+        logger.debug("igrsUserDao: {}", igrsUserDao);
         IgrsUser igrsUser = igrsUserDao.selectByUserName(userName);
 
         return igrsUser;

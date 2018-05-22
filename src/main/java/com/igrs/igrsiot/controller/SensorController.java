@@ -46,6 +46,7 @@ public class SensorController {
                 }
             }
         }
+        logger.debug("{}", result);
 
         return result;
     }

@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.service.impl;
 
+import com.igrs.igrsiot.dao.IIgrsSensorDetailDao;
 import com.igrs.igrsiot.model.IgrsSensorDetail;
 import com.igrs.igrsiot.service.IIgrsSensorDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,20 +11,20 @@ import java.util.List;
 @Service
 public class IgrsSensorDetailServiceImpl implements IIgrsSensorDetailService {
     @Autowired
-    private IIgrsSensorDetailService igrsSensorDetailService;
+    private IIgrsSensorDetailDao igrsSensorDetailDao;
 
     @Override
     public List<IgrsSensorDetail> getDataByType(String type) {
-        return igrsSensorDetailService.getDataByType(type);
+        return igrsSensorDetailDao.getDataByType(type);
     }
 
     @Override
     public List<String> getAvgDataByType(String type) {
-        return igrsSensorDetailService.getAvgDataByType(type);
+        return igrsSensorDetailDao.getAvgDataByType(type);
     }
 
     @Override
     public int insert(IgrsSensorDetail record) {
-        return igrsSensorDetailService.insert(record);
+        return igrsSensorDetailDao.insert(record);
     }
 }

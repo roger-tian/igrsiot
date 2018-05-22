@@ -1,71 +1,74 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDeviceStatus;
+import com.igrs.igrsiot.model.IgrsOperate;
+import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
+import com.igrs.igrsiot.service.IIgrsOperateService;
 import com.igrs.igrsiot.service.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @RestController
 @RequestMapping("/control")
 public class MachineController {
+    @Autowired
+    IIgrsDeviceStatusService igrsDeviceStatusService;
+    @Autowired
+    IIgrsOperateService igrsOperateService;
+
     @RequestMapping("/machine")
-    public String machineOnOff(String index, String onOff) throws SQLException {
+    public String machineOnOff(String index, String onOff) {
         String instruction;
 
-        logger.debug("index: {}", index);
         if (index.equals("1")) {
             String cmd = "{ch_10:" + onOff + "}";
-            logger.debug("cmd: {}", cmd);
             SocketService.cmdSend(cmd);
         }
         else if (index.equals("2")) {
             String cmd = "{ch_50:" + onOff + "}";
-            logger.debug("cmd: {}", cmd);
             SocketService.cmdSend(cmd);
         }
 
-        String sql;
-        ResultSet rs;
-
-        stmt = SocketService.getStmt();
-
-        // update switch status of led1
-        sql = String.format("select value from igrs_device_status where device_id = \"machine\" and attribute = \"switch\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            sql = String.format("update igrs_device_status set value = \"%s\" where device_id = \"machine\" and attribute = \"switch\"", onOff);
-            stmt.executeUpdate(sql);
+        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setDeviceId("machine" + index);
+        igrsDeviceStatus.setAttribute("switch");
+        igrsDeviceStatus.setValue(onOff);
+        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
-            sql = String.format("insert into igrs_device_status (device_id,attribute,value) values(\"machine\",\"switch\",\"%s\")", onOff);
-            stmt.executeUpdate(sql);
+            igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        // insert into igrs_operate
+        IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setDeviceId("machine" + index);
+        igrsOperate.setUser("admin");
         if (onOff.equals("1")) {
             instruction = "开关打开";
         }
         else {
             instruction = "开关关闭";
         }
+        igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"一体机\",\"%s\")", time, instruction);
-        stmt.executeUpdate(sql);
+        igrsOperate.setOperateTime(time);
+        igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";
     }
 
     @RequestMapping("/machineSig")
-    public String machineSigSource(String index, String sigSource) throws SQLException {
-//        String sigSource = request.getParameter("sigSource");
+    public String machineSigSource(String index, String sigSource) {
+        String instruction;
+
         if (index.equals("1")) {
             String cmd = "{ch_12:" + sigSource + "}";
             SocketService.cmdSend(cmd);
@@ -75,49 +78,49 @@ public class MachineController {
             SocketService.cmdSend(cmd);
         }
 
-        logger.debug("sigSource: {}", sigSource);
-
-        String sql;
-        ResultSet rs;
-        String instruction = null;
-
-        stmt = SocketService.getStmt();
-
-        // update switch status of led1
-        sql = String.format("select value from igrs_device_status where device_id = \"machine\" and attribute = \"sig_source\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            sql = String.format("update igrs_device_status set value = \"%s\" where device_id = \"machine\" and attribute = \"sig_source\"", sigSource);
-            stmt.executeUpdate(sql);
+        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setDeviceId("machine" + index);
+        igrsDeviceStatus.setAttribute("sig_source");
+        igrsDeviceStatus.setValue(sigSource);
+        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
-            sql = String.format("insert into igrs_device_status (device_id,attribute,value) values(\"machine\",\"sig_source\",\"%s\")", sigSource);
-            stmt.executeUpdate(sql);
+            igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        // insert into igrs_operate
+        IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setDeviceId("machine" + index);
+        igrsOperate.setUser("admin");
         if (sigSource.equals("1")) {
             instruction = "信号源切换到主页";
         }
         else if (sigSource.equals("2")) {
-            instruction = "信号源切换到HDMI2.0";
+            instruction = "信号源切换到HDMI1";
         }
         else if (sigSource.equals("3")) {
-            instruction = "信号源切换到HDMI1.4";
+            instruction = "信号源切换到HDMI2";
         }
         else if (sigSource.equals("4")) {
             instruction = "信号源切换到内置电脑";
         }
+        else {
+            instruction = null;
+        }
+        igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"一体机\",\"%s\")", time, instruction);
-        stmt.executeUpdate(sql);
+        igrsOperate.setOperateTime(time);
+        igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";
     }
 
     @RequestMapping("/machineVol")
-    public String machineVolume(String index, String volume) throws SQLException {
+    public String machineVolume(String index, String volume) {
+        String instruction;
+
         if (index.equals("1")) {
             String cmd = "{ch_11:" + volume + "}";
             SocketService.cmdSend(cmd);
@@ -127,54 +130,48 @@ public class MachineController {
             SocketService.cmdSend(cmd);
         }
 
-        String sql;
-        ResultSet rs;
-        String instruction = null;
-
-        stmt = SocketService.getStmt();
-
-        // update switch status of led1
-        sql = String.format("select value from igrs_device_status where device_id = \"machine\" and attribute = \"volume\"");
-        rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            int vol = Integer.parseInt(rs.getString(1));
-            if (volume.equals("1")) {
+        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setDeviceId("machine" + index);
+        igrsDeviceStatus.setAttribute("volume");
+        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            int vol = Integer.parseInt(status.getValue());
+            if (volume.equals("1")) {   //volume increase
                 vol ++;
                 if (vol > 100) {
                     vol = 100;
                 }
             }
-            else {
+            else {      //volume decrease
                 vol --;
                 if (vol < 0) {
                     vol = 0;
                 }
             }
-            System.out.println(volume);
-            sql = String.format("update igrs_device_status set value = \"%d\" where device_id = \"machine\" and attribute = \"volume\"", vol);
-            stmt.executeUpdate(sql);
+            igrsDeviceStatus.setValue(String.valueOf(vol));
+            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
-            sql = String.format("insert into igrs_device_status (device_id,attribute,value) values(\"machine\",\"volume\",\"%s\")", "0");
-            stmt.executeUpdate(sql);
+            igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        // insert into igrs_operate
+        IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setDeviceId("machine" + index);
+        igrsOperate.setUser("admin");
         if (volume.equals("1")) {
             instruction = "音量增加";
         }
         else {
             instruction = "音量减少";
         }
+        igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        sql = String.format("insert into igrs_operate (user,operate_time,device_id,instruction) values (\"admin\",\"%s\",\"一体机\",\"%s\")", time, instruction);
-        stmt.executeUpdate(sql);
+        igrsOperate.setOperateTime(time);
+        igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";
     }
-
-    private Statement stmt;
 
     private static final Logger logger = LoggerFactory.getLogger(MachineController.class);
 }

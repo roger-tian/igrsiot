@@ -37,15 +37,15 @@ public class AllController {
         SocketService.cmdSend(cmd);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        IgrsDeviceStatus result;
+        IgrsDeviceStatus status;
 
         //update db
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
         //machine1 switch
         igrsDeviceStatus.setDeviceId("machine1");
-        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (result != null) {
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
@@ -54,8 +54,8 @@ public class AllController {
 
         //machine2 switch
         igrsDeviceStatus.setDeviceId("machine2");
-        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (result != null) {
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
@@ -64,8 +64,8 @@ public class AllController {
 
         //led1 switch
         igrsDeviceStatus.setDeviceId("led1");
-        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (result != null) {
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
@@ -74,8 +74,8 @@ public class AllController {
 
         //led2 switch
         igrsDeviceStatus.setDeviceId("led2");
-        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (result != null) {
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
@@ -84,8 +84,8 @@ public class AllController {
 
         //curtain switch
         igrsDeviceStatus.setDeviceId("curtain");
-        result = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (result != null) {
+        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {

@@ -18,9 +18,9 @@ import java.util.Date;
 @RequestMapping("/control")
 public class MachineController {
     @Autowired
-    IIgrsDeviceStatusService igrsDeviceStatusService;
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
-    IIgrsOperateService igrsOperateService;
+    private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/machine")
     public String machineOnOff(String index, String onOff) {

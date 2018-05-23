@@ -30,7 +30,7 @@ angular.module('starter.controllers', [])
         var onOff;
         var instruction;
 
-        if (!switch_welcome) {
+        if (!switch_welcome.checked) {
             onOff = "1";
             instruction = "迎宾模式开启";
         }

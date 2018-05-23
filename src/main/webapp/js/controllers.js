@@ -859,7 +859,7 @@ angular.module('starter.controllers', [])
                 }
             }
         });
-    }, 5000);
+    }, 500000);
 
     setInterval(function () {
         $.ajax({
@@ -874,7 +874,7 @@ angular.module('starter.controllers', [])
             success: function(data) {
             }
         });
-    }, 10000);
+    }, 1000000);
 
     $(document).ready(function() {
         $.ajax({

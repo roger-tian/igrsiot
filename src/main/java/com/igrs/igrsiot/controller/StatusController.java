@@ -170,13 +170,13 @@ public class StatusController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setDeviceId("welcomemode");
+        igrsOperate.setDeviceId("迎宾模式");
         igrsOperate.setUser("admin");
         if (onOff.equals("1")) {
-            instruction = "迎宾模式开启";
+            instruction = "开关打开";
         }
         else {
-            instruction = "迎宾模式关闭";
+            instruction = "开关关闭";
         }
         igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -26,11 +26,11 @@ angular.module('starter.controllers', [])
     var curPageNo = 1;
 
     $scope.onSwitchWelcomeModeClick = function () {
-        var switch_welcome = document.getElementById("onoffswitch_welcomemode");
+        var switchWelcome = document.getElementById("onoffswitch_welcomemode");
         var onOff;
         var instruction;
 
-        if (!switch_welcome.checked) {
+        if (!switchWelcome.checked) {
             onOff = "1";
             instruction = "迎宾模式开启";
         }
@@ -563,38 +563,38 @@ angular.module('starter.controllers', [])
             error: function(result) {
             },
             success: function(data) {
-                var str = data.substring(data.indexOf("pw::"));
-                console.log(str);
-                var lc, sl, mo, io, uv, ti, fa; // 童锁, 睡眠, 模式, 负离子, UV, 定时, 风速,
-                var result;
-                var results = data.split(",");
-                for (var i=0; i<results.length; i++) {
-                    result = results[i].split("::");
-                    switch (result[0]) {
-                        case 'lc':
-                            lc = result[1];
-                            break;
-                        case 'sl':
-                            sl = result[1];
-                            break;
-                        case 'mo':
-                            mo = result[1];
-                            break;
-                        case 'io':
-                            io = result[1];
-                            break;
-                        case 'uv':
-                            uv = result[1];
-                            break;
-                        case 'ti':
-                            ti = result[1];
-                            break;
-                        case 'fa':
-                            fa = result[1];
-                            break;
-                    }
-                }
-                console.log(lc + '-' + sl + '-' + mo + '-' + io + '-' + uv + '-' + ti + '-' + fa);
+                // var str = data.substring(data.indexOf("pw::"));
+                // console.log(str);
+                // var lc, sl, mo, io, uv, ti, fa; // 童锁, 睡眠, 模式, 负离子, UV, 定时, 风速,
+                // var result;
+                // var results = data.split(",");
+                // for (var i=0; i<results.length; i++) {
+                //     result = results[i].split("::");
+                //     switch (result[0]) {
+                //         case 'lc':
+                //             lc = result[1];
+                //             break;
+                //         case 'sl':
+                //             sl = result[1];
+                //             break;
+                //         case 'mo':
+                //             mo = result[1];
+                //             break;
+                //         case 'io':
+                //             io = result[1];
+                //             break;
+                //         case 'uv':
+                //             uv = result[1];
+                //             break;
+                //         case 'ti':
+                //             ti = result[1];
+                //             break;
+                //         case 'fa':
+                //             fa = result[1];
+                //             break;
+                //     }
+                // }
+                // console.log(lc + '-' + sl + '-' + mo + '-' + io + '-' + uv + '-' + ti + '-' + fa);
             }
         });
     };
@@ -688,6 +688,7 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var switchWelcome = document.getElementById("onoffswitch_welcomemode");
                 var switchAll = document.getElementById("onoffswitch_all");
                 var switchMachine1 = document.getElementById("onoffswitch_machine1");
                 var machine1Sig = document.getElementsByName("machine1Radio");
@@ -702,6 +703,9 @@ angular.module('starter.controllers', [])
 
                 for (var i=0; i<data.length; i++) {
                     switch (data[i].deviceId) {
+                        case "welcomemode":
+                            switchWelcome.checked = data[i].value === "1";
+                            break;
                         case "machine1":
                             switch (data[i].attribute) {
                                 case "switch":
@@ -859,7 +863,7 @@ angular.module('starter.controllers', [])
                 }
             }
         });
-    }, 500000);
+    }, 5000);
 
     setInterval(function () {
         $.ajax({
@@ -874,7 +878,7 @@ angular.module('starter.controllers', [])
             success: function(data) {
             }
         });
-    }, 1000000);
+    }, 10000);
 
     $(document).ready(function() {
         $.ajax({
@@ -886,6 +890,7 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var switchWelcome = document.getElementById("onoffswitch_welcomemode");
                 var switchAll = document.getElementById("onoffswitch_all");
                 var switchMachine1 = document.getElementById("onoffswitch_machine1");
                 var machine1Sig = document.getElementsByName("machine1Radio");
@@ -900,6 +905,9 @@ angular.module('starter.controllers', [])
 
                 for (var i=0; i<data.length; i++) {
                     switch (data[i].deviceId) {
+                        case "welcomemode":
+                            switchWelcome.checked = data[i].value === "1";
+                            break;
                         case "machine1":
                             switch (data[i].attribute) {
                                 case "switch":

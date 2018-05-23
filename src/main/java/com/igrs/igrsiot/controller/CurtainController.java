@@ -26,6 +26,7 @@ public class CurtainController {
     public String curtainOnOff(String onOff) {
         String instruction;
 
+        logger.debug("curtainOnOff: {}", onOff);
         String cmd = "{ch_60:" + onOff + "}";   // 0,1,2--off,on,pause
         SocketService.cmdSend(cmd);
 

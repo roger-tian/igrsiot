@@ -1,6 +1,6 @@
 package com.igrs.igrsiot.service;
 
-import com.igrs.igrsiot.controller.CmdHandler;
+import com.igrs.igrsiot.utils.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +11,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
-import java.sql.Statement;
 
 public class SocketService implements ServletContextListener {
     public class socketThread extends Thread {
@@ -44,12 +43,9 @@ public class SocketService implements ServletContextListener {
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            CmdHandler cmdHandler = new CmdHandler();
-                                            try {
-                                                cmdHandler.cmdHandler(buf);
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
+                                            String url = "http://localhost:8080/igrsiot/control/sensor/handle";
+                                            String param = "buf=" + buf;
+                                            String result = HttpRequest.sendPost(url, param);
                                         }
                                     }).start();
                                 }
@@ -79,8 +75,8 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-//            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
-            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
+            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+//            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
             server.socket().bind(isa);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT);
@@ -122,16 +118,10 @@ public class SocketService implements ServletContextListener {
 
     }
 
-    public static Statement getStmt() {
-        return stmt;
-    }
-
     private static Charset charset = Charset.forName("UTF-8");
     private ServerSocketChannel server;
     private static Selector selector;
     private SocketChannel sc;
-
-    private static Statement stmt = null;
 
     private static final Logger logger = LoggerFactory.getLogger(SocketService.class);
 }

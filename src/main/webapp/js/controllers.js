@@ -825,6 +825,7 @@ angular.module('starter.controllers', [])
                 DrawPm25('canvasDiv2', pm25[0]);
                 DrawPm25('canvasDiv3', pm25[0]);
                 DrawPm25('canvasDiv4', pm25[0]);
+                DrawPm25('canvasDiv6', pm25[0]);
 
                 var value = [9,1,12,20,26,30,32,29,22,12,20,6,3,1,12,20,26,30,32,29,22,12,0,6];
                 DrawSensor('canvasDiv5', 'PM2.5', value);
@@ -1027,6 +1028,7 @@ angular.module('starter.controllers', [])
                 DrawPm25('canvasDiv2', pm25[0]);
                 DrawPm25('canvasDiv3', pm25[0]);
                 DrawPm25('canvasDiv4', pm25[0]);
+                DrawPm25('canvasDiv6', pm25[0]);
 
                 var value = [9,1,12,20,26,30,32,29,22,12,20,6,3,1,12,20,26,30,32,29,22,12,0,6];
                 DrawSensor('canvasDiv5', 'PM2.5', value);
@@ -1078,10 +1080,12 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
-                totalPage = data[0].totalPage;
-                var paginationTextObj = document.getElementById("paginationText");
-                paginationTextObj.innerText = curPageNo + '/' + totalPage;
-                $scope.data = data;
+                if (data.length != 0) {
+                    totalPage = data[0].totalPage;
+                    var paginationTextObj = document.getElementById("paginationText");
+                    paginationTextObj.innerText = curPageNo + '/' + totalPage;
+                    $scope.data = data;
+                }
             }
         });
     });

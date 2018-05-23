@@ -25,6 +25,38 @@ angular.module('starter.controllers', [])
     var totalPage = 1;
     var curPageNo = 1;
 
+    $scope.onSwitchWelcomeModeClick = function () {
+        var switch_welcome = document.getElementById("onoffswitch_welcomemode");
+        var onOff;
+        var instruction;
+
+        if (!switch_welcome) {
+            onOff = "1";
+            instruction = "迎宾模式开启";
+        }
+        else {
+            onOff = "0";
+            instruction = "迎宾模式关闭";
+        }
+
+        $.ajax({
+            type: 'POST',
+            url:'/igrsiot/control/welcomemode',
+            data:{
+                onOff:onOff
+            },
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:true,
+            error: function(result) {
+            },
+            success: function(data) {
+                console.log(data);
+                if (data == 'SUCCESS') {
+                }
+            }
+        });
+    };
+
     $scope.onSwitchAllClick = function() {
         var switch_all = document.getElementById("onoffswitch_all");
         var switch_machine1 = document.getElementById("onoffswitch_machine1");
@@ -68,33 +100,22 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    // var rowData;
-                    // rowData = "<tr>";
-                    // rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    // rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    // rowData += "<td style=\"text-align:center;color:green;\">" + "总开关" + "</td>";
-                    // rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
-                    // rowData += "</tr>";
-                    // $("#operate").append(rowData);
                 }
             }
         });
     };
 
     $scope.onSwitchMachine1Click = function() {
-        // $scope.toggleMachineState = !$scope.toggleMachineState;
-        // console.log($scope.toggleState)
-        clickSwitch_machine1();
-    };
-    var clickSwitch_machine1 = function() {
         var switch_all = document.getElementById("onoffswitch_all");
-        var switch_machine = document.getElementById("onoffswitch_machine1");
+        var switch_machine1 = document.getElementById("onoffswitch_machine1");
+        var switch_machine2 = document.getElementById("onoffswitch_machine2");
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
+        var switch_curtain = document.getElementById("onoffswitch_curtain");
         var index = 1;
         var onOff;
         var instruction;
-        if (!switch_machine.checked) {
+        if (!switch_machine1.checked) {
             onOff = "1";
 
             switch_all.checked = true;
@@ -104,7 +125,7 @@ angular.module('starter.controllers', [])
         else {
             onOff = "0";
 
-            if ((!switch_led1.checked) && (!switch_led2.checked)) {
+            if ((!switch_machine2.checked) && (!switch_led1.checked) && (!switch_led2.checked) && (!switch_curtain.checked)) {
                 switch_all.checked = false;
             }
 
@@ -125,14 +146,6 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "一体机" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -140,14 +153,11 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#machine1Sig").on('click', function(){
-        machine1SwitchSig();
-    });
-    var machine1SwitchSig = function() {
+    $scope.machine1Switch = function () {
         var index = 1;
         var sigSource;
         var instruction = "切换信号源到";
-        var objSig = document.getElementsByName("radio");
+        var objSig = document.getElementsByName("machine1Radio");
         for (var i=0; i<objSig.length; i++) {
             if (objSig[i].checked) {
                 sigSource = objSig[i].value;
@@ -158,10 +168,10 @@ angular.module('starter.controllers', [])
             instruction += "主页";
             break;
         case "2":
-            instruction += "HDMI2.0";
+            instruction += "HDMI1";
             break;
         case "3":
-            instruction += "HDMI1.4";
+            instruction += "HDMI2";
             break;
         case "4":
             instruction += "内置电脑";
@@ -185,14 +195,6 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "一体机" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -200,10 +202,7 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#switch1Increase").on('click', function(){
-        machine1SwitchIncrease();
-    });
-    var machine1SwitchIncrease = function() {
+    $scope.machine1SwitchIncrease = function() {
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/machineVol',
@@ -219,17 +218,8 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var volume = document.getElementById("volume");
+                    var volume = document.getElementById("machine1Volume");
                     volume.value += 1;
-
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "一体机" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "音量增加" + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -237,10 +227,7 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#switch1Decrease").on('click', function(){
-        machine1SwitchDecrease();
-    });
-    var machine1SwitchDecrease = function() {
+    $scope.machine1SwitchDecrease = function() {
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/machineVol',
@@ -256,17 +243,8 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var volume = document.getElementById("volume");
+                    var volume = document.getElementById("machine1Volume");
                     volume.value -= 1;
-
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "一体机" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "音量减少" + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -275,18 +253,15 @@ angular.module('starter.controllers', [])
     };
 
     $scope.onSwitchMachine2Click = function() {
-        // $scope.toggleMachineState = !$scope.toggleMachineState;
-        // console.log($scope.toggleState)
-        clickSwitch_machine2();
-    };
-    var clickSwitch_machine2 = function() {
         var switch_all = document.getElementById("onoffswitch_all");
-        var switch_machine = document.getElementById("onoffswitch_machine2");
+        var switch_machine1 = document.getElementById("onoffswitch_machine1");
+        var switch_machine2 = document.getElementById("onoffswitch_machine2");
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
+        var switch_curtain = document.getElementById("onoffswitch_curtain");
         var onOff;
         var instruction;
-        if (!switch_machine.checked) {
+        if (!switch_machine2.checked) {
             onOff = "1";
 
             switch_all.checked = true;
@@ -296,7 +271,7 @@ angular.module('starter.controllers', [])
         else {
             onOff = "0";
 
-            if ((!switch_led1.checked) && (!switch_led2.checked)) {
+            if ((!switch_machine1.checked) && (!switch_led1.checked) && (!switch_led2.checked) && (!switch_curtain.checked)) {
                 switch_all.checked = false;
             }
 
@@ -317,14 +292,6 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "一体机" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -332,13 +299,10 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#machine2Sig").on('click', function(){
-        machine2SwitchSig();
-    });
-    var machine2SwitchSig = function() {
+    $scope.machine2Switch = function() {
         var sigSource;
         var instruction = "切换信号源到";
-        var objSig = document.getElementsByName("radio2");
+        var objSig = document.getElementsByName("machine2Radio");
         for (var i=0; i<objSig.length; i++) {
             if (objSig[i].checked) {
                 sigSource = objSig[i].value;
@@ -349,10 +313,10 @@ angular.module('starter.controllers', [])
                 instruction += "主页";
                 break;
             case "2":
-                instruction += "HDMI2.0";
+                instruction += "HDMI1";
                 break;
             case "3":
-                instruction += "HDMI1.4";
+                instruction += "HDMI2";
                 break;
             case "4":
                 instruction += "内置电脑";
@@ -376,14 +340,6 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "一体机" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -391,10 +347,7 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#switch2Increase").on('click', function(){
-        machine2SwitchIncrease();
-    });
-    var machine2SwitchIncrease = function() {
+    $scope.machine2SwitchIncrease = function() {
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/machineVol',
@@ -410,17 +363,8 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var volume = document.getElementById("volume");
+                    var volume = document.getElementById("machine2Volume");
                     volume.value += 1;
-
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "一体机" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "音量增加" + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -428,10 +372,7 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#switch2Decrease").on('click', function(){
-        machine2SwitchDecrease();
-    });
-    var machine2SwitchDecrease = function() {
+    $scope.machine2SwitchDecrease = function() {
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/machineVol',
@@ -447,17 +388,8 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var volume = document.getElementById("volume");
+                    var volume = document.getElementById("machine2Volume");
                     volume.value -= 1;
-
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "一体机" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "音量减少" + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -465,19 +397,14 @@ angular.module('starter.controllers', [])
         });
     };
 
-    // $("#onoffswitch_led1").on('click', function(){
-    //     clickSwitch_led1();
-    // });
     $scope.onSwitchLed1Click = function() {
-        // $scope.toggleLed1State = !$scope.toggleLed1State;
-        // console.log($scope.toggleState)
-        clickSwitch_led1();
-    };
-    var clickSwitch_led1 = function() {
         var switch_all = document.getElementById("onoffswitch_all");
-        var switch_machine = document.getElementById("onoffswitch_machine1");
+        var switch_machine1 = document.getElementById("onoffswitch_machine1");
+        var switch_machine2 = document.getElementById("onoffswitch_machine2");
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
+        var switch_curtain = document.getElementById("onoffswitch_curtain");
+        var index = 1;
 
         var onOff;
         var instruction;
@@ -489,16 +416,17 @@ angular.module('starter.controllers', [])
         }
         else {
             onOff = "0";
-            // if ((!switch_machine.checked) && (!switch_led2.checked)) {
-            //     switch_all.checked = false;
-            // }
+            if ((!switch_machine1.checked) && (!switch_machine2.checked) && (!switch_led2.checked) && (!switch_curtain.checked)) {
+                switch_all.checked = false;
+            }
 
             instruction = "开关关闭";
         }
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/led1',
+            url:'/igrsiot/control/led',
             data:{
+                index:index,
                 onOff:onOff
             },
             // dataType:'json',
@@ -509,14 +437,6 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "智能灯一" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -524,23 +444,17 @@ angular.module('starter.controllers', [])
         });
     };
 
-    // $("#onoffswitch_led2").on('click', function(){
-    //     clickSwitch_led2();
-    // });
     $scope.onSwitchLed2Click = function() {
-        // $scope.toggleLed2State = !$scope.toggleLed2State;
-        // console.log($scope.toggleState)
-        clickSwitch_led2();
-    };
-    var clickSwitch_led2 = function() {
-        var onOff;
-        var instruction;
-
         var switch_all = document.getElementById("onoffswitch_all");
-        var switch_machine = document.getElementById("onoffswitch_machine");
+        var switch_machine1 = document.getElementById("onoffswitch_machine1");
+        var switch_machine2 = document.getElementById("onoffswitch_machine2");
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
+        var switch_curtain = document.getElementById("onoffswitch_curtain");
+        var index = 2;
 
+        var onOff;
+        var instruction;
         if (!switch_led2.checked) {
             onOff = "1";
 
@@ -551,16 +465,17 @@ angular.module('starter.controllers', [])
         else {
             onOff = "0";
 
-            // if ((!switch_machine.checked) && (!switch_led1.checked)) {
-            //     switch_all.checked = false;
-            // }
+            if ((!switch_machine1.checked) && (!switch_machine2.checked) && (!switch_led1.checked) && (!switch_curtain.checked)) {
+                switch_all.checked = false;
+            }
 
             instruction = "开关关闭";
         }
         $.ajax({
             type: 'POST',
-            url:'/igrsiot/control/led2',
+            url:'/igrsiot/control/led',
             data:{
+                index:index,
                 onOff:onOff
             },
             // dataType:'json',
@@ -571,14 +486,6 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "智能灯二" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -587,31 +494,27 @@ angular.module('starter.controllers', [])
     };
 
     $scope.onSwitchCurtainClick = function() {
-        // $scope.toggleMachineState = !$scope.toggleMachineState;
-        // console.log($scope.toggleState)
-        clickSwitch_curtain();
-    };
-    var clickSwitch_curtain = function() {
-        // var switch_all = document.getElementById("onoffswitch_all");
-        // var switch_machine = document.getElementById("onoffswitch_machine");
-        // var switch_led1 = document.getElementById("onoffswitch_led1");
-        // var switch_led2 = document.getElementById("onoffswitch_led2");
+        var switch_all = document.getElementById("onoffswitch_all");
+        var switch_machine1 = document.getElementById("onoffswitch_machine1");
+        var switch_machine2 = document.getElementById("onoffswitch_machine2");
+        var switch_led1 = document.getElementById("onoffswitch_led1");
+        var switch_led2 = document.getElementById("onoffswitch_led2");
         var switch_curtain = document.getElementById("onoffswitch_curtain");
         // var onOff;
         // var instruction;
         if (!switch_curtain.checked) {
             onOff = "1";
 
-            // switch_all.checked = true;
+            switch_all.checked = true;
 
             instruction = "开关打开";
         }
         else {
             onOff = "0";
 
-            // if ((!switch_led1.checked) && (!switch_led2.checked)) {
-            //     switch_all.checked = false;
-            // }
+            if ((!switch_machine1.checked) && (!switch_machine2.checked) && (!switch_led1.checked) && (!switch_led2.checked)) {
+                switch_all.checked = false;
+            }
 
             instruction = "开关关闭";
         }
@@ -629,14 +532,6 @@ angular.module('starter.controllers', [])
             success: function(data) {
                 console.log(data);
                 if (data == 'SUCCESS') {
-                    var rowData;
-                    rowData = "<tr>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "admin" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + getNowFormatDate() + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + "窗帘" + "</td>";
-                    rowData += "<td style=\"text-align:center;color:green;\">" + instruction + "</td>";
-                    rowData += "</tr>";
-                    $("#operate").append(rowData);
                 }
                 else {
                 }
@@ -644,52 +539,18 @@ angular.module('starter.controllers', [])
         });
     };
 
-    // $("#onoffswitch_purifier").on('click', function() {
-    //     clickSwitch_purifier();
-    // });
-    // $scope.toggleState=false;
     $scope.onSwitchPurifierClick = function() {
-        // $scope.toggleState=!$scope.toggleState;
-        // $scope.togglePurifierState = !$scope.togglePurifierState;
-        // console.log($scope.toggleState)
-        clickSwitch_purifier();
-    };
-    var clickSwitch_purifier = function() {
-        // var switch_all = document.getElementById("onoffswitch_all");
-        // var switch_machine = document.getElementById("onoffswitch_machine");
-        // var switch_led2 = document.getElementById("onoffswitch_led2");
-        //
-        // var onOff;
-        // var instruction;
-        // if ($("#onoffswitch_purifier").is(':checked')) {
-        //     onOff = "1";
-        //     switch_all.checked = true;
-        //
-        //     instruction = "开关打开";
-        // }
-        // else {
-        //     onOff = "0";
-        //     console.log(switch_machine);
-        //     console.log(switch_led2);
-        //     if ((switch_machine.checked==false) && (switch_led2.checked==false)) {
-        //         switch_all.checked = false;
-        //     }
-        //
-        //     instruction = "开关关闭";
-        // }
-        // var onOff = $scope.togglePurifierState;
         var onOff;
         var switch_purifier = document.getElementById("onoffswitch_purifier");
         if (!switch_purifier.checked) {
-            onOff = "on";
+            onOff = "1";
         }
         else {
-            onOff = "off";
+            onOff = "0";
         }
         $.ajax({
             type: 'POST',
             url:'/igrsiot/control/purifier/control',
-            // url:'http://mt.igrsservice.com/jh/test/control',
             data:{
                 deviceId:"#lemx500s#78b3b912418f",
                 lock:0,
@@ -738,10 +599,7 @@ angular.module('starter.controllers', [])
         });
     };
 
-    $("#sensorDataSwitch").on('click', function(){
-        sensorDataSwitch();
-    });
-    var sensorDataSwitch = function() {
+    $("#sensorDataSwitch").on('click', function() {
         var date;
         var sensorType;
         var title;
@@ -761,7 +619,7 @@ angular.module('starter.controllers', [])
                 type:sensorType
             },
             contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:true,
+            async:false,
             error: function(result) {
             },
             success: function(data) {
@@ -994,48 +852,51 @@ angular.module('starter.controllers', [])
     }, 2000000);
 
     $(document).ready(function() {
-    //     $.ajax({
-    //         type: 'POST',
-    //         url:'/igrsiot/control/status',
-    //         contentType:'application/x-www-form-urlencoded; charset=utf-8',
-    //         async:false,
-    //         error: function(result) {
-    //         },
-    //         success: function(data) {
-    //             console.log(data);
-    //             var result = data.split(",");
-    //             var switchAll = document.getElementById("onoffswitch_all");
-    //             var switchMachine = document.getElementById("onoffswitch_machine");
-    //             var machineSig = document.getElementsByName("radio");
-    //             var machineVolume = document.getElementById("volume");
-    //             var switchLed1 = document.getElementById("onoffswitch_led1");
-    //             var switchLed2 = document.getElementById("onoffswitch_led2");
-    //
-    //             if ((result[0] == "1") || (result[3] == "1") || (result[4] == "1")) {
-    //                 switchAll.checked = true;
-    //                 // $scope.toggleAllState = true;
-    //             }
-    //             else {
-    //                 switchAll.checked = false;
-    //                 // $scope.toggleAllState = false;
-    //             }
-    //             switchMachine.checked = (result[0] == "1");
-    //             for (var i=0; i<machineSig.length; i++) {
-    //                 if (machineSig[i].value == result[1]) {
-    //                     machineSig[i].checked = true;
-    //                     break;
-    //                 }
-    //             }
-    //             machineVolume.value = result[2];
-    //             switchLed1.checked = (result[3] == "1");
-    //             switchLed2.checked = (result[4] == "1");
-    //
-    //             if (data == 'SUCCESS') {
-    //             } else {
-    //             }
-    //         }
-    //     });
-    //
+        $.ajax({
+            type: 'POST',
+            url:'/igrsiot/control/status',
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
+            error: function(result) {
+            },
+            success: function(data) {
+                console.log(data);
+                var result = data.split(",");
+                var switchAll = document.getElementById("onoffswitch_all");
+                var switchMachine1 = document.getElementById("onoffswitch_machine1");
+                var switchMachine2 = document.getElementById("onoffswitch_machine2");
+                var machineSig1 = document.getElementsByName("radio");
+                var machineSig2 = document.getElementsByName("radio2");
+                var machineVolume1 = document.getElementById("volume");
+                var machineVolume2 = document.getElementById("volume2");
+                var switchLed1 = document.getElementById("onoffswitch_led1");
+                var switchLed2 = document.getElementById("onoffswitch_led2");
+
+                if ((result[0] == "1") || (result[3] == "1") || (result[4] == "1")) {
+                    switchAll.checked = true;
+                    // $scope.toggleAllState = true;
+                }
+                else {
+                    switchAll.checked = false;
+                    // $scope.toggleAllState = false;
+                }
+                switchMachine.checked = (result[0] == "1");
+                for (var i=0; i<machineSig.length; i++) {
+                    if (machineSig[i].value == result[1]) {
+                        machineSig[i].checked = true;
+                        break;
+                    }
+                }
+                machineVolume.value = result[2];
+                switchLed1.checked = (result[3] == "1");
+                switchLed2.checked = (result[4] == "1");
+
+                if (data == 'SUCCESS') {
+                } else {
+                }
+            }
+        });
+
         // var table = document.getElementsByName("sensor");
         // var cells;
         $.ajax({

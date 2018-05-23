@@ -2,14 +2,15 @@
 	<ion-content overflow-scroll="true"	style="overflow:scroll;-webkit-overflow-scrolling:touch;">
 		<div class="content_wrap">
 			<div class="row" style="padding-left: 10px;overflow: hidden">
-				<label class="toggle toggle-balanced">
-                	<input type="checkbox">
+				<label class="toggle toggle-balanced" on-release="onSwitchWelcomeModeClick()">
+                	<input type="checkbox" id="onoffswitch_welcomemode">
                     <div class="track">
                         <div class="handle"></div>
                     </div>
                 </label>
                 <label class="btn_switch">迎宾模式开关</label>
 			</div>
+			</br>
 			<div class="col-sm-7">
 				<div class="row daohang">
 					<a class="current col" href="#" title="tab1" >总开关</a>
@@ -194,27 +195,27 @@
                                 <label class="btn_switch">前交互大屏开关</label>
 					           	<div class="xinhao col-xs-12" style="clear: both;border: 1px solid #ececec;padding: 15px 10px;margin: 10px 0;">
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
-				           				<input type="radio" name="radio" value='1' checked=""/><label>主页</label>
+				           				<input type="radio" name="machine1Radio" value='1' checked=""/><label>主页</label>
 				           			</div>
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
-						            	<input  name="radio" type="radio" value="2" checked=""/><label>HDMI1</label>
+						            	<input type="radio" name="machine1Radio" value="2" checked=""/><label>HDMI1</label>
 						            </div>
 						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
-						            	<input name="radio" type="radio" value="3" checked=""/><label>HDMI2</label>
+						            	<input type="radio" name="machine1Radio" value="3" checked=""/><label>HDMI2</label>
 						            </div>
 						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
-				           				<input name="radio" type="radio" value="4" checked=""/><label>内置电脑</label>
+				           				<input type="radio" name="machine1Radio" value="4" checked=""/><label>内置电脑</label>
 				           			</div>
 						            <div class="col-xs-12" style="padding: 0;padding-left: 5px;margin-top: 10px;">
-						            	<button id="machine1Sig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						            	<button id="machine1Sig" class="btn qiehuan" ng-click="machine1Switch()">切换</button>
 						            </div>
 					           	</div>
 					           	<div class="yinliang col-xs-12" style="padding: 0;border: 1px solid #ececec;padding: 10px;">
 					           		<span>音量</span>
-						            <progress class="yinliangshow" id="volume" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
+						            <progress class="yinliangshow" id="machine1Volume" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
 						            <div>
-						            	<button id="switch1Decrease" class="btn btn-default" @click="machine1SwitchDecrease()">-</button>
-						            	<button id="switch1Increase" class="btn btn-default" @click="machine1SwitchIncrease()">+</button>
+						            	<button id="switch1Decrease" class="btn btn-default" ng-click="machine1SwitchDecrease()">-</button>
+						            	<button id="switch1Increase" class="btn btn-default" ng-click="machine1SwitchIncrease()">+</button>
 						            </div>
 					           	</div>
 				            </div>
@@ -237,27 +238,27 @@
                                 <label class="btn_switch">后交互大屏开关</label>
 					           	<div class="xinhao col-xs-12" style="clear: both;border: 1px solid #ececec;padding: 15px 10px;margin: 10px 0;">
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
-				           				<input type="radio" name="radio2" value='1' checked=""/><label>主页</label>
+				           				<input type="radio" name="machine2Radio" value='1' checked=""/><label>主页</label>
 				           			</div>
 				           			<div class="xinhaoyuan col-sm-3 col-xs-4" >
-						            	<input  name="radio2" type="radio" value="2" checked=""/><label>HDMI1</label>
+						            	<input type="radio" name="machine2Radio" value="2" checked=""/><label>HDMI1</label>
 						            </div>
 						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
-						            	<input name="radio2" type="radio" value="3" checked=""/><label>HDMI2</label>
+						            	<input type="radio" name="machine2Radio" value="3" checked=""/><label>HDMI2</label>
 						            </div>
 						            <div class="xinhaoyuan col-sm-3 col-xs-4" >
-				           				<input name="radio2" type="radio" value="4" checked=""/><label>内置电脑</label>
+				           				<input type="radio" name="machine2Radio" value="4" checked=""/><label>内置电脑</label>
 				           			</div>
 						            <div class="col-xs-12" style="padding: 0;padding-left: 5px;margin-top: 10px;">
-						            	<button id="machine2Sig" class="btn qiehuan" @click="machineSwitch()">切换</button>
+						            	<button id="machine2Sig" class="btn qiehuan" ng-click="machine2Switch()">切换</button>
 						            </div>
 					           	</div>
 					           	<div class="yinliang col-xs-12" style="padding: 0;border: 1px solid #ececec;padding: 10px;">
 					           		<span>音量</span>
-						            <progress class="yinliangshow" id="volume" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
+						            <progress class="yinliangshow" id="machine2Volume" value="50" max="100" style="width: 8em;margin: 10px ;"></progress>&nbsp
 						            <div>
-						            	<button id="switch2Decrease" class="btn btn-default" @click="machine2SwitchDecrease()">-</button>
-						            	<button id="switch2Increase" class="btn btn-default" @click="machine2SwitchIncrease()">+</button>
+						            	<button id="switch2Decrease" class="btn btn-default" ng-click="machine2SwitchDecrease()">-</button>
+						            	<button id="switch2Increase" class="btn btn-default" ng-click="machine2SwitchIncrease()">+</button>
 						            </div>
 					           	</div>
 				            </div>

@@ -1,6 +1,8 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsSensorDetail;
+import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import com.igrs.igrsiot.service.IIgrsSensorDetailService;
 import com.igrs.igrsiot.service.SocketService;
 import org.slf4j.Logger;
@@ -14,33 +16,41 @@ import java.util.List;
 public class CmdHandler {
     @Autowired
     private IIgrsSensorDetailService igrsSensorDetailService;
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
 
     public void cmdHandler(String buff) throws InterruptedException {
         String buf;
 
         if (buff.contains("ch_40")) {
-            float temp;
-            List<IgrsSensorDetail> list = igrsSensorDetailService.getDataByType("temperature");
-            if (list.size() != 0) {
-                temp = Float.parseFloat(list.get(0).getValue());
-            }
-            else {
-                temp = (float) 0.0;
-            }
+            IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+            igrsDeviceStatus.setDeviceId("welcomemode");
+            igrsDeviceStatus.setAttribute("switch");
+            IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+            if ((status != null) && (status.getValue().equals("1"))) {
+                float temp;
+                List<IgrsSensorDetail> list = igrsSensorDetailService.getDataByType("temperature");
+                if (list.size() != 0) {
+                    temp = Float.parseFloat(list.get(0).getValue());
+                }
+                else {
+                    temp = (float) 0.0;
+                }
 
-            if (temp < 26.0) {
-                buf = "{ch_30:1}";
+                if (temp < 26.0) {
+                    buf = "{ch_30:1}";
+                    SocketService.cmdSend(buf);
+                }
+                else {
+                    buf = "{ch_30:2}";
+                    SocketService.cmdSend(buf);
+                }
+
+                Thread.sleep(12000);
+
+                buf = "{ch_10:1,ch_50:1,ch_20:1,ch_21:1,ch_60:1}";
                 SocketService.cmdSend(buf);
             }
-            else {
-                buf = "{ch_30:2}";
-                SocketService.cmdSend(buf);
-            }
-
-            Thread.sleep(12000);
-
-            buf = "{ch_10:1,ch_50:1,ch_20:1,ch_21:1,ch_60:1}";
-            SocketService.cmdSend(buf);
         }
         else if (buff.contains("ch_2")) {
             //device return "ok"

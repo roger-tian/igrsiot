@@ -2,8 +2,12 @@ package com.igrs.igrsiot.dao;
 
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 
+import java.util.List;
+
 public interface IIgrsDeviceStatusDao {
     int deleteByPrimaryKey(Long id);
+
+    List<IgrsDeviceStatus> getAllStatus();
 
     IgrsDeviceStatus selectByDeviceIdAndAttribute(IgrsDeviceStatus igrsDeviceStatus);
 

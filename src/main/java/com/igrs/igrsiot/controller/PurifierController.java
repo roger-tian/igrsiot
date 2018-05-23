@@ -46,7 +46,7 @@ public class PurifierController {
 
         IgrsOperate igrsOperate = new IgrsOperate();
         igrsOperate.setUser("admin");
-        igrsOperate.setDeviceId("purifier");
+        igrsOperate.setDeviceId("智能净化器");
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
         igrsOperate.setOperateTime(time);
@@ -200,8 +200,20 @@ public class PurifierController {
                     }
                     break;
                 case "fa":      //wind speed
-                    igrsDeviceStatus.setAttribute("anion");
+                    igrsDeviceStatus.setAttribute("windspeed");
                     igrsDeviceStatus.setValue(strSet2[1]);
+                    if (strSet2[1].equals("10")) {
+                        igrsDeviceStatus.setValue("1");
+                    }
+                    else if (strSet2[1].equals("20")) {
+                        igrsDeviceStatus.setValue("2");
+                    }
+                    else if (strSet2[1].equals("30")) {
+                        igrsDeviceStatus.setValue("3");
+                    }
+                    else {
+                        igrsDeviceStatus.setValue("1");
+                    }
                     status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);

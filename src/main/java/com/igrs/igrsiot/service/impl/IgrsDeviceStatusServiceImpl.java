@@ -6,10 +6,17 @@ import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
     @Autowired
     IIgrsDeviceStatusDao igrsDeviceStatusDao;
+
+    @Override
+    public List<IgrsDeviceStatus> getAllStatus() {
+        return igrsDeviceStatusDao.getAllStatus();
+    }
 
     @Override
     public IgrsDeviceStatus selectByDeviceIdAndAttribute(IgrsDeviceStatus igrsDeviceStatus) {

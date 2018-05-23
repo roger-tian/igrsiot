@@ -20,6 +20,9 @@
     delete from igrs_device_status
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <select id="getAllStatus" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
+    select * from igrs_device_status
+  </select>
   <select id="selectByDeviceIdAndAttribute" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
     select * from igrs_device_status where device_id=#{deviceId} and attribute=#{attribute}
   </select>

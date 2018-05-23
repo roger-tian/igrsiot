@@ -42,7 +42,7 @@ public class CurtainController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setDeviceId("curtain");
+        igrsOperate.setDeviceId("智能窗帘");
         igrsOperate.setUser("admin");
         if (onOff.equals("1")) {
             instruction = "开关打开";

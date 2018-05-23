@@ -25,14 +25,17 @@ public class MachineController {
     @RequestMapping("/machine")
     public String machineOnOff(String index, String onOff) {
         String instruction;
+        String deviceId;
 
         if (index.equals("1")) {
             String cmd = "{ch_10:" + onOff + "}";
             SocketService.cmdSend(cmd);
+            deviceId = "前交互大屏";
         }
-        else if (index.equals("2")) {
+        else {
             String cmd = "{ch_50:" + onOff + "}";
             SocketService.cmdSend(cmd);
+            deviceId = "后交互大屏";
         }
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
@@ -48,7 +51,7 @@ public class MachineController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setDeviceId("machine" + index);
+        igrsOperate.setDeviceId(deviceId);
         igrsOperate.setUser("admin");
         if (onOff.equals("1")) {
             instruction = "开关打开";
@@ -68,14 +71,17 @@ public class MachineController {
     @RequestMapping("/machineSig")
     public String machineSigSource(String index, String sigSource) {
         String instruction;
+        String deviceId;
 
         if (index.equals("1")) {
             String cmd = "{ch_12:" + sigSource + "}";
             SocketService.cmdSend(cmd);
+            deviceId = "前交互大屏";
         }
-        else if (index.equals("2")) {
+        else {
             String cmd = "{ch_52:" + sigSource + "}";
             SocketService.cmdSend(cmd);
+            deviceId = "后交互大屏";
         }
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
@@ -91,7 +97,7 @@ public class MachineController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setDeviceId("machine" + index);
+        igrsOperate.setDeviceId(deviceId);
         igrsOperate.setUser("admin");
         if (sigSource.equals("1")) {
             instruction = "信号源切换到主页";
@@ -120,14 +126,17 @@ public class MachineController {
     @RequestMapping("/machineVol")
     public String machineVolume(String index, String volume) {
         String instruction;
+        String deviceId;
 
         if (index.equals("1")) {
             String cmd = "{ch_11:" + volume + "}";
             SocketService.cmdSend(cmd);
+            deviceId = "前交互大屏";
         }
-        else if (index.equals("2")) {
+        else {
             String cmd = "{ch_51:" + volume + "}";
             SocketService.cmdSend(cmd);
+            deviceId = "后交互大屏";
         }
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
@@ -152,11 +161,12 @@ public class MachineController {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
         }
         else {
+            igrsDeviceStatus.setValue("0");
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setDeviceId("machine" + index);
+        igrsOperate.setDeviceId(deviceId);
         igrsOperate.setUser("admin");
         if (volume.equals("1")) {
             instruction = "音量增加";

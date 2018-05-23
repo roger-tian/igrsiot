@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/control")
@@ -22,104 +23,134 @@ public class StatusController {
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/status")
-    public String getDeviceStatus() {
-        String result;
-//        String[][] = {{"machine1","switch"},{"machine1","sig_source"},{"machine1","volume"}};
+    public List<IgrsDeviceStatus> getDeviceStatus() {
+        return igrsDeviceStatusService.getAllStatus();
 
-        IgrsDeviceStatus status;
-        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-
-        igrsDeviceStatus.setDeviceId("machine1");
-        igrsDeviceStatus.setAttribute("switch");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            result = status.getValue();
-        }
-        else {
-            result = "0";
-        }
-
-        igrsDeviceStatus.setDeviceId("machine1");
-        igrsDeviceStatus.setAttribute("sig_source");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            result += "," + status.getValue();
-        }
-        else {
-            result += "," + "0";
-        }
-
-        igrsDeviceStatus.setDeviceId("machine1");
-        igrsDeviceStatus.setAttribute("volume");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            result += "," + status.getValue();
-        }
-        else {
-            result += "," + "0";
-        }
-
-        igrsDeviceStatus.setDeviceId("machine2");
-        igrsDeviceStatus.setAttribute("switch");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            result = status.getValue();
-        }
-        else {
-            result = "0";
-        }
-
-        igrsDeviceStatus.setDeviceId("machine2");
-        igrsDeviceStatus.setAttribute("sig_source");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            result += "," + status.getValue();
-        }
-        else {
-            result += "," + "0";
-        }
-
-        igrsDeviceStatus.setDeviceId("machine2");
-        igrsDeviceStatus.setAttribute("volume");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            result += "," + status.getValue();
-        }
-        else {
-            result += "," + "0";
-        }
-
-        igrsDeviceStatus.setDeviceId("led1");
-        igrsDeviceStatus.setAttribute("switch");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            result += "," + status.getValue();
-        }
-        else {
-            result += "," + "0";
-        }
-
-        igrsDeviceStatus.setDeviceId("led2");
-        igrsDeviceStatus.setAttribute("switch");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            result += "," + status.getValue();
-        }
-        else {
-            result += "," + "0";
-        }
-
-        igrsDeviceStatus.setDeviceId("curtain");
-        igrsDeviceStatus.setAttribute("switch");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            result += "," + status.getValue();
-        }
-        else {
-            result += "," + "0";
-        }
-
-        return result;
+//        List<IgrsDeviceStatus> list = new ArrayList<>();
+//
+//        IgrsDeviceStatus status;
+//        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+//
+//        igrsDeviceStatus.setDeviceId("machine1");
+//        igrsDeviceStatus.setAttribute("switch");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("machine1");
+//        igrsDeviceStatus.setAttribute("sig_source");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("machine1");
+//        igrsDeviceStatus.setAttribute("volume");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("machine2");
+//        igrsDeviceStatus.setAttribute("switch");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("machine2");
+//        igrsDeviceStatus.setAttribute("sig_source");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("machine2");
+//        igrsDeviceStatus.setAttribute("volume");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("led1");
+//        igrsDeviceStatus.setAttribute("switch");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("led2");
+//        igrsDeviceStatus.setAttribute("switch");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("curtain");
+//        igrsDeviceStatus.setAttribute("switch");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("purifier");
+//        igrsDeviceStatus.setAttribute("switch");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("purifier");
+//        igrsDeviceStatus.setAttribute("lock");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("purifier");
+//        igrsDeviceStatus.setAttribute("sleep");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("purifier");
+//        igrsDeviceStatus.setAttribute("mode");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("purifier");
+//        igrsDeviceStatus.setAttribute("anion");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("purifier");
+//        igrsDeviceStatus.setAttribute("uv");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("purifier");
+//        igrsDeviceStatus.setAttribute("timer");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        igrsDeviceStatus.setDeviceId("purifier");
+//        igrsDeviceStatus.setAttribute("windspeed");
+//        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+//        if (status != null) {
+//            list.add(status);
+//        }
+//
+//        return list;
     }
 
     @RequestMapping("/welcomemode")

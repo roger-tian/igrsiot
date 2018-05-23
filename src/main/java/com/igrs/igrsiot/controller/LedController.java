@@ -25,17 +25,17 @@ public class LedController {
     @RequestMapping("/led")
     public String led1OnOff(String index, String onOff) {
         String instruction;
+        String deviceId;
 
         if (index.equals("1")) {
             String cmd = "{ch_20:" + onOff + "}";
             SocketService.cmdSend(cmd);
-        }
-        else if (index.equals("2")) {
-            String cmd = "{ch_21:" + onOff + "}";
-            SocketService.cmdSend(cmd);
+            deviceId = "智能灯一";
         }
         else {
-            return "FAIL";
+            String cmd = "{ch_21:" + onOff + "}";
+            SocketService.cmdSend(cmd);
+            deviceId = "智能灯二";
         }
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
@@ -51,7 +51,7 @@ public class LedController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setDeviceId("led" + index);
+        igrsOperate.setDeviceId(deviceId);
         igrsOperate.setUser("admin");
         if (onOff.equals("1")) {
             instruction = "开关打开";

@@ -23,18 +23,25 @@ public class AllController {
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/all")
-    public String allOnOff(String onOff) {
+    public String allOnOff(String onOff) throws InterruptedException {
         String cmd;
         String instruction;
         if (onOff.equals("1")) {
-            cmd = "{ch_10:1,ch_50:1,ch_20:1,ch_21:1,ch_60:1}";
+            cmd = "{ch_10:1,ch_20:1,ch_21:1}";
+            SocketService.cmdSend(cmd);
+            Thread.sleep(1000);
+            cmd = "{ch_60:1}";
+            SocketService.cmdSend(cmd);
+            Thread.sleep(1000);
+            cmd = "{ch_50:1}";
+            SocketService.cmdSend(cmd);
             instruction = "总开关打开";
         }
         else {
             cmd = "{ch_10:0,ch_50:0,ch_20:0,ch_21:0,ch_60:0}";
+            SocketService.cmdSend(cmd);
             instruction = "总开关关闭";
         }
-        SocketService.cmdSend(cmd);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         IgrsDeviceStatus status;

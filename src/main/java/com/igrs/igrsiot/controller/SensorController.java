@@ -89,7 +89,11 @@ public class SensorController {
 
                 Thread.sleep(12000);
 
-                buff = "{ch_10:1,ch_50:1,ch_20:1,ch_21:1,ch_60:1}";
+                buff = "{ch_10:1,ch_20:1,ch_21:1,ch_60:1}";
+                SocketService.cmdSend(buff);
+
+                Thread.sleep(2000);
+                buff = "{ch_50:1}";
                 SocketService.cmdSend(buff);
 
                 igrsDeviceStatus.setValue("0");

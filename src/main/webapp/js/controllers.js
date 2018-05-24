@@ -563,38 +563,6 @@ angular.module('starter.controllers', [])
             error: function(result) {
             },
             success: function(data) {
-                // var str = data.substring(data.indexOf("pw::"));
-                // console.log(str);
-                // var lc, sl, mo, io, uv, ti, fa; // 童锁, 睡眠, 模式, 负离子, UV, 定时, 风速,
-                // var result;
-                // var results = data.split(",");
-                // for (var i=0; i<results.length; i++) {
-                //     result = results[i].split("::");
-                //     switch (result[0]) {
-                //         case 'lc':
-                //             lc = result[1];
-                //             break;
-                //         case 'sl':
-                //             sl = result[1];
-                //             break;
-                //         case 'mo':
-                //             mo = result[1];
-                //             break;
-                //         case 'io':
-                //             io = result[1];
-                //             break;
-                //         case 'uv':
-                //             uv = result[1];
-                //             break;
-                //         case 'ti':
-                //             ti = result[1];
-                //             break;
-                //         case 'fa':
-                //             fa = result[1];
-                //             break;
-                //     }
-                // }
-                // console.log(lc + '-' + sl + '-' + mo + '-' + io + '-' + uv + '-' + ti + '-' + fa);
             }
         });
     };
@@ -866,20 +834,20 @@ angular.module('starter.controllers', [])
         });
     }, 5000);
 
-    // setInterval(function () {
-    //     $.ajax({
-    //         type: 'POST',
-    //         url:'/igrsiot/control/purifier/query',
-    //         data:{
-    //             deviceId:"#lemx500s#78b3b912418f"
-    //         },
-    //         contentType:'application/x-www-form-urlencoded; charset=utf-8',
-    //         error: function(result) {
-    //         },
-    //         success: function(data) {
-    //         }
-    //     });
-    // }, 10000);
+    setInterval(function () {
+        $.ajax({
+            type: 'POST',
+            url:'/igrsiot/control/purifier/query',
+            data:{
+                deviceId:"#lemx500s#78b3b912418f"
+            },
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            error: function(result) {
+            },
+            success: function(data) {
+            }
+        });
+    }, 10000);
 
     $(document).ready(function() {
         $.ajax({

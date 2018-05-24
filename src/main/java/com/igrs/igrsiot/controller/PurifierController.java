@@ -40,24 +40,25 @@ public class PurifierController {
         String url = "http://mt.igrsservice.com/jh/test/control";
 
         String result = HttpRequest.sendPost(url, param);
+        if (!result.equals("")) {
+            String str = result.substring(result.indexOf("pw::"));
+            purifierDataHandler(str);
 
-        String str = result.substring(result.indexOf("pw::"));
-        purifierDataHandler(str);
-
-        IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setUser("admin");
-        igrsOperate.setDeviceId("智能净化器");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = df.format(new Date());
-        igrsOperate.setOperateTime(time);
-        if (power.equals("1")) {
-            instruction = "开关打开";
+            IgrsOperate igrsOperate = new IgrsOperate();
+            igrsOperate.setUser("admin");
+            igrsOperate.setDeviceId("智能净化器");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String time = df.format(new Date());
+            igrsOperate.setOperateTime(time);
+            if (power.equals("1")) {
+                instruction = "开关打开";
+            }
+            else {
+                instruction = "开关关闭";
+            }
+            igrsOperate.setInstruction(instruction);
+            igrsOperateService.insert(igrsOperate);
         }
-        else {
-            instruction = "开关关闭";
-        }
-        igrsOperate.setInstruction(instruction);
-        igrsOperateService.insert(igrsOperate);
 
         return result;
     }
@@ -70,9 +71,10 @@ public class PurifierController {
         String url = "http://mt.igrsservice.com/jh/test/query";
 
         String result = HttpRequest.sendPost(url, param);
-
-        String str = result.substring(result.indexOf("pw::"));
-        purifierDataHandler(str);
+        if (!result.equals("")) {
+            String str = result.substring(result.indexOf("pw::"));
+            purifierDataHandler(str);
+        }
 
         return result;
     }

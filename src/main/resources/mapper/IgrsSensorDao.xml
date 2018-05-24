@@ -18,7 +18,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="getDataByDateAndType" resultType="String" parameterType="com.igrs.igrsiot.model.IgrsSensor">
-    select value from igrs_sensor where left(date,10) = #{date} and type=#{type} order by hour
+    select * from igrs_sensor where left(date,10) = #{date} and type=#{type} order by hour
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from igrs_sensor

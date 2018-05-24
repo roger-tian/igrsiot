@@ -567,76 +567,116 @@ angular.module('starter.controllers', [])
         });
     };
 
-    // $("#sensorDataSwitch").on('click', function() {
-    //     var date;
-    //     var sensorType;
-    //     var title;
-    //     var dateObj = document.getElementById("sensorDate");
-    //     date = dateObj.value;
-    //     var objSig = document.getElementsByName("sensorTypeRadio");
-    //     for (var i=0; i<objSig.length; i++) {
-    //         if (objSig[i].checked) {
-    //             sensorType = objSig[i].value;
-    //         }
-    //     }
-    //     $.ajax({
-    //         type: 'POST',
-    //         url:'/igrsiot/control/sensor/history',
-    //         data:{
-    //             date:date,
-    //             type:sensorType
-    //         },
-    //         contentType:'application/x-www-form-urlencoded; charset=utf-8',
-    //         async:false,
-    //         error: function(result) {
-    //         },
-    //         success: function(data) {
-    //             console.log(data);
-    //             var value = [];
-    //             var buf;
-    //             for (var i=0; i<data.length; i++) {
-    //                 switch (sensorType) {
-    //                     case 'pm25':
-    //                         title = "PM2.5";
-    //                         buf = data[i].split('.');
-    //                         value.push(buf[0]);
-    //                         break;
-    //                     case 'co2':
-    //                         title = "CO2";
-    //                         buf = data[i].split('.');
-    //                         value.push(buf[0]);
-    //                         break;
-    //                     case 'tvoc':
-    //                         title = "TVOC";
-    //                         buf = data[i].split('.');
-    //                         var buff = data[i].substring(0, buf[0].length+4);
-    //                         value.push(buff);
-    //                         break;
-    //                     case 'temperature':
-    //                         title = "温度";
-    //                         buf = data[i].split('.');
-    //                         var buff = data[i].substring(0, buf[0].length+2);
-    //                         value.push(buff);
-    //                         break;
-    //                     case 'humidity':
-    //                         title = "湿度";
-    //                         buf = data[i].split('.');
-    //                         var buff = data[i].substring(0, buf[0].length+2);
-    //                         value.push(buff);
-    //                         break;
-    //                     case 'formaldehyde':
-    //                         title = "甲醛";
-    //                         buf = data[i].split('.');
-    //                         var buff = data[i].substring(0, buf[0].length+4);
-    //                         value.push(buff);
-    //                         break;
-    //                 }
-    //             }
-    //             console.log(value);
-    //             DrawSensor('canvasDiv5', title, value);
-    //         }
-    //     });
-    // };
+    $scope.sensorDataSwitch = function() {
+        var date;
+        var sensorType;
+        var title;
+        var dateObj = document.getElementById("sensorDate");
+        date = dateObj.value;
+        var objSig = document.getElementsByName("sensorTypeRadio");
+        for (var i=0; i<objSig.length; i++) {
+            if (objSig[i].checked) {
+                sensorType = objSig[i].value;
+            }
+        }
+        $.ajax({
+            type: 'POST',
+            url:'/igrsiot/control/sensor/history',
+            data:{
+                date:date,
+                type:sensorType
+            },
+            contentType:'application/x-www-form-urlencoded; charset=utf-8',
+            async:false,
+            error: function(result) {
+            },
+            success: function(data) {
+                console.log(data);
+                var value = [];
+                var buf;
+                switch (sensorType) {
+                    case 'pm25':
+                        title = "PM2.5";
+                        for (var i=0; i<data.length; i++) {
+                            if (data[i].hour == i) {
+                                buf = data[i].split('.');
+                                value.push(buf[0]);
+                            }
+                            else {
+                                value.push(0);
+                            }
+                        }
+                        break;
+                    case 'co2':
+                        title = "CO2";
+                        for (var i=0; i<data.length; i++) {
+                            if (data[i].hour == i) {
+                                buf = data[i].split('.');
+                                value.push(buf[0]);
+                            }
+                            else {
+                                value.push(0);
+                            }
+                        }
+                        break;
+                    case 'tvoc':
+                        title = "TVOC";
+                        for (var i=0; i<data.length; i++) {
+                            if (data[i].hour == i) {
+                                buf = data[i].split('.');
+                                var buff = data[i].substring(0, buf[0].length+4);
+                                value.push(buff);
+                            }
+                            else {
+                                value.push(0);
+                            }
+                        }
+                        break;
+                    case 'temperature':
+                        title = "温度";
+                        for (var i=0; i<data.length; i++) {
+                            if (data[i].hour == i) {
+                                buf = data[i].split('.');
+                                var buff = data[i].substring(0, buf[0].length+2);
+                                value.push(buff);
+                            }
+                            else {
+                                value.push(0);
+                            }
+                        }
+                        break;
+                    case 'humidity':
+                        title = "湿度";
+                        for (var i=0; i<data.length; i++) {
+                            if (data[i].hour == i) {
+                                buf = data[i].split('.');
+                                var buff = data[i].substring(0, buf[0].length+2);
+                                value.push(buff);
+                            }
+                            else {
+                                value.push(0);
+                            }
+                        }
+                        break;
+                    case 'formaldehyde':
+                        title = "甲醛";
+                        for (var i=0; i<data.length; i++) {
+                            if (data[i].hour == i) {
+                                buf = data[i].split('.');
+                                var buff = data[i].substring(0, buf[0].length+4);
+                                value.push(buff);
+                            }
+                            else {
+                                value.push(0);
+                            }
+                        }
+                        break;
+                }
+                console.log(value);
+                DrawSensor('canvasDiv5', title, value);
+            }
+        });
+    };
 
     $('.daohang a').click(function(e) {
         e.preventDefault();
@@ -795,8 +835,8 @@ angular.module('starter.controllers', [])
                 DrawPm25('canvasDiv4', pm25[0]);
                 DrawPm25('canvasDiv6', pm25[0]);
 
-                var value = [9,1,12,20,26,30,32,29,22,12,20,6,3,1,12,20,26,30,32,29,22,12,0,6];
-                DrawSensor('canvasDiv5', 'PM2.5', value);
+                // var value = [9,1,12,20,26,30,32,29,22,12,20,6,3,1,12,20,26,30,32,29,22,12,0,6];
+                // DrawSensor('canvasDiv5', 'PM2.5', value);
 
                 var co2Value = document.getElementsByName("co2Value");
                 for (var i=0; i<co2Value.length; i++) {

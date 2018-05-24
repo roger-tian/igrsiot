@@ -5,5 +5,5 @@ import com.igrs.igrsiot.model.IgrsSensor;
 import java.util.List;
 
 public interface IIgrsSensorService {
-    public List<String> getDataByDateAndType(IgrsSensor igrsSensor);
+    public List<IgrsSensor> getDataByDateAndType(IgrsSensor igrsSensor);
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public interface IIgrsSensorDetailDao {
     List<IgrsSensorDetail> getDataByType(String type);
 
-    List<String> getAvgDataByType(String type);
+    List<IgrsSensorDetail> getAvgDataByType(String type);
 
     int deleteByPrimaryKey(Long id);
 

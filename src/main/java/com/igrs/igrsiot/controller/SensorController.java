@@ -171,7 +171,6 @@ public class SensorController {
 
             results = buf.split(",");
 
-            logger.debug("results.length: {}-{}-{}-{}", results.length, igrsSensorDetailService, igrsDeviceStatusService);
             for (int i=0; i<results.length; i++) {
                 cells = results[i].split(":");
                 if (cells[0].contains("pm25")) {
@@ -220,11 +219,26 @@ public class SensorController {
     }
 
     @RequestMapping("/sensor/history")
-    public List<String> getSensorHistoryData(String date, String type) {
-        List<String> list = new ArrayList<>();
+    public List<IgrsSensor> getSensorHistoryData(String date, String type) {
+        if (date.equals("")) {
+            List<IgrsSensor> result = new ArrayList<>();
+            List<IgrsSensorDetail> list = igrsSensorDetailService.getAvgDataByType(type);
+            if (list.size() != 0) {
+                String[] str;
+                String[] strTime;
+                for (int i=0; i<list.size(); i++) {
+                    IgrsSensor igrsSensor = new IgrsSensor();
+                    igrsSensor.setType(type);
+                    igrsSensor.setValue(list.get(i).getValue());
+                    str = list.get(i).getTime().split(" ");
+                    strTime = str[1].split(":");
+                    igrsSensor.setDate(str[0]);
+                    igrsSensor.setHour(strTime[0]);
+                    result.add(igrsSensor);
+                }
+            }
 
-        if (date.length() == 0) {
-            return igrsSensorDetailService.getAvgDataByType(type);
+            return result;
         }
         else {
             IgrsSensor igrsSensor = new IgrsSensor();

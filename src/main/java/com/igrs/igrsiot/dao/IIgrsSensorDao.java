@@ -5,7 +5,7 @@ import com.igrs.igrsiot.model.IgrsSensor;
 import java.util.List;
 
 public interface IIgrsSensorDao {
-    List<String> getDataByDateAndType(IgrsSensor igrsSensor);
+    List<IgrsSensor> getDataByDateAndType(IgrsSensor igrsSensor);
 
     int deleteByPrimaryKey(Long id);
 

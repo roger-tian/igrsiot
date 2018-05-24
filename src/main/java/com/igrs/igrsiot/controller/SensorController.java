@@ -91,6 +91,34 @@ public class SensorController {
 
                 buff = "{ch_10:1,ch_50:1,ch_20:1,ch_21:1,ch_60:1}";
                 SocketService.cmdSend(buff);
+
+                igrsDeviceStatus.setValue("0");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
+                igrsDeviceStatus.setDeviceId("machine1");
+                igrsDeviceStatus.setAttribute("switch");
+                igrsDeviceStatus.setValue("1");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
+                igrsDeviceStatus.setDeviceId("machine2");
+                igrsDeviceStatus.setAttribute("switch");
+                igrsDeviceStatus.setValue("1");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
+                igrsDeviceStatus.setDeviceId("led1");
+                igrsDeviceStatus.setAttribute("switch");
+                igrsDeviceStatus.setValue("1");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
+                igrsDeviceStatus.setDeviceId("led2");
+                igrsDeviceStatus.setAttribute("switch");
+                igrsDeviceStatus.setValue("1");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
+                igrsDeviceStatus.setDeviceId("curtain");
+                igrsDeviceStatus.setAttribute("switch");
+                igrsDeviceStatus.setValue("1");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
             }
         }
         else if (buf.contains("ch_2")) {

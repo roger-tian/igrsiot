@@ -866,20 +866,20 @@ angular.module('starter.controllers', [])
         });
     }, 5000);
 
-    setInterval(function () {
-        $.ajax({
-            type: 'POST',
-            url:'/igrsiot/control/purifier/query',
-            data:{
-                deviceId:"#lemx500s#78b3b912418f"
-            },
-            contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            error: function(result) {
-            },
-            success: function(data) {
-            }
-        });
-    }, 10000);
+    // setInterval(function () {
+    //     $.ajax({
+    //         type: 'POST',
+    //         url:'/igrsiot/control/purifier/query',
+    //         data:{
+    //             deviceId:"#lemx500s#78b3b912418f"
+    //         },
+    //         contentType:'application/x-www-form-urlencoded; charset=utf-8',
+    //         error: function(result) {
+    //         },
+    //         success: function(data) {
+    //         }
+    //     });
+    // }, 10000);
 
     $(document).ready(function() {
         $.ajax({

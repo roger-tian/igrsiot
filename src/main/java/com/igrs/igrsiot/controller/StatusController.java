@@ -187,5 +187,22 @@ public class StatusController {
         return "SUCCESS";
     }
 
+    @RequestMapping("/welcomemode/auto")
+    public String welcomeModeAuto() {
+        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setDeviceId("welcomemode");
+        igrsDeviceStatus.setAttribute("switch");
+        igrsDeviceStatus.setValue("1");
+        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        if (status != null) {
+            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+        }
+        else {
+            igrsDeviceStatusService.insert(igrsDeviceStatus);
+        }
+
+        return "SUCCESS";
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(StatusController.class);
 }

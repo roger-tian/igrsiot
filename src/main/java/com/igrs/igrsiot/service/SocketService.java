@@ -11,6 +11,9 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SocketService implements ServletContextListener {
     public class socketThread extends Thread {
@@ -107,6 +110,28 @@ public class SocketService implements ServletContextListener {
             socketThread thread = new socketThread();
             thread.init();
             thread.start();
+
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    String url;
+                    String param;
+                    url = "http://localhost:8080/igrsiot/control/purifier/query";
+                    param = "deviceId=" + "#lemx500s#78b3b912418f";
+                    HttpRequest.sendPost(url, param);
+
+                    Calendar calendar=Calendar.getInstance();
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    int minute = calendar.get(Calendar.MINUTE);
+                    logger.debug("time: {}-{}", hour, minute);
+                    if ((hour == 7) && (minute == 0)) {
+                        url = "http://localhost:8080/igrsiot/control/welcomemode/auto";
+                        param = "";
+                        HttpRequest.sendPost(url, param);
+                    }
+                }
+            }, 10000, 10000);
         }
         catch (IOException e) {
             e.printStackTrace();

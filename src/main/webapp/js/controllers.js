@@ -600,14 +600,14 @@ angular.module('starter.controllers', [])
                         title = "PM2.5";
                         for (var i=0; i<data.length; i++) {
                             buf = data[i].value.split('.');
-                            value[data[i].hour] = buf[0];
+                            value[parseInt(data[i].hour, 10)] = buf[0];
                         }
                         break;
                     case 'co2':
                         title = "CO2";
                         for (var i=0; i<data.length; i++) {
                             buf = data[i].value.split('.');
-                            value[data[i].hour] = buf[0];
+                            value[parseInt(data[i].hour, 10)] = buf[0];
                         }
                         break;
                     case 'tvoc':
@@ -615,7 +615,7 @@ angular.module('starter.controllers', [])
                         for (var i=0; i<data.length; i++) {
                             buf = data[i].value.split('.');
                             var buff = data[i].value.substring(0, buf[0].length+4);
-                            value[data[i].hour] = buff;
+                            value[parseInt(data[i].hour, 10)] = buff;
                         }
                         break;
                     case 'temperature':
@@ -623,7 +623,7 @@ angular.module('starter.controllers', [])
                         for (var i=0; i<data.length; i++) {
                             buf = data[i].value.split('.');
                             var buff = data[i].value.substring(0, buf[0].length+2);
-                            value[data[i].hour] = buff;
+                            value[parseInt(data[i].hour, 10)] = buff;
                         }
                         break;
                     case 'humidity':
@@ -631,7 +631,7 @@ angular.module('starter.controllers', [])
                         for (var i=0; i<data.length; i++) {
                             buf = data[i].value.split('.');
                             var buff = data[i].value.substring(0, buf[0].length+2);
-                            value[data[i].hour] = buff;
+                            value[parseInt(data[i].hour, 10)] = buff;
                         }
                         break;
                     case 'formaldehyde':
@@ -639,7 +639,7 @@ angular.module('starter.controllers', [])
                         for (var i=0; i<data.length; i++) {
                             buf = data[i].value.split('.');
                             var buff = data[i].value.substring(0, buf[0].length+4);
-                            value[data[i].hour] = buff;
+                            value[parseInt(data[i].hour, 10)] = buff;
                         }
                         break;
                 }
@@ -1065,7 +1065,7 @@ angular.module('starter.controllers', [])
                 title = "PM2.5";
                 for (var i=0; i<data.length; i++) {
                     buf = data[i].value.split('.');
-                    value[data[i].hour] = buf[0];
+                    value[parseInt(data[i].hour, 10)] = buf[0];
                 }
                 console.log(value);
                 DrawSensor('canvasDiv5', title, value);

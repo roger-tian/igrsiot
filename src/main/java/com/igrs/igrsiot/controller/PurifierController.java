@@ -4,6 +4,7 @@ import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import com.igrs.igrsiot.service.IIgrsOperateService;
+import com.igrs.igrsiot.service.IgrsWebSocketService;
 import com.igrs.igrsiot.utils.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -74,6 +76,15 @@ public class PurifierController {
         if (!result.equals("")) {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(str);
+
+            for (IgrsWebSocketService item: IgrsWebSocketService.getWebSocketSet()) {
+                try {
+                    item.sendMessage(str);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+            }
         }
 
         return result;

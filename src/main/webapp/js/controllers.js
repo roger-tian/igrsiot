@@ -25,6 +25,208 @@ angular.module('starter.controllers', [])
     var totalPage = 1;
     var curPageNo = 1;
 
+    //websocket
+    var websocket = null;
+    if ('WebSocket' in window) {
+        websocket = new WebSocket("ws://localhost:8080/igrsiot/websocket");
+    }
+    else {
+        console.log('browser not support websocket')
+    }
+    websocket.onerror = function () {
+    };
+    websocket.onopen = function () {
+    };
+    websocket.onmessage = function (event) {
+        console.log(event.data);
+        var data = event.data;
+        var str;
+        if (data.search("pw::") !== -1) {      //purifier data from server
+            // str = data.substring(data.indexOf("pw::"));
+            var result;
+            var results = data.split(",");
+            for (var i=0; i<results.length; i++) {
+                result = results[i].split("::");
+                switch (result[0]) {
+                    case 'pw':
+                        var switch_purifier = document.getElementById("onoffswitch_purifier");
+                        switch_purifier.checked = result[1] === '10';
+                        break;
+                    case 'lc':
+                        var check = document.getElementById("purifierLcCheck");
+                        check.checked = result[1] === "10";
+                        break;
+                    case 'sl':
+                        var check = document.getElementById("purifierSlCheck");
+                        check.checked = result[1] === "10";
+                        break;
+                    case 'mo':
+                        var check = document.getElementById("purifierMoCheck");
+                        check.checked = result[1] === "10";
+                        break;
+                    case 'io':
+                        var check = document.getElementById("purifierIoCheck");
+                        check.checked = result[1] === "10";
+                        break;
+                    case 'uv':
+                        var check = document.getElementById("purifierUvCheck");
+                        check.checked = result[1] === "10";
+                        break;
+                    case 'ti':
+                        var check = document.getElementById("purifierTiCheck");
+                        check.checked = result[1] !== "000";
+                        break;
+                    case 'fa':
+                        var value = result[1] + '0';
+                        var radio = document.getElementsByName("purifierRadio");
+                        for (var j=0; j<radio.length; j++) {
+                            if (radio[j].value === value) {
+                                radio[j].checked = true;
+                                break;
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        else if (data.search("pm25") !== -1) {     //sensor data from server
+            results = data.split(",");
+            for (var i=0; i<results.length; i++) {
+                result = results[i].split(":");
+                switch (result[0]) {
+                    case 'pm25':
+                        console.log(result[1]);
+                        var pm25 = result[1].split('.');
+                        DrawPm25('canvasDiv1', pm25[0]);
+                        DrawPm25('canvasDiv2', pm25[0]);
+                        DrawPm25('canvasDiv3', pm25[0]);
+                        DrawPm25('canvasDiv4', pm25[0]);
+                        DrawPm25('canvasDiv6', pm25[0]);
+                        break;
+                    case 'co2':
+                        var co2 = result[1].split('.');
+                        var co2Value = document.getElementsByName("co2Value");
+                        for (var j=0; j<co2Value.length; j++) {
+                            co2Value[j].innerText = co2[0];
+                        }
+                        break;
+                    case 'tvoc':
+                        var tvocValue = document.getElementsByName("tvocValue");
+                        for (var j=0; j<tvocValue.length; j++) {
+                            tvocValue[j].innerText = result[1];
+                        }
+                        break;
+                    case 'temperature':
+                        var temp = result[1].substring(0, result[1].length-2);
+                        var temperatureValue = document.getElementsByName("temperatureValue");
+                        for (var j=0; j<temperatureValue.length; j++) {
+                            temperatureValue[j].innerText = temp;
+                        }
+                        break;
+                    case 'humidity':
+                        var hum = result[1].substring(0, result[1].length-2);
+                        var humidityValue = document.getElementsByName("humidityValue");
+                        for (var j=0; j<humidityValue.length; j++) {
+                            humidityValue[j].innerText = hum;
+                        }
+                        break;
+                    case 'formaldehyde':
+                        var formaldehydeValue = document.getElementsByName("formaldehydeValue");
+                        for (var j=0; j<formaldehydeValue.length; j++) {
+                            formaldehydeValue[j].innerText = result[1];
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        else {      //sync message from other client
+            str = data.split(":");
+            switch (str[0]) {
+                case 'welcomeModeSwitch':
+                    var switch_welcomemode = document.getElementById("onoffswitch_welcomemode");
+                    switch_welcomemode.checked = str[1] === "1";
+                    break;
+                case 'allSwitch':
+                    var switch_all = document.getElementById("onoffswitch_all");
+                    switch_all.checked = str[1] === "1";
+                    break;
+                case 'machine1Switch':
+                    var switch_machine1 = document.getElementById("onoffswitch_machine1");
+                    switch_machine1.checked = str[1] === "1";
+                    break;
+                case 'machine1Sig':
+                    var objSig = document.getElementsByName("machine1Radio");
+                    for (var i=0; i<objSig.length; i++) {
+                        if (objSig[i].value == str[1]) {
+                            objSig[i].checked = true;
+                        }
+                    }
+                    break;
+                case 'machine1Volume':
+                    var volume = document.getElementById("machine1Volume");
+                    if (str[1] == '1') {
+                        volume.value += 1;
+                    }
+                    else {
+                        volume.value -= 1;
+                    }
+                    break;
+                case 'machine2Switch':
+                    var switch_machine2 = document.getElementById("onoffswitch_machine2");
+                    switch_machine2.checked = str[1] === "1";
+                    break;
+                case 'machine2Sig':
+                    var objSig = document.getElementsByName("machine2Radio");
+                    for (var i=0; i<objSig.length; i++) {
+                        if (objSig[i].value == str[1]) {
+                            objSig[i].checked = true;
+                        }
+                    }
+                    break;
+                case 'machine2Volume':
+                    var volume = document.getElementById("machine2Volume");
+                    if (str[1] == '1') {
+                        volume.value += 1;
+                    }
+                    else {
+                        volume.value -= 1;
+                    }
+                    break;
+                case 'led1Switch':
+                    var switch_led1 = document.getElementById("onoffswitch_led1");
+                    switch_led1.checked = str[1] === "1";
+                    break;
+                case 'led2Switch':
+                    var switch_led2 = document.getElementById("onoffswitch_led2");
+                    switch_led2.checked = str[1] === "1";
+                    break;
+                case 'curtainSwitch':
+                    var switch_curtain = document.getElementById("onoffswitch_curtain");
+                    switch_curtain.checked = str[1] === "1";
+                    break;
+                case 'purifierSwitch':
+                    var switch_purifier = document.getElementById("onoffswitch_purifier");
+                    switch_purifier.checked = str[1] === "1";
+                    break;
+               default:
+                    break;
+            }
+        }
+    };
+    websocket.onclose = function () {
+    };
+    window.onbeforeunload = function () {
+        webSocketClose();
+    };
+    function webSocketClose() {
+        websocket.close();
+    }
+    function webSocketsendMessage(message) {
+        websocket.send(message);
+    }
+
     $scope.onSwitchWelcomeModeClick = function () {
         var switchWelcome = document.getElementById("onoffswitch_welcomemode");
         var onOff;
@@ -51,6 +253,8 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var msg = "welcomeModeSwitch" + ":" + onOff;
+                webSocketsendMessage(msg);
                 if (data == 'SUCCESS') {
                 }
             }
@@ -99,6 +303,8 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var msg = "allSwitch" + ":" + onOff;
+                webSocketsendMessage(msg);
                 if (data == 'SUCCESS') {
                 }
             }
@@ -145,6 +351,8 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var msg = "machine1Switch" + ":" + onOff;
+                webSocketsendMessage(msg);
                 if (data == 'SUCCESS') {
                 }
                 else {
@@ -194,6 +402,8 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var msg = "machine1Sig" + ":" + sigSource;
+                webSocketsendMessage(msg);
                 if (data == 'SUCCESS') {
                 }
                 else {
@@ -220,6 +430,8 @@ angular.module('starter.controllers', [])
                 if (data == 'SUCCESS') {
                     var volume = document.getElementById("machine1Volume");
                     volume.value += 1;
+                    var msg = "machine1Volume" + ":" + volume;
+                    webSocketsendMessage(msg);
                 }
                 else {
                 }
@@ -245,6 +457,8 @@ angular.module('starter.controllers', [])
                 if (data == 'SUCCESS') {
                     var volume = document.getElementById("machine1Volume");
                     volume.value -= 1;
+                    var msg = "machine1Volume" + ":" + volume;
+                    webSocketsendMessage(msg);
                 }
                 else {
                 }
@@ -291,6 +505,8 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var msg = "machine2Switch" + ":" + onOff;
+                webSocketsendMessage(msg);
                 if (data == 'SUCCESS') {
                 }
                 else {
@@ -339,6 +555,8 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var msg = "machine2Sig" + ":" + sigSource;
+                webSocketsendMessage(msg);
                 if (data == 'SUCCESS') {
                 }
                 else {
@@ -365,6 +583,8 @@ angular.module('starter.controllers', [])
                 if (data == 'SUCCESS') {
                     var volume = document.getElementById("machine2Volume");
                     volume.value += 1;
+                    var msg = "machine2Volume" + ":" + volume;
+                    webSocketsendMessage(msg);
                 }
                 else {
                 }
@@ -390,6 +610,8 @@ angular.module('starter.controllers', [])
                 if (data == 'SUCCESS') {
                     var volume = document.getElementById("machine2Volume");
                     volume.value -= 1;
+                    var msg = "machine2Volume" + ":" + volume;
+                    webSocketsendMessage(msg);
                 }
                 else {
                 }
@@ -436,6 +658,8 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var msg = "led1Switch" + ":" + onOff;
+                webSocketsendMessage(msg);
                 if (data == 'SUCCESS') {
                 }
                 else {
@@ -485,6 +709,8 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var msg = "led2Switch" + ":" + onOff;
+                webSocketsendMessage(msg);
                 if (data == 'SUCCESS') {
                 }
                 else {
@@ -531,6 +757,8 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
+                var msg = "curtainSwitch" + ":" + onOff;
+                webSocketsendMessage(msg);
                 if (data == 'SUCCESS') {
                 }
                 else {
@@ -563,6 +791,8 @@ angular.module('starter.controllers', [])
             error: function(result) {
             },
             success: function(data) {
+                var msg = "purifierSwitch" + ":" + onOff;
+                webSocketsendMessage(msg);
             }
         });
     };
@@ -657,208 +887,190 @@ angular.module('starter.controllers', [])
         $('#' + $(this).attr('title')).addClass('show');
     });
 
-    setInterval(function () {
-        $.ajax({
-            type: 'POST',
-            url:'/igrsiot/control/status',
-            contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:false,
-            error: function(result) {
-            },
-            success: function(data) {
-                console.log(data);
-                var switchWelcome = document.getElementById("onoffswitch_welcomemode");
-                var switchAll = document.getElementById("onoffswitch_all");
-                var switchMachine1 = document.getElementById("onoffswitch_machine1");
-                var machine1Sig = document.getElementsByName("machine1Radio");
-                var machine1Volume = document.getElementById("machine1Volume");
-                var switchMachine2 = document.getElementById("onoffswitch_machine2");
-                var machine2Sig = document.getElementsByName("machine2Radio");
-                var machine2Volume = document.getElementById("machine2Volume");
-                var switchLed1 = document.getElementById("onoffswitch_led1");
-                var switchLed2 = document.getElementById("onoffswitch_led2");
-                var switchCurtain = document.getElementById("onoffswitch_curtain");
-                var switchPurifier = document.getElementById("onoffswitch_purifier");
-
-                for (var i=0; i<data.length; i++) {
-                    switch (data[i].deviceId) {
-                        case "welcomemode":
-                            switchWelcome.checked = data[i].value === "1";
-                            break;
-                        case "machine1":
-                            switch (data[i].attribute) {
-                                case "switch":
-                                    switchMachine1.checked = data[i].value === "1";
-                                    break;
-                                case "sig_source":
-                                    for (var j=0; j<machine1Sig.length; j++) {
-                                        if (machine1Sig[j].value == data[i].value) {
-                                            machine1Sig[j].checked = true;
-                                            break;
-                                        }
-                                    }
-                                    break;
-                                case "volume":
-                                    machine1Volume.value = data[i].value;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case "machine2":
-                            switch (data[i].attribute) {
-                                case "switch":
-                                    switchMachine2.checked = data[i].value === "1";
-                                    break;
-                                case "sig_source":
-                                    for (var j=0; j<machine2Sig.length; j++) {
-                                        if (machine2Sig[j].value == data[i].value) {
-                                            machine2Sig[j].checked = true;
-                                            break;
-                                        }
-                                    }
-                                    break;
-                                case "volume":
-                                    machine2Volume.value = data[i].value;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case "led1":
-                            switchLed1.checked = data[i].value === "1";
-                            break;
-                        case "led2":
-                            switchLed2.checked = data[i].value === "1";
-                            break;
-                        case "curtain":
-                            switchCurtain.checked = data[i].value === "1";
-                            break;
-                        case "purifier":
-                            switch (data[i].attribute) {
-                                case "switch":
-                                    switchPurifier.checked = data[i].value === "1";
-                                    break;
-                                case "lock":
-                                    var check = document.getElementById("purifierLcCheck");
-                                    check.checked = data[i].value === "1";
-                                    break;
-                                case "sleep":
-                                    var check = document.getElementById("purifierSlCheck");
-                                    check.checked = data[i].value === "1";
-                                    break;
-                                case "mode":
-                                    var check = document.getElementById("purifierMoCheck");
-                                    check.checked = data[i].value === "1";
-                                    break;
-                                case "anion":
-                                    var check = document.getElementById("purifierIoCheck");
-                                    check.checked = data[i].value === "1";
-                                    break;
-                                case "uv":
-                                    var check = document.getElementById("purifierUvCheck");
-                                    check.checked = data[i].value === "1";
-                                    break;
-                                case "timer":
-                                    var check = document.getElementById("purifierTiCheck");
-                                    check.checked = data[i].value === "1";
-                                    break;
-                                case "windspeed":
-                                    var radio = document.getElementsByName("purifierRadio");
-                                    for (var j=0; j<radio.length; j++) {
-                                        if (radio[j].value == data[i].value) {
-                                            radio[j].checked = true;
-                                            break;
-                                        }
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                if (!switchMachine1.checked && !switchMachine2.checked && !switchLed1.checked && !switchLed2.checked && !switchCurtain.checked) {
-                    switchAll.checked = false;
-                }
-                else {
-                    switchAll.checked = true;
-                }
-            }
-        });
-
-        $.ajax({
-            type: 'POST',
-            url:'/igrsiot/control/sensor',
-            contentType:'application/x-www-form-urlencoded; charset=utf-8',
-            async:true,
-            error: function(result) {
-            },
-            success: function(data) {
-                console.log(data);
-                var result = data.split(",");
-                var pm25 = result[0].split('.');
-                DrawPm25('canvasDiv1', pm25[0]);
-                DrawPm25('canvasDiv2', pm25[0]);
-                DrawPm25('canvasDiv3', pm25[0]);
-                DrawPm25('canvasDiv4', pm25[0]);
-                DrawPm25('canvasDiv6', pm25[0]);
-
-                // var value = [9,1,12,20,26,30,32,29,22,12,20,6,3,1,12,20,26,30,32,29,22,12,0,6];
-                // DrawSensor('canvasDiv5', 'PM2.5', value);
-
-                var co2Value = document.getElementsByName("co2Value");
-                for (var i=0; i<co2Value.length; i++) {
-                    var co2 = result[1].split('.');
-                    co2Value[i].innerText = co2[0];
-                }
-
-                var tvocValue = document.getElementsByName("tvocValue");
-                for (var i=0; i<tvocValue.length; i++) {
-                    tvocValue[i].innerText = result[2];
-                }
-
-                var temperatureValue = document.getElementsByName("temperatureValue");
-                for (var i=0; i<temperatureValue.length; i++) {
-                    var temp = result[3].substring(0, result[3].length-2);
-                    temperatureValue[i].innerText = temp;
-                }
-
-                var humidityValue = document.getElementsByName("humidityValue");
-                for (var i=0; i<humidityValue.length; i++) {
-                    var hum = result[4].substring(0, result[4].length-2);
-                    humidityValue[i].innerText = hum;
-                }
-
-                var formaldehydeValue = document.getElementsByName("formaldehydeValue");
-                for (var i=0; i<formaldehydeValue.length; i++) {
-                    var co2 = result[1].split('.');
-                    formaldehydeValue[i].innerText = result[5];
-                }
-
-                if (data == 'SUCCESS') {
-                } else {
-                }
-            }
-        });
-    }, 5000);
-
     // setInterval(function () {
     //     $.ajax({
     //         type: 'POST',
-    //         url:'/igrsiot/control/purifier/query',
-    //         data:{
-    //             deviceId:"#lemx500s#78b3b912418f"
-    //         },
+    //         url:'/igrsiot/control/status',
     //         contentType:'application/x-www-form-urlencoded; charset=utf-8',
+    //         async:false,
     //         error: function(result) {
     //         },
     //         success: function(data) {
+    //             console.log(data);
+    //             var switchWelcome = document.getElementById("onoffswitch_welcomemode");
+    //             var switchAll = document.getElementById("onoffswitch_all");
+    //             var switchMachine1 = document.getElementById("onoffswitch_machine1");
+    //             var machine1Sig = document.getElementsByName("machine1Radio");
+    //             var machine1Volume = document.getElementById("machine1Volume");
+    //             var switchMachine2 = document.getElementById("onoffswitch_machine2");
+    //             var machine2Sig = document.getElementsByName("machine2Radio");
+    //             var machine2Volume = document.getElementById("machine2Volume");
+    //             var switchLed1 = document.getElementById("onoffswitch_led1");
+    //             var switchLed2 = document.getElementById("onoffswitch_led2");
+    //             var switchCurtain = document.getElementById("onoffswitch_curtain");
+    //             var switchPurifier = document.getElementById("onoffswitch_purifier");
+    //
+    //             for (var i=0; i<data.length; i++) {
+    //                 switch (data[i].deviceId) {
+    //                     case "welcomemode":
+    //                         switchWelcome.checked = data[i].value === "1";
+    //                         break;
+    //                     case "machine1":
+    //                         switch (data[i].attribute) {
+    //                             case "switch":
+    //                                 switchMachine1.checked = data[i].value === "1";
+    //                                 break;
+    //                             case "sig_source":
+    //                                 for (var j=0; j<machine1Sig.length; j++) {
+    //                                     if (machine1Sig[j].value == data[i].value) {
+    //                                         machine1Sig[j].checked = true;
+    //                                         break;
+    //                                     }
+    //                                 }
+    //                                 break;
+    //                             case "volume":
+    //                                 machine1Volume.value = data[i].value;
+    //                                 break;
+    //                             default:
+    //                                 break;
+    //                         }
+    //                         break;
+    //                     case "machine2":
+    //                         switch (data[i].attribute) {
+    //                             case "switch":
+    //                                 switchMachine2.checked = data[i].value === "1";
+    //                                 break;
+    //                             case "sig_source":
+    //                                 for (var j=0; j<machine2Sig.length; j++) {
+    //                                     if (machine2Sig[j].value == data[i].value) {
+    //                                         machine2Sig[j].checked = true;
+    //                                         break;
+    //                                     }
+    //                                 }
+    //                                 break;
+    //                             case "volume":
+    //                                 machine2Volume.value = data[i].value;
+    //                                 break;
+    //                             default:
+    //                                 break;
+    //                         }
+    //                         break;
+    //                     case "led1":
+    //                         switchLed1.checked = data[i].value === "1";
+    //                         break;
+    //                     case "led2":
+    //                         switchLed2.checked = data[i].value === "1";
+    //                         break;
+    //                     case "curtain":
+    //                         switchCurtain.checked = data[i].value === "1";
+    //                         break;
+    //                     case "purifier":
+    //                         switch (data[i].attribute) {
+    //                             case "switch":
+    //                                 switchPurifier.checked = data[i].value === "1";
+    //                                 break;
+    //                             case "lock":
+    //                                 var check = document.getElementById("purifierLcCheck");
+    //                                 check.checked = data[i].value === "1";
+    //                                 break;
+    //                             case "sleep":
+    //                                 var check = document.getElementById("purifierSlCheck");
+    //                                 check.checked = data[i].value === "1";
+    //                                 break;
+    //                             case "mode":
+    //                                 var check = document.getElementById("purifierMoCheck");
+    //                                 check.checked = data[i].value === "1";
+    //                                 break;
+    //                             case "anion":
+    //                                 var check = document.getElementById("purifierIoCheck");
+    //                                 check.checked = data[i].value === "1";
+    //                                 break;
+    //                             case "uv":
+    //                                 var check = document.getElementById("purifierUvCheck");
+    //                                 check.checked = data[i].value === "1";
+    //                                 break;
+    //                             case "timer":
+    //                                 var check = document.getElementById("purifierTiCheck");
+    //                                 check.checked = data[i].value === "1";
+    //                                 break;
+    //                             case "windspeed":
+    //                                 var radio = document.getElementsByName("purifierRadio");
+    //                                 for (var j=0; j<radio.length; j++) {
+    //                                     if (radio[j].value == data[i].value) {
+    //                                         radio[j].checked = true;
+    //                                         break;
+    //                                     }
+    //                                 }
+    //                                 break;
+    //                             default:
+    //                                 break;
+    //                         }
+    //                         break;
+    //                     default:
+    //                         break;
+    //                 }
+    //             }
+    //             if (!switchMachine1.checked && !switchMachine2.checked && !switchLed1.checked && !switchLed2.checked && !switchCurtain.checked) {
+    //                 switchAll.checked = false;
+    //             }
+    //             else {
+    //                 switchAll.checked = true;
+    //             }
     //         }
     //     });
-    // }, 10000);
+    //
+    //     $.ajax({
+    //         type: 'POST',
+    //         url:'/igrsiot/control/sensor',
+    //         contentType:'application/x-www-form-urlencoded; charset=utf-8',
+    //         async:true,
+    //         error: function(result) {
+    //         },
+    //         success: function(data) {
+    //             console.log(data);
+    //             var result = data.split(",");
+    //             var pm25 = result[0].split('.');
+    //             DrawPm25('canvasDiv1', pm25[0]);
+    //             DrawPm25('canvasDiv2', pm25[0]);
+    //             DrawPm25('canvasDiv3', pm25[0]);
+    //             DrawPm25('canvasDiv4', pm25[0]);
+    //             DrawPm25('canvasDiv6', pm25[0]);
+    //
+    //             var co2Value = document.getElementsByName("co2Value");
+    //             for (var i=0; i<co2Value.length; i++) {
+    //                 var co2 = result[1].split('.');
+    //                 co2Value[i].innerText = co2[0];
+    //             }
+    //
+    //             var tvocValue = document.getElementsByName("tvocValue");
+    //             for (var i=0; i<tvocValue.length; i++) {
+    //                 tvocValue[i].innerText = result[2];
+    //             }
+    //
+    //             var temperatureValue = document.getElementsByName("temperatureValue");
+    //             for (var i=0; i<temperatureValue.length; i++) {
+    //                 var temp = result[3].substring(0, result[3].length-2);
+    //                 temperatureValue[i].innerText = temp;
+    //             }
+    //
+    //             var humidityValue = document.getElementsByName("humidityValue");
+    //             for (var i=0; i<humidityValue.length; i++) {
+    //                 var hum = result[4].substring(0, result[4].length-2);
+    //                 humidityValue[i].innerText = hum;
+    //             }
+    //
+    //             var formaldehydeValue = document.getElementsByName("formaldehydeValue");
+    //             for (var i=0; i<formaldehydeValue.length; i++) {
+    //                 var co2 = result[1].split('.');
+    //                 formaldehydeValue[i].innerText = result[5];
+    //             }
+    //
+    //             if (data == 'SUCCESS') {
+    //             } else {
+    //             }
+    //         }
+    //     });
+    // }, 30000);
 
     $(document).ready(function() {
         $.ajax({

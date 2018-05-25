@@ -11,7 +11,7 @@
         websocket = new WebSocket("ws://localhost:8080/igrsiot/websocket");
     }
     else {
-        alert('browser not support websocket')
+        console.log('browser not support websocket')
     }
 
     websocket.onerror = function () {

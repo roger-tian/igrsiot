@@ -3,16 +3,14 @@ package com.igrs.igrsiot.controller;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsSensor;
 import com.igrs.igrsiot.model.IgrsSensorDetail;
-import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
-import com.igrs.igrsiot.service.IIgrsSensorDetailService;
-import com.igrs.igrsiot.service.IIgrsSensorService;
-import com.igrs.igrsiot.service.SocketService;
+import com.igrs.igrsiot.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -160,12 +158,12 @@ public class SensorController {
         else if (buf.contains("pm25")) {
             String results[];
             String cells[];
-            String pm25;
-            String co2;
-            String tvoc;
-            String temperature;
-            String humidity;
-            String formaldehyde;
+            String pm25 = "";
+            String co2 = "";
+            String tvoc = "";
+            String temperature = "";
+            String humidity = "";
+            String formaldehyde = "";
 
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String time = df.format(new Date());
@@ -208,10 +206,21 @@ public class SensorController {
                     igrsSensorDetailService.insert(igrsSensorDetail);
                 }
                 else if (cells[0].contains("hcho")) {
-                    formaldehyde = cells[1].substring(0, cells[1].length()-2);
+                    formaldehyde = cells[1];
                     igrsSensorDetail.setType("formaldehyde");
                     igrsSensorDetail.setValue(formaldehyde);
                     igrsSensorDetailService.insert(igrsSensorDetail);
+                }
+            }
+
+            String str = "pm25:" + pm25 + ",co2:" + co2 + ",tvoc:" + tvoc + ",temperature:" +
+                temperature + ",humidity:" + humidity + ",formaldehyde:" + formaldehyde;
+            for (IgrsWebSocketService item: IgrsWebSocketService.getWebSocketSet()) {
+                try {
+                    item.sendMessage(str);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    continue;
                 }
             }
         }

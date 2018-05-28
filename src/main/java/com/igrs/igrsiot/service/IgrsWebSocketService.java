@@ -51,6 +51,17 @@ public class IgrsWebSocketService {
         this.session.getBasicRemote().sendText(message);
     }
 
+    public static void sendAllMessage(String message) {
+        for (IgrsWebSocketService item: webSocketSet) {
+            try {
+                item.sendMessage(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+                continue;
+            }
+        }
+    }
+
     public static CopyOnWriteArraySet<IgrsWebSocketService> getWebSocketSet() {
         return webSocketSet;
     }

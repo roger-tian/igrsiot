@@ -141,7 +141,7 @@ angular.module('starter.controllers', [])
                 }
             }
         }
-        else {      //sync message from other client
+        else {      //sync message from other client or socket controller
             str = data.split(":");
             switch (str[0]) {
                 case 'welcomeModeSwitch':
@@ -149,8 +149,19 @@ angular.module('starter.controllers', [])
                     switch_welcomemode.checked = str[1] === "1";
                     break;
                 case 'allSwitch':
+                    var value = str[1] === "1";
                     var switch_all = document.getElementById("onoffswitch_all");
-                    switch_all.checked = str[1] === "1";
+                    var switch_machine1 = document.getElementById("onoffswitch_machine1");
+                    var switch_machine2 = document.getElementById("onoffswitch_machine2");
+                    var switch_led1 = document.getElementById("onoffswitch_led1");
+                    var switch_led2 = document.getElementById("onoffswitch_led2");
+                    var switch_curtain = document.getElementById("onoffswitch_curtain");
+                    switch_all.checked = value;
+                    switch_machine1.checked = value;
+                    switch_machine2.checked = value;
+                    switch_led1.checked = value;
+                    switch_led2.checked = value;
+                    switch_curtain.checked = value;
                     break;
                 case 'machine1Switch':
                     var switch_machine1 = document.getElementById("onoffswitch_machine1");

@@ -46,7 +46,7 @@ public class SocketService implements ServletContextListener {
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            String url = "http://localhost:8080/igrsiot/control/sensor/handle";
+                                            String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
                                             String param = "buf=" + buf;
                                             String result = HttpRequest.sendPost(url, param);
                                         }

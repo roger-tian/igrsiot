@@ -40,6 +40,9 @@ public class AllController {
         else {
             cmd = "{ch_10:0,ch_50:0,ch_20:0,ch_21:0,ch_60:0}";
             SocketService.cmdSend(cmd);
+            Thread.sleep(5000);
+            cmd = "{ch_10:0,ch_50:0}";
+            SocketService.cmdSend(cmd);
             instruction = "总开关关闭";
         }
 

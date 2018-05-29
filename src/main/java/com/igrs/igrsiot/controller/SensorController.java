@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,10 +40,10 @@ public class SensorController {
             }
             else {
                 if (i == 0) {
-                    result = "0";
+                    result = "0.000";
                 }
                 else {
-                    result += "," + "0";
+                    result += "," + "0.000";
                 }
             }
         }
@@ -55,20 +56,26 @@ public class SensorController {
     public List<IgrsSensor> getSensorHistoryData(String date, String type) {
         if (date.equals("")) {
             List<IgrsSensor> result = new ArrayList<>();
-            List<IgrsSensorDetail> list = igrsSensorDetailService.getAvgDataByType(type);
-            if (list.size() != 0) {
-                String[] str;
-                String[] strTime;
-                for (int i=0; i<list.size(); i++) {
-                    IgrsSensor igrsSensor = new IgrsSensor();
-                    igrsSensor.setType(type);
-                    igrsSensor.setValue(list.get(i).getValue());
-                    str = list.get(i).getTime().split(" ");
-                    strTime = str[1].split(":");
-                    igrsSensor.setDate(str[0]);
-                    igrsSensor.setHour(strTime[0]);
-                    result.add(igrsSensor);
+            try {
+                List<IgrsSensorDetail> list = igrsSensorDetailService.getAvgDataByType(type);
+                if (list.size() != 0) {
+                    String[] str;
+                    String[] strTime;
+                    for (int i=0; i<list.size(); i++) {
+                        IgrsSensor igrsSensor = new IgrsSensor();
+                        igrsSensor.setType(type);
+                        igrsSensor.setValue(list.get(i).getValue());
+                        str = list.get(i).getTime().split(" ");
+                        strTime = str[1].split(":");
+                        igrsSensor.setDate(str[0]);
+                        igrsSensor.setHour(strTime[0]);
+                        result.add(igrsSensor);
+                    }
                 }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
 
             return result;

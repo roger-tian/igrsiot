@@ -34,6 +34,9 @@ public class SocketController {
             igrsDeviceStatus.setAttribute("switch");
             IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
             if ((status != null) && (status.getValue().equals("1"))) {
+                String msg = "welcomeModeSwitch:0";
+                IgrsWebSocketService.sendAllMessage(msg);
+
                 float temp;
                 List<IgrsSensorDetail> list = igrsSensorDetailService.getDataByType("temperature");
                 if (list.size() != 0) {
@@ -94,7 +97,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                String msg = "allSwitch:1";
+                msg = "allSwitch:1";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
         }

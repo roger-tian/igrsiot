@@ -833,7 +833,6 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
-                console.log(data[0].hour);
                 var value = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
                 var buf;
                 switch (sensorType) {
@@ -1282,7 +1281,6 @@ angular.module('starter.controllers', [])
             },
             success: function(data) {
                 console.log(data);
-                console.log(data[0].hour);
                 var value = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
                 var buf;
                 title = "PM2.5";

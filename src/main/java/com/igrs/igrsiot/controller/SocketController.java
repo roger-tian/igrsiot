@@ -34,6 +34,9 @@ public class SocketController {
             igrsDeviceStatus.setAttribute("switch");
             IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
             if ((status != null) && (status.getValue().equals("1"))) {
+                igrsDeviceStatus.setValue("0");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
                 String msg = "welcomeModeSwitch:0";
                 IgrsWebSocketService.sendAllMessage(msg);
 
@@ -68,9 +71,6 @@ public class SocketController {
                 Thread.sleep(1000);
                 buff = "{ch_50:1}";
                 SocketService.cmdSend(buff);
-
-                igrsDeviceStatus.setValue("0");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
                 igrsDeviceStatus.setDeviceId("machine1");
                 igrsDeviceStatus.setAttribute("switch");

@@ -9,5 +9,8 @@
         <module name="igrsiot" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="igrsiot" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

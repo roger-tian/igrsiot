@@ -113,18 +113,18 @@ angular.module('starter.controllers', [])
                     case 'tvoc':
                         var tvocValue = document.getElementsByName("tvocValue");
                         for (var j=0; j<tvocValue.length; j++) {
-                            tvocValue[j].innerText = result[1];
+                            tvocValue[j].innerText = parseFloat(result[1]).toFixed(3);
                         }
                         break;
                     case 'temperature':
-                        var temp = result[1].substring(0, result[1].length-2);
+                        var temp = parseFloat(result[1]).toFixed(1);
                         var temperatureValue = document.getElementsByName("temperatureValue");
                         for (var j=0; j<temperatureValue.length; j++) {
                             temperatureValue[j].innerText = temp;
                         }
                         break;
                     case 'humidity':
-                        var hum = result[1].substring(0, result[1].length-2);
+                        var hum = parseFloat(result[1]).toFixed(1);
                         var humidityValue = document.getElementsByName("humidityValue");
                         for (var j=0; j<humidityValue.length; j++) {
                             humidityValue[j].innerText = hum;
@@ -133,7 +133,7 @@ angular.module('starter.controllers', [])
                     case 'formaldehyde':
                         var formaldehydeValue = document.getElementsByName("formaldehydeValue");
                         for (var j=0; j<formaldehydeValue.length; j++) {
-                            formaldehydeValue[j].innerText = result[1];
+                            formaldehydeValue[j].innerText = parseFloat(result[1]).toFixed(3);
                         }
                         break;
                     default:
@@ -1239,25 +1239,25 @@ angular.module('starter.controllers', [])
 
                 var tvocValue = document.getElementsByName("tvocValue");
                 for (var i=0; i<tvocValue.length; i++) {
-                    tvocValue[i].innerText = result[2];
+                    tvocValue[i].innerText = parseFloat(result[2]).toFixed(3);
                 }
 
                 var temperatureValue = document.getElementsByName("temperatureValue");
                 for (var i=0; i<temperatureValue.length; i++) {
-                    var temp = result[3].substring(0, result[3].length-2);
+                    var temp = parseFloat(result[3]).toFixed(1);
                     temperatureValue[i].innerText = temp;
                 }
 
                 var humidityValue = document.getElementsByName("humidityValue");
                 for (var i=0; i<humidityValue.length; i++) {
-                    var hum = result[4].substring(0, result[4].length-2);
+                    var hum = parseFloat(result[4]).toFixed(1);
                     humidityValue[i].innerText = hum;
                 }
 
                 var formaldehydeValue = document.getElementsByName("formaldehydeValue");
                 for (var i=0; i<formaldehydeValue.length; i++) {
                     var co2 = result[1].split('.');
-                    formaldehydeValue[i].innerText = result[5];
+                    formaldehydeValue[i].innerText = parseFloat(result[5]).toFixed(3);
                 }
 
                 if (data == 'SUCCESS') {

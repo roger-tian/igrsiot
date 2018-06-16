@@ -4,6 +4,7 @@ import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import com.igrs.igrsiot.service.IIgrsOperateService;
+import com.igrs.igrsiot.service.IgrsWebSocketService;
 import com.igrs.igrsiot.service.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class LedController {
         String instruction;
         String deviceId;
 
-        if (index.equals("1")) {
+        if (index.equals("0")) {
             String cmd = "{ch_20:" + onOff + "}";
             SocketService.cmdSend(cmd);
             deviceId = "智能灯一";
@@ -37,6 +38,9 @@ public class LedController {
             SocketService.cmdSend(cmd);
             deviceId = "智能灯二";
         }
+
+        String msg = "led" + index + "Switch:" + onOff;
+        IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setDeviceId("led" + index);

@@ -4,6 +4,7 @@ import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import com.igrs.igrsiot.service.IIgrsOperateService;
+import com.igrs.igrsiot.service.IgrsWebSocketService;
 import com.igrs.igrsiot.service.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,9 @@ public class CurtainController {
         logger.debug("curtainOnOff: {}", onOff);
         String cmd = "{ch_60:" + onOff + "}";   // 0,1,2--off,on,pause
         SocketService.cmdSend(cmd);
+
+        String msg = "curtainSwitch:" + onOff;
+        IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setDeviceId("curtain");

@@ -4,6 +4,7 @@ import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import com.igrs.igrsiot.service.IIgrsOperateService;
+import com.igrs.igrsiot.service.IgrsWebSocketService;
 import com.igrs.igrsiot.service.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,9 @@ public class AllController {
             SocketService.cmdSend(cmd);
             instruction = "总开关关闭";
         }
+
+        String msg = "allSwitch:" + onOff;
+        IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         IgrsDeviceStatus status;

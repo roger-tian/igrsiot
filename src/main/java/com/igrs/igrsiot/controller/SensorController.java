@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -53,11 +55,25 @@ public class SensorController {
     }
 
     @RequestMapping("/sensor/history")
-    public List<IgrsSensor> getSensorHistoryData(String date, String type) {
-        if (date.equals("")) {
-            List<IgrsSensor> result = new ArrayList<>();
+    public List<IgrsSensor> getSensorHistoryData(String date, String type) throws ParseException {
+        if (date.contains("T")) {
+            date = date.replace("Z", " UTC");
+            SimpleDateFormat uf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            date = df.format(uf.parse(date));
+        }
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String curDate = df.format(new Date());
+
+        List<IgrsSensor> result = new ArrayList<>();
+
+        if (date.equals("") || date.equals(curDate)) {
             try {
-                List<IgrsSensorDetail> list = igrsSensorDetailService.getAvgDataByType(type);
+                IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
+                igrsSensorDetail.setType(type);
+                igrsSensorDetail.setTime(curDate);
+                List<IgrsSensorDetail> list = igrsSensorDetailService.getAvgDataByType(igrsSensorDetail);
                 if (list.size() != 0) {
                     String[] str;
                     String[] strTime;
@@ -81,10 +97,26 @@ public class SensorController {
             return result;
         }
         else {
-            IgrsSensor igrsSensor = new IgrsSensor();
-            igrsSensor.setDate(date);
-            igrsSensor.setType(type);
-            return igrsSensorService.getDataByDateAndType(igrsSensor);
+            logger.debug("date: {}", date);
+
+            logger.debug("date: {}", date);
+            IgrsSensor igrsSensor1 = new IgrsSensor();
+            igrsSensor1.setDate(date);
+            igrsSensor1.setType(type);
+//            return igrsSensorService.getDataByDateAndType(igrsSensor);
+            List<IgrsSensor> list = igrsSensorService.getDataByDateAndType(igrsSensor1);
+//            if (list.size() != 0) {
+//                for (int i=0; i<list.size(); i++) {
+//                    IgrsSensor igrsSensor = new IgrsSensor();
+//                    igrsSensor.setType(type);
+//                    igrsSensor.setValue(list.get(i).getValue());
+//                    igrsSensor.setDate(list.get(i).getDate());
+//                    igrsSensor.setHour(list.get(i).getHour());
+//                    result.add(igrsSensor);
+//                }
+//            }
+            logger.debug("list: {}, result: {}", list, result);
+            return list;
         }
     }
 

@@ -21,8 +21,8 @@ public class IgrsSensorDetailServiceImpl implements IIgrsSensorDetailService {
     }
 
     @Override
-    public List<IgrsSensorDetail> getAvgDataByType(String type) {
-        return igrsSensorDetailDao.getAvgDataByType(type);
+    public List<IgrsSensorDetail> getAvgDataByType(IgrsSensorDetail igrsSensorDetail) {
+        return igrsSensorDetailDao.getAvgDataByType(igrsSensorDetail);
     }
 
     @Override

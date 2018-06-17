@@ -19,5 +19,7 @@ public interface IIgrsSensorDetailDao {
 
     int updateByPrimaryKeySelective(IgrsSensorDetail record);
 
-    int updateByPrimaryKey(IgrsSensorDetail record);
+    int updateByPrimaryKey(IgrsSensorDetail igrsSensorDetail);
+
+    void deleteDataByDate(IgrsSensorDetail igrsSensorDetail);
 }

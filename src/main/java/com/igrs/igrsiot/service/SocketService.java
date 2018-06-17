@@ -117,15 +117,27 @@ public class SocketService implements ServletContextListener {
                 public void run() {
                     String url;
                     String param;
+                    boolean flag = true;
                     url = "http://localhost:8080/igrsiot/control/purifier/query";
                     param = "deviceId=" + "#lemx500s#78b3b912418f";
                     HttpRequest.sendPost(url, param);
 
-                    Calendar calendar=Calendar.getInstance();
-                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                    int minute = calendar.get(Calendar.MINUTE);
+                    Calendar cl = Calendar.getInstance();
+                    int hour = cl.get(Calendar.HOUR_OF_DAY);
+                    int minute = cl.get(Calendar.MINUTE);
                     logger.debug("time: {}-{}", hour, minute);
-                    if ((hour == 7) && (minute == 0)) {
+                    if ((hour == 1) && (minute == 0)) {
+                        if (flag) {
+                            flag = false;
+                            url = "http://localhost:8080/igrsiot/control/sensor/history/generate";
+                            param = "";
+                            HttpRequest.sendPost(url, param);
+                        }
+                    }
+                    else if ((hour == 1) && (minute == 1)) {
+                        flag = true;
+                    }
+                    else if ((hour == 7) && (minute == 0)) {
                         url = "http://localhost:8080/igrsiot/control/welcomemode/auto";
                         param = "";
                         HttpRequest.sendPost(url, param);

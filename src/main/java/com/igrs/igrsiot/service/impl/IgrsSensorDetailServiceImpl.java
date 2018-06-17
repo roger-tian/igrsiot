@@ -26,8 +26,13 @@ public class IgrsSensorDetailServiceImpl implements IIgrsSensorDetailService {
     }
 
     @Override
-    public int insert(IgrsSensorDetail record) {
-        return igrsSensorDetailDao.insert(record);
+    public int insert(IgrsSensorDetail igrsSensorDetail) {
+        return igrsSensorDetailDao.insert(igrsSensorDetail);
+    }
+
+    @Override
+    public void deleteDataByDate(IgrsSensorDetail igrsSensorDetail) {
+        igrsSensorDetailDao.deleteDataByDate(igrsSensorDetail);
     }
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsSensorDetailServiceImpl.class);

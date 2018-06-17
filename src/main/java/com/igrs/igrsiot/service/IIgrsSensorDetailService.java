@@ -9,5 +9,7 @@ public interface IIgrsSensorDetailService {
 
     public List<IgrsSensorDetail> getAvgDataByType(IgrsSensorDetail igrsSensorDetail);
 
-    public int insert(IgrsSensorDetail record);
+    public int insert(IgrsSensorDetail igrsSensorDetail);
+
+    public void deleteDataByDate(IgrsSensorDetail igrsSensorDetail);
 }

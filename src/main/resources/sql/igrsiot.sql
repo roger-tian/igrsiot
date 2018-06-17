@@ -60,7 +60,7 @@ DROP TABLE IF EXISTS `igrs_sensor`;
 CREATE TABLE `igrs_sensor` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(22) DEFAULT NULL,
-  `value` FLOAT(6,2) DEFAULT NULL,
+  `value` FLOAT(10,3) DEFAULT NULL,
   `date` datetime DEFAULT NULL,
   `hour` int DEFAULT NULL,
   PRIMARY KEY (`id`)

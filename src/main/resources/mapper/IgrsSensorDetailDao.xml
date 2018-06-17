@@ -22,6 +22,9 @@
   <select id="getAvgDataByType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsSensorDetail">
     select any_value(id) as id,type,avg(value) as value,any_value(time) as time from igrs_sensor_detail where type=#{type} and left(time,10)=#{time} group by left(time,13) order by time
   </select>
+  <delete id="deleteDataByDate" parameterType="com.igrs.igrsiot.model.IgrsSensorDetail">
+    delete from igrs_sensor_detail where left(time, 10) = #{time}
+  </delete>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from igrs_sensor_detail
     where id = #{id,jdbcType=BIGINT}

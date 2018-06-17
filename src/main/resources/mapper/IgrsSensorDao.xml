@@ -25,10 +25,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsSensor" >
-    insert into igrs_sensor (id, type, value, 
-      date, hour)
-    values (#{id,jdbcType=BIGINT}, #{type,jdbcType=VARCHAR}, #{value,jdbcType=REAL}, 
-      #{date,jdbcType=TIMESTAMP}, #{hour,jdbcType=INTEGER})
+    insert into igrs_sensor(type, value, date, hour) values(#{type}, #{value}, #{date}, #{hour})
   </insert>
   <insert id="insertSelective" parameterType="com.igrs.igrsiot.model.IgrsSensor" >
     insert into igrs_sensor

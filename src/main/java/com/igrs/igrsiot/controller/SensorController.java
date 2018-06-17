@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -66,9 +67,8 @@ public class SensorController {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String curDate = df.format(new Date());
 
-        List<IgrsSensor> result = new ArrayList<>();
-
         if (date.equals("") || date.equals(curDate)) {
+            List<IgrsSensor> result = new ArrayList<>();
             try {
                 IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
                 igrsSensorDetail.setType(type);
@@ -97,26 +97,52 @@ public class SensorController {
             return result;
         }
         else {
-            logger.debug("date: {}", date);
+            IgrsSensor igrsSensor = new IgrsSensor();
+            igrsSensor.setDate(date);
+            igrsSensor.setType(type);
+            return igrsSensorService.getDataByDateAndType(igrsSensor);
+        }
+    }
 
-            logger.debug("date: {}", date);
-            IgrsSensor igrsSensor1 = new IgrsSensor();
-            igrsSensor1.setDate(date);
-            igrsSensor1.setType(type);
-//            return igrsSensorService.getDataByDateAndType(igrsSensor);
-            List<IgrsSensor> list = igrsSensorService.getDataByDateAndType(igrsSensor1);
-//            if (list.size() != 0) {
-//                for (int i=0; i<list.size(); i++) {
-//                    IgrsSensor igrsSensor = new IgrsSensor();
-//                    igrsSensor.setType(type);
-//                    igrsSensor.setValue(list.get(i).getValue());
-//                    igrsSensor.setDate(list.get(i).getDate());
-//                    igrsSensor.setHour(list.get(i).getHour());
-//                    result.add(igrsSensor);
-//                }
-//            }
-            logger.debug("list: {}, result: {}", list, result);
-            return list;
+    @RequestMapping("/sensor/history/generate")
+    public void generateSensorHistory() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date d = new Date();
+
+        Calendar cl = Calendar.getInstance();
+        cl.setTime(d);
+        cl.add(Calendar.DAY_OF_MONTH, -1);
+        d = cl.getTime();
+
+        String date = df.format(d);
+        logger.debug(date);
+
+        String[] type = {"pm25", "co2", "tvoc", "temperature", "humidity", "formaldehyde"};
+        List<IgrsSensorDetail> list = new ArrayList<>();
+        try {
+            String[] str, strTime;
+            IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
+            IgrsSensor igrsSensor = new IgrsSensor();
+            igrsSensorDetail.setTime(date);
+            for (int i=0; i<type.length; i++) {
+                igrsSensorDetail.setType(type[i]);
+                list = igrsSensorDetailService.getAvgDataByType(igrsSensorDetail);
+                if (list.size() != 0) {
+                    for (int j=0; j<list.size(); j++) {
+                        igrsSensor.setType(type[i]);
+                        igrsSensor.setValue(list.get(j).getValue());
+                        str = list.get(j).getTime().split(" ");
+                        igrsSensor.setDate(str[0]);
+                        strTime = str[1].split(":");
+                        igrsSensor.setHour(strTime[0]);
+                        igrsSensorService.insert(igrsSensor);
+                    }
+                }
+            }
+            igrsSensorDetailService.deleteDataByDate(igrsSensorDetail);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

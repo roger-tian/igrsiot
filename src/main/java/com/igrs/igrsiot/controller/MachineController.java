@@ -146,15 +146,13 @@ public class MachineController {
             deviceId = "后交互大屏";
         }
 
-        String msg = "machine" + index + "Volume:" + volume;
-        IgrsWebSocketService.sendAllMessage(msg);
-
+        int vol = 0;
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setDeviceId("machine" + index);
         igrsDeviceStatus.setAttribute("volume");
         IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
         if (status != null) {
-            int vol = Integer.parseInt(status.getValue());
+            vol = Integer.parseInt(status.getValue());
             if (volume.equals("1")) {   //volume increase
                 vol ++;
                 if (vol > 100) {
@@ -174,6 +172,9 @@ public class MachineController {
             igrsDeviceStatus.setValue("0");
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
+
+        String msg = "machine" + index + "Volume:" + vol;
+        IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsOperate igrsOperate = new IgrsOperate();
         igrsOperate.setDeviceId(deviceId);

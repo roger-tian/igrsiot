@@ -9,8 +9,11 @@
     <!--welcome pages-->
     <welcome-file-list>
         <!--<welcome-file>index.jsp</welcome-file>-->
-        <welcome-file>login.html</welcome-file>
+        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+    <error-page>
+        <location>/index.html</location>
+    </error-page>
 
     <!--配置springmvc DispatcherServlet-->
     <servlet>

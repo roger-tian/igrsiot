@@ -136,11 +136,11 @@ public class SocketController {
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
                 igrsDeviceStatus.setValue("1");
-                msg = "led1Switch:1";
+                msg = "led0Switch:1";
             }
             else {
                 igrsDeviceStatus.setValue("0");
-                msg = "led1Switch:0";
+                msg = "led0Switch:0";
             }
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
@@ -153,11 +153,11 @@ public class SocketController {
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
                 igrsDeviceStatus.setValue("1");
-                msg = "led2Switch:1";
+                msg = "led1Switch:1";
             }
             else {
                 igrsDeviceStatus.setValue("0");
-                msg = "led2Switch:0";
+                msg = "led1Switch:0";
             }
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 

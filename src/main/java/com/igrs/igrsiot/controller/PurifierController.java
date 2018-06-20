@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -46,6 +45,8 @@ public class PurifierController {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(str);
 
+            IgrsWebSocketService.sendAllMessage(str);
+
             IgrsOperate igrsOperate = new IgrsOperate();
             igrsOperate.setUser("admin");
             igrsOperate.setDeviceId("智能净化器");
@@ -77,14 +78,7 @@ public class PurifierController {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(str);
 
-            for (IgrsWebSocketService item: IgrsWebSocketService.getWebSocketSet()) {
-                try {
-                    item.sendMessage(str);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    continue;
-                }
-            }
+            IgrsWebSocketService.sendAllMessage(str);
         }
 
         return result;

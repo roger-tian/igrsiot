@@ -118,9 +118,9 @@ public class SocketService implements ServletContextListener {
                     String url;
                     String param;
                     boolean flag = true;
-                    url = "http://localhost:8080/igrsiot/control/purifier/query";
-                    param = "deviceId=" + "#lemx500s#78b3b912418f";
-                    HttpRequest.sendPost(url, param);
+                    //url = "http://localhost:8080/igrsiot/control/purifier/query";
+                    //param = "deviceId=" + "#lemx500s#78b3b912418f";
+                    //HttpRequest.sendPost(url, param);
 
                     Calendar cl = Calendar.getInstance();
                     int hour = cl.get(Calendar.HOUR_OF_DAY);

@@ -72,22 +72,22 @@ public class SocketController {
                 buff = "{ch_50:1}";
                 SocketService.cmdSend(buff);
 
+                igrsDeviceStatus.setDeviceId("machine0");
+                igrsDeviceStatus.setAttribute("switch");
+                igrsDeviceStatus.setValue("1");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
                 igrsDeviceStatus.setDeviceId("machine1");
                 igrsDeviceStatus.setAttribute("switch");
                 igrsDeviceStatus.setValue("1");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                igrsDeviceStatus.setDeviceId("machine2");
+                igrsDeviceStatus.setDeviceId("led0");
                 igrsDeviceStatus.setAttribute("switch");
                 igrsDeviceStatus.setValue("1");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
                 igrsDeviceStatus.setDeviceId("led1");
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("1");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-                igrsDeviceStatus.setDeviceId("led2");
                 igrsDeviceStatus.setAttribute("switch");
                 igrsDeviceStatus.setValue("1");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
@@ -107,24 +107,32 @@ public class SocketController {
         else if (buf.contains("ch_10:")) {
             String msg;
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setDeviceId("machine1");
-            igrsDeviceStatus.setAttribute("switch");
+            igrsDeviceStatus.setDeviceId("machine0");
             if (buf.endsWith(":1}")) {
+                igrsDeviceStatus.setAttribute("switch");
                 igrsDeviceStatus.setValue("1");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
                 msg = "machine1Switch:1";
+                IgrsWebSocketService.sendAllMessage(msg);
             }
             else {
+                igrsDeviceStatus.setAttribute("switch");
                 igrsDeviceStatus.setValue("0");
-                msg = "machine1Switch:0";
-            }
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-            IgrsWebSocketService.sendAllMessage(msg);
+                igrsDeviceStatus.setAttribute("sig_source");
+                igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
+                msg = "machine1Switch:0";
+                IgrsWebSocketService.sendAllMessage(msg);
+            }
         }
         else if (buf.contains("ch_20:")) {
             String msg;
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setDeviceId("led1");
+            igrsDeviceStatus.setDeviceId("led0");
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
                 igrsDeviceStatus.setValue("1");
@@ -141,7 +149,7 @@ public class SocketController {
         else if (buf.contains("ch_21:")) {
             String msg;
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setDeviceId("led2");
+            igrsDeviceStatus.setDeviceId("led1");
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
                 igrsDeviceStatus.setValue("1");
@@ -158,19 +166,27 @@ public class SocketController {
         else if (buf.contains("ch_50:")) {
             String msg;
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setDeviceId("machine2");
-            igrsDeviceStatus.setAttribute("switch");
+            igrsDeviceStatus.setDeviceId("machine1");
             if (buf.endsWith(":1}")) {
+                igrsDeviceStatus.setAttribute("switch");
                 igrsDeviceStatus.setValue("1");
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
                 msg = "machine2Switch:1";
+                IgrsWebSocketService.sendAllMessage(msg);
             }
             else {
+                igrsDeviceStatus.setAttribute("switch");
                 igrsDeviceStatus.setValue("0");
-                msg = "machine2Switch:0";
-            }
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-            IgrsWebSocketService.sendAllMessage(msg);
+                igrsDeviceStatus.setAttribute("sig_source");
+                igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+
+                msg = "machine2Switch:0";
+                IgrsWebSocketService.sendAllMessage(msg);
+            }
         }
         else if (buf.contains("ch_60:")) {
             String msg;

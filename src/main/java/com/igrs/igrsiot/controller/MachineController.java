@@ -54,6 +54,18 @@ public class MachineController {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
+        if (onOff.equals("0")) {
+            igrsDeviceStatus.setAttribute("sig_source");
+            igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
+            status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+            if (status != null) {
+                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+            }
+            else {
+                igrsDeviceStatusService.insert(igrsDeviceStatus);
+            }
+        }
+
         IgrsOperate igrsOperate = new IgrsOperate();
         igrsOperate.setDeviceId(deviceId);
         igrsOperate.setUser("admin");

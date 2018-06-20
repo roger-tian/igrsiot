@@ -113,7 +113,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                msg = "machine1Switch:1";
+                msg = "machine0Switch:1";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
             else {
@@ -125,7 +125,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                msg = "machine1Switch:0";
+                msg = "machine0Switch:0";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
         }
@@ -172,7 +172,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                msg = "machine2Switch:1";
+                msg = "machine1Switch:1";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
             else {
@@ -184,7 +184,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                msg = "machine2Switch:0";
+                msg = "machine1Switch:0";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
         }

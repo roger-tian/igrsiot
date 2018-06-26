@@ -5,7 +5,7 @@ import com.igrs.igrsiot.model.IgrsSensorDetail;
 import java.util.List;
 
 public interface IIgrsSensorDetailDao {
-    List<IgrsSensorDetail> getDataByType(String type);
+    List<IgrsSensorDetail> getDataByType(IgrsSensorDetail igrsSensorDetail);
 
     List<IgrsSensorDetail> getAvgDataByType(IgrsSensorDetail igrsSensorDetail);
 

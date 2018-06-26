@@ -14,8 +14,8 @@ public class IgrsOperateServiceImpl implements IIgrsOperateService {
     IIgrsOperateDao igrsOperateDao;
 
     @Override
-    public List<IgrsOperate> getAllOperates() {
-        return igrsOperateDao.getAllOperates();
+    public List<IgrsOperate> getOperatesByRoom(String room) {
+        return igrsOperateDao.getOperatesByRoom(room);
     }
 
     @Override

@@ -3,13 +3,14 @@
 <mapper namespace="com.igrs.igrsiot.dao.IIgrsOperateDao" >
   <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsOperate" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="room" property="room" jdbcType="VARCHAR" />
     <result column="user" property="user" jdbcType="VARCHAR" />
     <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP" />
     <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
     <result column="instruction" property="instruction" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user, operate_time, device_id, instruction
+    id, room, user, operate_time, device_id, instruction
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -17,17 +18,16 @@
     from igrs_operate
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="getAllOperates" resultMap="BaseResultMap">
-    select * from igrs_operate order by operate_time desc
+  <select id="getOperatesByRoom" resultMap="BaseResultMap" parameterType="String">
+    select * from igrs_operate where room=#{room} order by operate_time desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from igrs_operate
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsOperate" >
-    insert into igrs_operate (id, user, operate_time, 
-      device_id, instruction)
-    values (#{id,jdbcType=BIGINT}, #{user,jdbcType=VARCHAR}, #{operateTime,jdbcType=TIMESTAMP}, 
+    insert into igrs_operate (id, room, user, operate_time, device_id, instruction)
+    values (#{id,jdbcType=BIGINT}, #{room,jdbcType=VARCHAR} #{user,jdbcType=VARCHAR}, #{operateTime,jdbcType=TIMESTAMP},
       #{deviceId,jdbcType=VARCHAR}, #{instruction,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.igrs.igrsiot.model.IgrsOperate" >

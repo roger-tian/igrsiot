@@ -9,6 +9,14 @@ public class IgrsDeviceStatus {
         this.id = id;
     }
 
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -34,6 +42,7 @@ public class IgrsDeviceStatus {
     }
 
     private Long id;
+    private String room;
     private String deviceId;
     private String attribute;
     private String value;

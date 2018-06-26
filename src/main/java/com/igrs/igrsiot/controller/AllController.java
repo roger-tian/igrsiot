@@ -24,26 +24,26 @@ public class AllController {
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/all")
-    public String allOnOff(String onOff) throws InterruptedException {
+    public String allOnOff(String room, String onOff) throws InterruptedException {
         String cmd;
         String instruction;
         if (onOff.equals("1")) {
             cmd = "{ch_10:1,ch_20:1,ch_21:1}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             Thread.sleep(1000);
             cmd = "{ch_60:1}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             Thread.sleep(1000);
             cmd = "{ch_50:1}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             instruction = "总开关打开";
         }
         else {
             cmd = "{ch_10:0,ch_50:0,ch_20:0,ch_21:0,ch_60:0}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             Thread.sleep(5000);
             cmd = "{ch_10:0,ch_50:0}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             instruction = "总开关关闭";
         }
 
@@ -54,9 +54,10 @@ public class AllController {
         IgrsDeviceStatus status;
 
         //update db
+        igrsDeviceStatus.setRoom(room);
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
-        //machine1 switch
+        //machine0 switch
         igrsDeviceStatus.setDeviceId("machine1");
         status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
         if (status != null) {
@@ -66,7 +67,7 @@ public class AllController {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        //machine2 switch
+        //machine1 switch
         igrsDeviceStatus.setDeviceId("machine2");
         status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
         if (status != null) {
@@ -76,7 +77,7 @@ public class AllController {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        //led1 switch
+        //led0 switch
         igrsDeviceStatus.setDeviceId("led1");
         status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
         if (status != null) {
@@ -86,7 +87,7 @@ public class AllController {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        //led2 switch
+        //led1 switch
         igrsDeviceStatus.setDeviceId("led2");
         status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
         if (status != null) {
@@ -107,6 +108,7 @@ public class AllController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setRoom(room);
         igrsOperate.setDeviceId("总开关");
         igrsOperate.setUser("admin");
         igrsOperate.setInstruction(instruction);

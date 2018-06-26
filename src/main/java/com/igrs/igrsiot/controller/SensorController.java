@@ -26,13 +26,17 @@ public class SensorController {
     private IIgrsSensorService igrsSensorService;
 
     @RequestMapping("/sensor")
-    public String getSensorData() {
+    public String getSensorData(String room) {
         String result = "";
         List<IgrsSensorDetail> list;
         String[] type = {"pm25", "co2", "tvoc", "temperature", "humidity", "formaldehyde"};
 
+        IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
+        igrsSensorDetail.setRoom(room);
+
         for (int i=0; i<type.length; i++) {
-            list = igrsSensorDetailService.getDataByType(type[i]);
+            igrsSensorDetail.setType(type[i]);
+            list = igrsSensorDetailService.getDataByType(igrsSensorDetail);
             if (list.size() != 0) {
                 if (i == 0) {
                     result = list.get(0).getValue();
@@ -56,7 +60,7 @@ public class SensorController {
     }
 
     @RequestMapping("/sensor/history")
-    public List<IgrsSensor> getSensorHistoryData(String date, String type) throws ParseException {
+    public List<IgrsSensor> getSensorHistoryData(String room, String date, String type) throws ParseException {
         if (date.contains("T")) {
             date = date.replace("Z", " UTC");
             SimpleDateFormat uf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
@@ -71,6 +75,7 @@ public class SensorController {
             List<IgrsSensor> result = new ArrayList<>();
             try {
                 IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
+                igrsSensorDetail.setRoom(room);
                 igrsSensorDetail.setType(type);
                 igrsSensorDetail.setTime(curDate);
                 List<IgrsSensorDetail> list = igrsSensorDetailService.getAvgDataByType(igrsSensorDetail);
@@ -79,6 +84,7 @@ public class SensorController {
                     String[] strTime;
                     for (int i=0; i<list.size(); i++) {
                         IgrsSensor igrsSensor = new IgrsSensor();
+                        igrsSensor.setRoom(room);
                         igrsSensor.setType(type);
                         igrsSensor.setValue(list.get(i).getValue());
                         str = list.get(i).getTime().split(" ");
@@ -129,6 +135,7 @@ public class SensorController {
                 list = igrsSensorDetailService.getAvgDataByType(igrsSensorDetail);
                 if (list.size() != 0) {
                     for (int j=0; j<list.size(); j++) {
+                        igrsSensor.setRoom(list.get(j).getRoom());
                         igrsSensor.setType(type[i]);
                         igrsSensor.setValue(list.get(j).getValue());
                         str = list.get(j).getTime().split(" ");

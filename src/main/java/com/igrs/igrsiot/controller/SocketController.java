@@ -25,11 +25,12 @@ public class SocketController {
     private IIgrsSensorDetailService igrsSensorDetailService;
 
     @RequestMapping("/socketdata/handle")
-    public String socketDataHandler(String buf) throws InterruptedException {
+    public String socketDataHandler(String room, String buf) throws InterruptedException {
         String buff;
 
         if (buf.contains("ch_40:")) {
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+            igrsDeviceStatus.setRoom(room);
             igrsDeviceStatus.setDeviceId("welcomemode");
             igrsDeviceStatus.setAttribute("switch");
             IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
@@ -41,7 +42,10 @@ public class SocketController {
                 IgrsWebSocketService.sendAllMessage(msg);
 
                 float temp;
-                List<IgrsSensorDetail> list = igrsSensorDetailService.getDataByType("temperature");
+                IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
+                igrsSensorDetail.setRoom(room);
+                igrsSensorDetail.setType("temperature");
+                List<IgrsSensorDetail> list = igrsSensorDetailService.getDataByType(igrsSensorDetail);
                 if (list.size() != 0) {
                     temp = Float.parseFloat(list.get(0).getValue());
                 }
@@ -52,25 +56,25 @@ public class SocketController {
                 logger.debug("temp: {}", temp);
                 if (temp < 26.0) {
                     buff = "{ch_30:1}";
-                    SocketService.cmdSend(buff);
+                    SocketService.cmdSend(room, buff);
                 }
                 else {
                     buff = "{ch_30:2}";
-                    SocketService.cmdSend(buff);
+                    SocketService.cmdSend(room, buff);
                 }
 
                 Thread.sleep(12000);
 
                 buff = "{ch_10:1,ch_20:1,ch_21:1}";
-                SocketService.cmdSend(buff);
+                SocketService.cmdSend(room, buff);
 
                 Thread.sleep(1000);
                 buff = "{ch_60:1}";
-                SocketService.cmdSend(buff);
+                SocketService.cmdSend(room, buff);
 
                 Thread.sleep(1000);
                 buff = "{ch_50:1}";
-                SocketService.cmdSend(buff);
+                SocketService.cmdSend(room, buff);
 
                 igrsDeviceStatus.setDeviceId("machine0");
                 igrsDeviceStatus.setAttribute("switch");
@@ -107,6 +111,7 @@ public class SocketController {
         else if (buf.contains("ch_10:")) {
             String msg;
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+            igrsDeviceStatus.setRoom(room);
             igrsDeviceStatus.setDeviceId("machine0");
             if (buf.endsWith(":1}")) {
                 igrsDeviceStatus.setAttribute("switch");
@@ -132,6 +137,7 @@ public class SocketController {
         else if (buf.contains("ch_20:")) {
             String msg;
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+            igrsDeviceStatus.setRoom(room);
             igrsDeviceStatus.setDeviceId("led0");
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
@@ -149,6 +155,7 @@ public class SocketController {
         else if (buf.contains("ch_21:")) {
             String msg;
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+            igrsDeviceStatus.setRoom(room);
             igrsDeviceStatus.setDeviceId("led1");
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
@@ -166,6 +173,7 @@ public class SocketController {
         else if (buf.contains("ch_50:")) {
             String msg;
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+            igrsDeviceStatus.setRoom(room);
             igrsDeviceStatus.setDeviceId("machine1");
             if (buf.endsWith(":1}")) {
                 igrsDeviceStatus.setAttribute("switch");
@@ -191,6 +199,7 @@ public class SocketController {
         else if (buf.contains("ch_60:")) {
             String msg;
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+            igrsDeviceStatus.setRoom(room);
             igrsDeviceStatus.setDeviceId("curtain");
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
@@ -219,6 +228,7 @@ public class SocketController {
             String time = df.format(new Date());
 
             IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
+            igrsSensorDetail.setRoom(room);
             igrsSensorDetail.setTime(time);
 
             results = buf.split(",");

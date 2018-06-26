@@ -24,18 +24,18 @@ public class MachineController {
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/machine")
-    public String machineOnOff(String index, String onOff) {
+    public String machineOnOff(String room, String index, String onOff) {
         String instruction;
         String deviceId;
 
         if (index.equals("0")) {
             String cmd = "{ch_10:" + onOff + "}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             deviceId = "前交互大屏";
         }
         else {
             String cmd = "{ch_50:" + onOff + "}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             deviceId = "后交互大屏";
         }
 
@@ -43,6 +43,7 @@ public class MachineController {
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setRoom(room);
         igrsDeviceStatus.setDeviceId("machine" + index);
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
@@ -67,6 +68,7 @@ public class MachineController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setRoom(room);
         igrsOperate.setDeviceId(deviceId);
         igrsOperate.setUser("admin");
         if (onOff.equals("1")) {
@@ -85,18 +87,18 @@ public class MachineController {
     }
 
     @RequestMapping("/machineSig")
-    public String machineSigSource(String index, String sigSource) {
+    public String machineSigSource(String room, String index, String sigSource) {
         String instruction;
         String deviceId;
 
         if (index.equals("0")) {
             String cmd = "{ch_12:" + sigSource + "}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             deviceId = "前交互大屏";
         }
         else {
             String cmd = "{ch_52:" + sigSource + "}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             deviceId = "后交互大屏";
         }
 
@@ -104,6 +106,7 @@ public class MachineController {
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setRoom(room);
         igrsDeviceStatus.setDeviceId("machine" + index);
         igrsDeviceStatus.setAttribute("sig_source");
         igrsDeviceStatus.setValue(sigSource);
@@ -116,6 +119,7 @@ public class MachineController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setRoom(room);
         igrsOperate.setDeviceId(deviceId);
         igrsOperate.setUser("admin");
         if (sigSource.equals("1")) {
@@ -143,23 +147,24 @@ public class MachineController {
     }
 
     @RequestMapping("/machineVol")
-    public String machineVolume(String index, String volume) {
+    public String machineVolume(String room, String index, String volume) {
         String instruction;
         String deviceId;
 
         if (index.equals("0")) {
             String cmd = "{ch_11:" + volume + "}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             deviceId = "前交互大屏";
         }
         else {
             String cmd = "{ch_51:" + volume + "}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             deviceId = "后交互大屏";
         }
 
         int vol = 0;
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setRoom(room);
         igrsDeviceStatus.setDeviceId("machine" + index);
         igrsDeviceStatus.setAttribute("volume");
         IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
@@ -189,6 +194,7 @@ public class MachineController {
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setRoom(room);
         igrsOperate.setDeviceId(deviceId);
         igrsOperate.setUser("admin");
         if (volume.equals("1")) {

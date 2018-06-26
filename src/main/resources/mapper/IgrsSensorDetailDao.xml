@@ -3,12 +3,13 @@
 <mapper namespace="com.igrs.igrsiot.dao.IIgrsSensorDetailDao" >
   <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsSensorDetail" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="room" property="room" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="value" property="value" jdbcType="REAL" />
     <result column="time" property="time" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, type, value, time
+    id, room, type, value, time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -16,11 +17,11 @@
     from igrs_sensor_detail
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="getDataByType" resultMap="BaseResultMap" parameterType="String">
-    select * from igrs_sensor_detail where type=#{type} order by time desc
+  <select id="getDataByType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsSensorDetail">
+    select * from igrs_sensor_detail where room=#{room} and type=#{type} order by time desc
   </select>
   <select id="getAvgDataByType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsSensorDetail">
-    select any_value(id) as id,type,avg(value) as value,any_value(time) as time from igrs_sensor_detail where type=#{type} and left(time,10)=#{time} group by left(time,13) order by time
+    select any_value(id) as id,room,type,avg(value) as value,any_value(time) as time from igrs_sensor_detail where room=#{room} and type=#{type} and left(time,10)=#{time} group by left(time,13) order by time
   </select>
   <delete id="deleteDataByDate" parameterType="com.igrs.igrsiot.model.IgrsSensorDetail">
     delete from igrs_sensor_detail where left(time, 10) = #{time}
@@ -30,8 +31,8 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsSensorDetail" >
-    insert into igrs_sensor_detail (type, value, time)
-    values (#{type,jdbcType=VARCHAR}, #{value,jdbcType=REAL}, #{time,jdbcType=TIMESTAMP})
+    insert into igrs_sensor_detail (room, type, value, time)
+    values (#{room,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{value,jdbcType=REAL}, #{time,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.igrs.igrsiot.model.IgrsSensorDetail" >
     insert into igrs_sensor_detail

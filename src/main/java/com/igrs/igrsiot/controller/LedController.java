@@ -24,18 +24,18 @@ public class LedController {
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/led")
-    public String led1OnOff(String index, String onOff) {
+    public String led1OnOff(String room, String index, String onOff) {
         String instruction;
         String deviceId;
 
         if (index.equals("0")) {
             String cmd = "{ch_20:" + onOff + "}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             deviceId = "智能灯一";
         }
         else {
             String cmd = "{ch_21:" + onOff + "}";
-            SocketService.cmdSend(cmd);
+            SocketService.cmdSend(room, cmd);
             deviceId = "智能灯二";
         }
 
@@ -43,6 +43,7 @@ public class LedController {
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setRoom(room);
         igrsDeviceStatus.setDeviceId("led" + index);
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
@@ -55,6 +56,7 @@ public class LedController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setRoom(room);
         igrsOperate.setDeviceId(deviceId);
         igrsOperate.setUser("admin");
         if (onOff.equals("1")) {

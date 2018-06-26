@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.service;
 
+import com.igrs.igrsiot.model.IgrsRoom;
 import com.igrs.igrsiot.utils.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +12,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
-import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class SocketService implements ServletContextListener {
     public class socketThread extends Thread {
@@ -26,6 +25,7 @@ public class SocketService implements ServletContextListener {
                             SocketChannel sc = server.accept();
                             sc.configureBlocking(false);
                             sc.register(selector, SelectionKey.OP_READ);
+                            logger.debug("client ip: {}", sc.getRemoteAddress());
                             sk.interestOps(SelectionKey.OP_ACCEPT);
                         }
                         if (sk.isReadable()) {
@@ -78,21 +78,32 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
-//            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
+//            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+            InetSocketAddress isa = new InetSocketAddress("10.1.31.94", 8086);
             server.socket().bind(isa);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT);
         }
     }
 
-    public static int cmdSend(String buf) {
+    public static int cmdSend(String room, String buf) {
+        int i;
+        for (i=0; i<igrsClient.size(); i++) {
+            if (igrsClient.get(i).getRoom().equals(room)) {
+                break;
+            }
+        }
+
         try {
             for (SelectionKey key : selector.keys()) {
                 Channel targetChannel = key.channel();
                 if (targetChannel instanceof SocketChannel) {
                     SocketChannel dest = (SocketChannel) targetChannel;
-                    dest.write(charset.encode(buf));
+                    String remoteAddress = String.valueOf(dest.getRemoteAddress());
+                    if (remoteAddress.contains(igrsClient.get(i).getClientIp())) {
+                        logger.debug("send command {} to {}", buf, igrsClient.get(i).getClientIp());
+                        dest.write(charset.encode(buf));
+                    }
                 }
             }
         }
@@ -122,10 +133,29 @@ public class SocketService implements ServletContextListener {
                     //param = "deviceId=" + "#lemx500s#78b3b912418f";
                     //HttpRequest.sendPost(url, param);
 
+                    if (igrsClient == null) {
+                        url = "http://localhost:8080/igrsiot/control/room";
+                        param = "";
+                        String result = HttpRequest.sendPost(url, param);
+                        logger.debug("result: {}", result);
+                        if (result.length() != 0) {
+                            igrsClient = new ArrayList<>();
+                            String[] list = result.split(",");
+                            String[] list1;
+                            for (int i=0; i<list.length; i++) {
+                                list1 = list[i].split(":");
+                                IgrsRoom igrsRoom = new IgrsRoom();
+                                igrsRoom.setRoom(list1[0]);
+                                igrsRoom.setClientIp(list1[1]);
+                                igrsClient.add(igrsRoom);
+                            }
+                        }
+                    }
+
                     Calendar cl = Calendar.getInstance();
                     int hour = cl.get(Calendar.HOUR_OF_DAY);
                     int minute = cl.get(Calendar.MINUTE);
-                    logger.debug("time: {}-{}", hour, minute);
+                    //logger.debug("time: {}-{}", hour, minute);
                     if ((hour == 1) && (minute == 0)) {
                         if (flag) {
                             flag = false;
@@ -143,7 +173,7 @@ public class SocketService implements ServletContextListener {
                         HttpRequest.sendPost(url, param);
                     }
                 }
-            }, 10000, 10000);
+            }, 10000, 30000);
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -159,6 +189,7 @@ public class SocketService implements ServletContextListener {
     private ServerSocketChannel server;
     private static Selector selector;
     private SocketChannel sc;
+    private static List<IgrsRoom> igrsClient = null;
 
     private static final Logger logger = LoggerFactory.getLogger(SocketService.class);
 }

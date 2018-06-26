@@ -24,17 +24,18 @@ public class CurtainController {
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/curtain")
-    public String curtainOnOff(String onOff) {
+    public String curtainOnOff(String room, String onOff) {
         String instruction;
 
         logger.debug("curtainOnOff: {}", onOff);
         String cmd = "{ch_60:" + onOff + "}";   // 0,1,2--off,on,pause
-        SocketService.cmdSend(cmd);
+        SocketService.cmdSend(room, cmd);
 
         String msg = "curtainSwitch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setRoom(room);
         igrsDeviceStatus.setDeviceId("curtain");
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
@@ -47,6 +48,7 @@ public class CurtainController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
+        igrsOperate.setRoom(room);
         igrsOperate.setDeviceId("智能窗帘");
         igrsOperate.setUser("admin");
         if (onOff.equals("1")) {

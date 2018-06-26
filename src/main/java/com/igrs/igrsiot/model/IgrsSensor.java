@@ -9,6 +9,14 @@ public class IgrsSensor {
         this.id = id;
     }
 
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
     public String getType() {
         return type;
     }
@@ -42,6 +50,7 @@ public class IgrsSensor {
     }
 
     private Long id;
+    private String room;
     private String type;
     private String value;
     private String date;

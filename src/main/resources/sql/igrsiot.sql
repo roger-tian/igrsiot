@@ -29,53 +29,67 @@ CREATE TABLE `igrs_user` (
   `user` varchar(22) DEFAULT NULL,
   `password` varchar(22) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=920 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `igrs_device_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `igrs_device_status` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `room` varchar(22) DEFAULT NULL,
   `device_id` varchar(22) DEFAULT NULL,
   `attribute` varchar(22) DEFAULT NULL,
   `value` varchar(22) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=920 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `igrs_operate`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `igrs_operate` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `room` varchar(22) DEFAULT NULL,
   `user` varchar(22) DEFAULT NULL,
   `operate_time` datetime DEFAULT NULL,
   `device_id` varchar(22) DEFAULT NULL,
   `instruction` varchar(22) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=920 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `igrs_sensor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `igrs_sensor` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `room` varchar(22) DEFAULT NULL,
   `type` varchar(22) DEFAULT NULL,
   `value` FLOAT(10,3) DEFAULT NULL,
   `date` datetime DEFAULT NULL,
   `hour` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=920 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `igrs_sensor_detail`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `igrs_sensor_detail` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `room` varchar(22) DEFAULT NULL,
   `type` varchar(22) DEFAULT NULL,
   `value` FLOAT(10,3) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=920 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `igrs_room`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `igrs_room` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `room` varchar(22) DEFAULT NULL,
+  `client_ip` varchar(16) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -9,6 +9,14 @@ public class IgrsOperate {
         this.id = id;
     }
 
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
     public String getUser() {
         return user;
     }
@@ -50,6 +58,7 @@ public class IgrsOperate {
     }
 
     private Long id;
+    private String room;
     private String user;
     private String operateTime;
     private String deviceId;

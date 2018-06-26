@@ -29,6 +29,7 @@ public class PurifierController {
         String param;
         String instruction;
 
+        String room = request.getParameter("room");
         String deviceId = request.getParameter("deviceId");
         param = "deviceId=" + deviceId;
         String lock = request.getParameter("lock");
@@ -43,11 +44,12 @@ public class PurifierController {
         String result = HttpRequest.sendPost(url, param);
         if (!result.equals("")) {
             String str = result.substring(result.indexOf("pw::"));
-            purifierDataHandler(str);
+            purifierDataHandler(room, str);
 
             IgrsWebSocketService.sendAllMessage(str);
 
             IgrsOperate igrsOperate = new IgrsOperate();
+            igrsOperate.setRoom(room);
             igrsOperate.setUser("admin");
             igrsOperate.setDeviceId("智能净化器");
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -68,6 +70,7 @@ public class PurifierController {
 
     @RequestMapping("/purifier/query")
     public String sendPurifierQuery(HttpServletRequest request) {
+        String room = request.getParameter("room");
         String deviceId = request.getParameter("deviceId");
         String param = "deviceId=" + deviceId;
 
@@ -76,7 +79,7 @@ public class PurifierController {
         String result = HttpRequest.sendPost(url, param);
         if (!result.equals("")) {
             String str = result.substring(result.indexOf("pw::"));
-            purifierDataHandler(str);
+            purifierDataHandler(room, str);
 
             IgrsWebSocketService.sendAllMessage(str);
         }
@@ -84,9 +87,10 @@ public class PurifierController {
         return result;
     }
 
-    private String purifierDataHandler(String data) {
+    private String purifierDataHandler(String room, String data) {
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         IgrsDeviceStatus status;
+        igrsDeviceStatus.setRoom(room);
         igrsDeviceStatus.setDeviceId("purifier");
 
         String strSet1[] = data.split(",");
@@ -174,7 +178,7 @@ public class PurifierController {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
                     }
                     break;
-                case "uv":      //UV
+                case "uv":      //Uv
                     igrsDeviceStatus.setAttribute("uv");
                     if (strSet2[1].equals("10")) {
                         igrsDeviceStatus.setValue("1");

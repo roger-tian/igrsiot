@@ -23,11 +23,12 @@ public class OperateController {
     @RequestMapping("/operate")
     public List<IgrsOperate> getOperateData(HttpServletRequest request) throws ParseException {
         List<IgrsOperate> listResult = new ArrayList<>();
+        String room = request.getParameter("room");
         String totalPage;
         String pageNo = request.getParameter("pageNo");
         int curRecord = (Integer.parseInt(pageNo) - 1) * 10;
 
-        List<IgrsOperate> list = igrsOperateService.getAllOperates();
+        List<IgrsOperate> list = igrsOperateService.getOperatesByRoom(room);
         totalPage = String.format("%d", (list.size()-1)/10+1);
 
         for (int i=curRecord; i<curRecord+10; i++) {
@@ -35,6 +36,7 @@ public class OperateController {
                 break;
             }
             IgrsOperate operate = new IgrsOperate();
+            operate.setRoom(list.get(i).getRoom());
             operate.setUser(list.get(i).getUser());
             operate.setDeviceId(list.get(i).getDeviceId());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

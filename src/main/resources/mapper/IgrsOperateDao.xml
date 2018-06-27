@@ -27,7 +27,7 @@
   </delete>
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsOperate" >
     insert into igrs_operate (id, room, user, operate_time, device_id, instruction)
-    values (#{id,jdbcType=BIGINT}, #{room,jdbcType=VARCHAR} #{user,jdbcType=VARCHAR}, #{operateTime,jdbcType=TIMESTAMP},
+    values (#{id,jdbcType=BIGINT}, #{room,jdbcType=VARCHAR}, #{user,jdbcType=VARCHAR}, #{operateTime,jdbcType=TIMESTAMP},
       #{deviceId,jdbcType=VARCHAR}, #{instruction,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.igrs.igrsiot.model.IgrsOperate" >

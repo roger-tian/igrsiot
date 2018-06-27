@@ -38,7 +38,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("0");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                String msg = "welcomeModeSwitch:0";
+                String msg = "room:" + room + ",welcomeModeSwitch:0";
                 IgrsWebSocketService.sendAllMessage(msg);
 
                 float temp;
@@ -101,7 +101,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                msg = "allSwitch:1";
+                msg = "room:" + room + ",allSwitch:1";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
         }
@@ -118,7 +118,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                msg = "machine0Switch:1";
+                msg = "room:" + room + ",machine0Switch:1";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
             else {
@@ -130,7 +130,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                msg = "machine0Switch:0";
+                msg = "room:" + room + ",machine0Switch:0";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
         }
@@ -142,11 +142,11 @@ public class SocketController {
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
                 igrsDeviceStatus.setValue("1");
-                msg = "led0Switch:1";
+                msg = "room:" + room + ",led0Switch:1";
             }
             else {
                 igrsDeviceStatus.setValue("0");
-                msg = "led0Switch:0";
+                msg = "room:" + room + ",led0Switch:0";
             }
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
@@ -160,11 +160,11 @@ public class SocketController {
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
                 igrsDeviceStatus.setValue("1");
-                msg = "led1Switch:1";
+                msg = "room:" + room + ",led1Switch:1";
             }
             else {
                 igrsDeviceStatus.setValue("0");
-                msg = "led1Switch:0";
+                msg = "room:" + room + ",led1Switch:0";
             }
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
@@ -180,7 +180,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1");
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                msg = "machine1Switch:1";
+                msg = "room:" + room + ",machine1Switch:1";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
             else {
@@ -192,7 +192,7 @@ public class SocketController {
                 igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
                 igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
-                msg = "machine1Switch:0";
+                msg = "room:" + room + ",machine1Switch:0";
                 IgrsWebSocketService.sendAllMessage(msg);
             }
         }
@@ -204,11 +204,11 @@ public class SocketController {
             igrsDeviceStatus.setAttribute("switch");
             if (buf.endsWith(":1}")) {
                 igrsDeviceStatus.setValue("1");
-                msg = "curtainSwitch:1";
+                msg = "room:" + room + ",curtainSwitch:1";
             }
             else {
                 igrsDeviceStatus.setValue("0");
-                msg = "curtainSwitch:0";
+                msg = "room:" + room + ",curtainSwitch:0";
             }
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
 
@@ -271,7 +271,7 @@ public class SocketController {
                     igrsSensorDetailService.insert(igrsSensorDetail);
                 }
                 else if (cells[0].contains("hcho")) {
-                    formaldehyde = cells[1].substring(0, cells[1].length()-2);
+                    formaldehyde = cells[1].substring(0, cells[1].length()-1);
                     igrsSensorDetail.setType("formaldehyde");
                     igrsSensorDetail.setValue(formaldehyde);
                     logger.debug("formaldehyde: {}", igrsSensorDetail.getValue());
@@ -279,7 +279,7 @@ public class SocketController {
                 }
             }
 
-            String msg = "pm25:" + pm25 + ",co2:" + co2 + ",tvoc:" + tvoc + ",temperature:" +
+            String msg = "room:" + room + "," + "pm25:" + pm25 + ",co2:" + co2 + ",tvoc:" + tvoc + ",temperature:" +
                     temperature + ",humidity:" + humidity + ",formaldehyde:" + formaldehyde;
             IgrsWebSocketService.sendAllMessage(msg);
         }

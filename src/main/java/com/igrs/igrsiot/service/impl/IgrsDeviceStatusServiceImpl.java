@@ -14,8 +14,8 @@ public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
     IIgrsDeviceStatusDao igrsDeviceStatusDao;
 
     @Override
-    public List<IgrsDeviceStatus> getAllStatus() {
-        return igrsDeviceStatusDao.getAllStatus();
+    public List<IgrsDeviceStatus> getAllStatus(IgrsDeviceStatus igrsDeviceStatus) {
+        return igrsDeviceStatusDao.getAllStatus(igrsDeviceStatus);
     }
 
     @Override

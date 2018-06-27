@@ -39,7 +39,8 @@ public class MachineController {
             deviceId = "后交互大屏";
         }
 
-        String msg = "machine" + index + "Switch:" + onOff;
+        String msg = "room:" + room;
+        msg += "," + "machine" + index + "Switch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
@@ -102,7 +103,8 @@ public class MachineController {
             deviceId = "后交互大屏";
         }
 
-        String msg = "machine" + index + "Sig:" + sigSource;
+        String msg = "room:" + room;
+        msg += "," + "machine" + index + "Sig:" + sigSource;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
@@ -190,7 +192,8 @@ public class MachineController {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        String msg = "machine" + index + "Volume:" + vol;
+        String msg = "room:" + room;
+        msg += "," + "machine" + index + "Volume:" + vol;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsOperate igrsOperate = new IgrsOperate();

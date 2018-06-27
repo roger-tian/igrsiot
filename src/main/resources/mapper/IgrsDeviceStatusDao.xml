@@ -22,7 +22,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <select id="getAllStatus" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
-    select * from igrs_device_status
+    select * from igrs_device_status where room=#{room}
   </select>
   <select id="selectByDeviceIdAndAttribute" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
     select * from igrs_device_status where room=#{room} and device_id=#{deviceId} and attribute=#{attribute}

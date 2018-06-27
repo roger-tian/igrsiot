@@ -47,7 +47,8 @@ public class AllController {
             instruction = "总开关关闭";
         }
 
-        String msg = "allSwitch:" + onOff;
+        String msg = "room:" + room;
+        msg += "," + "allSwitch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();

@@ -46,9 +46,20 @@ public class SocketService implements ServletContextListener {
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
-                                            String param = "buf=" + buf;
-                                            String result = HttpRequest.sendPost(url, param);
+                                            String remoteAddress = null;
+                                            try {
+                                                remoteAddress = String.valueOf(sc.getRemoteAddress());
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            for (int i=0; i<igrsClient.size(); i++) {
+                                                if (remoteAddress.contains(igrsClient.get(i).getClientIp())) {
+                                                    String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
+                                                    String param = "room=" + igrsClient.get(i).getRoom() + "&" + "buf=" + buf;
+                                                    logger.debug("param: {}", param);
+                                                    String result = HttpRequest.sendPost(url, param);
+                                                }
+                                            }
                                         }
                                     }).start();
                                 }
@@ -79,7 +90,7 @@ public class SocketService implements ServletContextListener {
             selector = Selector.open();
             server = ServerSocketChannel.open();
 //            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
-            InetSocketAddress isa = new InetSocketAddress("10.1.31.94", 8086);
+            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
             server.socket().bind(isa);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT);

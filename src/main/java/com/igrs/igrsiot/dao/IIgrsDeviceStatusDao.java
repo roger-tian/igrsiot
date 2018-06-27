@@ -7,7 +7,7 @@ import java.util.List;
 public interface IIgrsDeviceStatusDao {
     int deleteByPrimaryKey(Long id);
 
-    List<IgrsDeviceStatus> getAllStatus();
+    List<IgrsDeviceStatus> getAllStatus(IgrsDeviceStatus igrsDeviceStatus);
 
     IgrsDeviceStatus selectByDeviceIdAndAttribute(IgrsDeviceStatus igrsDeviceStatus);
 

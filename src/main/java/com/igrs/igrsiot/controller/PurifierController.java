@@ -46,7 +46,9 @@ public class PurifierController {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(room, str);
 
-            IgrsWebSocketService.sendAllMessage(str);
+            String msg = "room:" + room;
+            msg += "," + str;
+            IgrsWebSocketService.sendAllMessage(msg);
 
             IgrsOperate igrsOperate = new IgrsOperate();
             igrsOperate.setRoom(room);
@@ -81,7 +83,9 @@ public class PurifierController {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(room, str);
 
-            IgrsWebSocketService.sendAllMessage(str);
+            String msg = "room:" + room;
+            msg += "," + str;
+            IgrsWebSocketService.sendAllMessage(msg);
         }
 
         return result;

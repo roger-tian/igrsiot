@@ -39,7 +39,8 @@ public class LedController {
             deviceId = "智能灯二";
         }
 
-        String msg = "led" + index + "Switch:" + onOff;
+        String msg = "room:" + room;
+        msg += "," + "led" + index + "Switch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();

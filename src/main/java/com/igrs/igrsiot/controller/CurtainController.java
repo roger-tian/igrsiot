@@ -27,11 +27,11 @@ public class CurtainController {
     public String curtainOnOff(String room, String onOff) {
         String instruction;
 
-        logger.debug("curtainOnOff: {}", onOff);
         String cmd = "{ch_60:" + onOff + "}";   // 0,1,2--off,on,pause
         SocketService.cmdSend(room, cmd);
 
-        String msg = "curtainSwitch:" + onOff;
+        String msg = "room:" + room;
+        msg += "," + "curtainSwitch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();

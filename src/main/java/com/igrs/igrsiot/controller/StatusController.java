@@ -2,8 +2,11 @@ package com.igrs.igrsiot.controller;
 
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
+import com.igrs.igrsiot.model.IgrsRoom;
 import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import com.igrs.igrsiot.service.IIgrsOperateService;
+import com.igrs.igrsiot.service.IIgrsRoomService;
+import com.igrs.igrsiot.service.IgrsWebSocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +24,24 @@ public class StatusController {
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
+    @Autowired
+    private IIgrsRoomService igrsRoomService;
 
     @RequestMapping("/status")
-    public List<IgrsDeviceStatus> getDeviceStatus() {
-        return igrsDeviceStatusService.getAllStatus();
+    public List<IgrsDeviceStatus> getDeviceStatus(String room) {
+        logger.debug("--------room: {}", room);
+        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setRoom(room);
+        return igrsDeviceStatusService.getAllStatus(igrsDeviceStatus);
     }
 
     @RequestMapping("/welcomemode")
     public String welcomeMode(String room, String onOff) {
         String instruction;
+
+        String msg = "room:" + room;
+        msg += "," + "welcomeModeSwitch:" + onOff;
+        IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setRoom(room);
@@ -65,6 +77,12 @@ public class StatusController {
 
     @RequestMapping("/welcomemode/auto")
     public String welcomeModeAuto() {
+        List<IgrsRoom> list = igrsRoomService.selectAll();
+        for (int i=0; i<list.size(); i++) {
+            String msg = "room:" + list.get(i).getRoom() + ",welcomemode:1";
+            IgrsWebSocketService.sendAllMessage(msg);
+        }
+
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setDeviceId("welcomemode");
         igrsDeviceStatus.setAttribute("switch");

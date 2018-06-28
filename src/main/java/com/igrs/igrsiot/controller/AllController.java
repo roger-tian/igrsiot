@@ -59,7 +59,7 @@ public class AllController {
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
         //machine0 switch
-        igrsDeviceStatus.setDeviceId("machine1");
+        igrsDeviceStatus.setDeviceId("machine0");
         status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
         if (status != null) {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
@@ -69,7 +69,7 @@ public class AllController {
         }
 
         //machine1 switch
-        igrsDeviceStatus.setDeviceId("machine2");
+        igrsDeviceStatus.setDeviceId("machine1");
         status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
         if (status != null) {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
@@ -79,7 +79,7 @@ public class AllController {
         }
 
         //led0 switch
-        igrsDeviceStatus.setDeviceId("led1");
+        igrsDeviceStatus.setDeviceId("led0");
         status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
         if (status != null) {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
@@ -89,7 +89,7 @@ public class AllController {
         }
 
         //led1 switch
-        igrsDeviceStatus.setDeviceId("led2");
+        igrsDeviceStatus.setDeviceId("led1");
         status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
         if (status != null) {
             igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);

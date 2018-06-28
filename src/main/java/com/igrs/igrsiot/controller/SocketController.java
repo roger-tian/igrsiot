@@ -271,7 +271,8 @@ public class SocketController {
                     igrsSensorDetailService.insert(igrsSensorDetail);
                 }
                 else if (cells[0].contains("hcho")) {
-                    formaldehyde = cells[1].substring(0, cells[1].length()-1);
+                    formaldehyde = cells[1].substring(0, cells[1].length()-2);
+                    logger.debug("cells[1]: {}, formaldehyde: {}", cells[1], formaldehyde);
                     igrsSensorDetail.setType("formaldehyde");
                     igrsSensorDetail.setValue(formaldehyde);
                     logger.debug("formaldehyde: {}", igrsSensorDetail.getValue());

@@ -104,6 +104,7 @@ public class SensorController {
         }
         else {
             IgrsSensor igrsSensor = new IgrsSensor();
+            igrsSensor.setRoom(room);
             igrsSensor.setDate(date);
             igrsSensor.setType(type);
             return igrsSensorService.getDataByDateAndType(igrsSensor);

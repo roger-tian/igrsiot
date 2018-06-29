@@ -11,6 +11,14 @@ insert into igrs_device_status(room, device_id, attribute, value) values('100', 
 insert into igrs_device_status(room, device_id, attribute, value) values('100', 'led0', 'switch', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('100', 'led1', 'switch', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('100', 'curtain', 'switch', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('100', 'purifier', 'switch', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('100', 'purifier', 'lock', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('100', 'purifier', 'sleep', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('100', 'purifier', 'mode', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('100', 'purifier', 'anion', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('100', 'purifier', 'uv', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('100', 'purifier', 'timer', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('100', 'purifier', 'windspeed', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('101', 'welcomemode', 'switch', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('101', 'machine0', 'switch', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('101', 'machine0', 'sig_source', '1');

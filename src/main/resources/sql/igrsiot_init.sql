@@ -6,7 +6,7 @@ insert into igrs_device_status(room, device_id, attribute, value) values('100', 
 insert into igrs_device_status(room, device_id, attribute, value) values('100', 'machine0', 'sig_source', '1');
 insert into igrs_device_status(room, device_id, attribute, value) values('100', 'machine0', 'volume', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('100', 'machine1', 'switch', '0');
-insert into igrs_device_status(room, device_id, attribute, value) values('100', 'machine1', 'sig_source', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('100', 'machine1', 'sig_source', '1');
 insert into igrs_device_status(room, device_id, attribute, value) values('100', 'machine1', 'volume', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('100', 'led0', 'switch', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('100', 'led1', 'switch', '0');
@@ -16,7 +16,7 @@ insert into igrs_device_status(room, device_id, attribute, value) values('101', 
 insert into igrs_device_status(room, device_id, attribute, value) values('101', 'machine0', 'sig_source', '1');
 insert into igrs_device_status(room, device_id, attribute, value) values('101', 'machine0', 'volume', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('101', 'machine1', 'switch', '0');
-insert into igrs_device_status(room, device_id, attribute, value) values('101', 'machine1', 'sig_source', '0');
+insert into igrs_device_status(room, device_id, attribute, value) values('101', 'machine1', 'sig_source', '1');
 insert into igrs_device_status(room, device_id, attribute, value) values('101', 'machine1', 'volume', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('101', 'led0', 'switch', '0');
 insert into igrs_device_status(room, device_id, attribute, value) values('101', 'led1', 'switch', '0');

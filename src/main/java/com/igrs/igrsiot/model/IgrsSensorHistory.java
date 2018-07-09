@@ -1,6 +1,6 @@
 package com.igrs.igrsiot.model;
 
-public class IgrsSensor {
+public class IgrsSensorHistory {
     public Long getId() {
         return id;
     }
@@ -14,7 +14,7 @@ public class IgrsSensor {
     }
 
     public void setType(String type) {
-        this.type = type == null ? null : type.trim();
+        this.type = type;
     }
 
     public String getValue() {
@@ -25,12 +25,20 @@ public class IgrsSensor {
         this.value = value;
     }
 
-    public String getTime() {
-        return time;
+    public String getDate() {
+        return date;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getHour() {
+        return hour;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
     }
 
     public String getRoom() {
@@ -44,6 +52,7 @@ public class IgrsSensor {
     private Long id;
     private String type;
     private String value;
-    private String time;
+    private String date;
+    private String hour;
     private String room;
 }

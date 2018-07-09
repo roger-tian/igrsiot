@@ -14,16 +14,11 @@ public class IgrsUserServiceImpl implements IIgrsUserService {
     private IIgrsUserDao igrsUserDao;
 
     @Override
-    public IgrsUser getUserByUserName(String userName) {
+    public IgrsUser getUserByName(String userName) {
         logger.debug("igrsUserDao: {}", igrsUserDao);
-        IgrsUser igrsUser = igrsUserDao.selectByUserName(userName);
+        IgrsUser igrsUser = igrsUserDao.getUserByName(userName);
 
         return igrsUser;
-    }
-
-    @Override
-    public IgrsUser getUserByUserPass(String userName, String password) {
-        return igrsUserDao.selectByUserPass(userName, password);
     }
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsUserServiceImpl.class);

@@ -3,89 +3,43 @@
 <mapper namespace="com.igrs.igrsiot.dao.IIgrsDeviceStatusDao" >
   <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsDeviceStatus" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="room" property="room" jdbcType="VARCHAR" />
-    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="device" property="device" jdbcType="BIGINT" />
     <result column="attribute" property="attribute" jdbcType="VARCHAR" />
     <result column="value" property="value" jdbcType="VARCHAR" />
   </resultMap>
+
   <sql id="Base_Column_List" >
-    id, room, device_id, attribute, value
+    id, device, attribute, value
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from igrs_device_status
-    where id = #{id,jdbcType=BIGINT}
+
+  <select id="getStatusByRoom" resultMap="BaseResultMap" parameterType="String" >
+    select * from igrs_device_status where device in (select id from igrs_device where room=#{room})
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from igrs_device_status
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <select id="getAllStatus" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
-    select * from igrs_device_status where room=#{room}
+
+  <select id="getByDeviceAndAttr" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
+    select * from igrs_device_status where device=#{device} and attribute=#{attribute}
   </select>
-  <select id="selectByDeviceIdAndAttribute" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
-    select * from igrs_device_status where room=#{room} and device_id=#{deviceId} and attribute=#{attribute}
+
+  <select id="getByRoomChAttr" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select * from igrs_device d, igrs_device_status s
+    where d.id=s.device and d.room=#{room} and d.cchannel=#{channel} and s.attribute=#{attribute}
   </select>
-  <update id="updateByDeviceIdAndAttribute" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
-    update igrs_device_status set value=#{value} where room=#{room} and device_id=#{deviceId} and attribute=#{attribute}
+
+  <update id="updateByDeviceAndAttr" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
+    update igrs_device_status set value=#{value} where device=#{device} and attribute=#{attribute}
   </update>
+
+  <update id="updateByRoomChAttr" parameterType="java.util.Map" >
+    update igrs_device d, igrs_device_status s set s.value=#{value}
+    where d.id=s.device and d.room=#{room} and d.cchannel=#{channel} and s.attribute=#{attribute}
+  </update>
+
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
-    insert into igrs_device_status (room,device_id,attribute,value)
-    values (#{room,jdbcType=VARCHAR},#{deviceId,jdbcType=VARCHAR}, #{attribute,jdbcType=VARCHAR},
-      #{value,jdbcType=VARCHAR})
+    insert into igrs_device_status(device,attribute,value) values(#{device}, #{attribute}, #{value})
   </insert>
-  <insert id="insertSelective" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
-    insert into igrs_device_status
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="deviceId != null" >
-        device_id,
-      </if>
-      <if test="attribute != null" >
-        attribute,
-      </if>
-      <if test="value != null" >
-        value,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="deviceId != null" >
-        #{deviceId,jdbcType=VARCHAR},
-      </if>
-      <if test="attribute != null" >
-        #{attribute,jdbcType=VARCHAR},
-      </if>
-      <if test="value != null" >
-        #{value,jdbcType=VARCHAR},
-      </if>
-    </trim>
+
+  <insert id="insertByRoomChAndAttr" parameterType="java.util.Map" >
+    insert into igrs_device_status(device,attribute,value)
+    values((select d.id from igrs_device d where d.room=#{room} and d.cchannel=#{channel}), #{attribute}, #{value})
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
-    update igrs_device_status
-    <set >
-      <if test="deviceId != null" >
-        device_id = #{deviceId,jdbcType=VARCHAR},
-      </if>
-      <if test="attribute != null" >
-        attribute = #{attribute,jdbcType=VARCHAR},
-      </if>
-      <if test="value != null" >
-        value = #{value,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
-    update igrs_device_status
-    set device_id = #{deviceId,jdbcType=VARCHAR},
-      attribute = #{attribute,jdbcType=VARCHAR},
-      value = #{value,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 </mapper>

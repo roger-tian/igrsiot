@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.igrs.igrsiot.dao.IIgrsSensorHistoryDao" >
+  <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsSensorHistory" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="REAL" />
+    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="hour" property="hour" jdbcType="INTEGER" />
+    <result column="room" property="room" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, type, value, date, hour, room
+  </sql>
+
+  <select id="getDataByDateAndType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsSensorHistory">
+    select * from igrs_sensor_history where room=#{room} and left(date,10) = #{date} and type=#{type} order by hour
+  </select>
+
+  <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsSensorHistory" >
+    insert into igrs_sensor_history(type, value, date, hour, room) values(#{type}, #{value}, #{date}, #{hour}, #{room})
+  </insert>
+</mapper>

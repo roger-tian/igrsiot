@@ -9,36 +9,12 @@ public class IgrsOperate {
         this.id = id;
     }
 
-    public String getRoom() {
-        return room;
+    public String getTime() {
+        return time;
     }
 
-    public void setRoom(String room) {
-        this.room = room;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user == null ? null : user.trim();
-    }
-
-    public String getOperateTime() {
-        return operateTime;
-    }
-
-    public void setOperateTime(String operateTime) {
-        this.operateTime = operateTime;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId == null ? null : deviceId.trim();
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getInstruction() {
@@ -47,6 +23,30 @@ public class IgrsOperate {
 
     public void setInstruction(String instruction) {
         this.instruction = instruction == null ? null : instruction.trim();
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
+    public String getDevice() {
+        return device;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
     }
 
     public String getTotalPage() {
@@ -58,10 +58,10 @@ public class IgrsOperate {
     }
 
     private Long id;
-    private String room;
-    private String user;
-    private String operateTime;
-    private String deviceId;
+    private String time;
     private String instruction;
+    private String user;
+    private String room;
+    private String device;
     private String totalPage;
 }

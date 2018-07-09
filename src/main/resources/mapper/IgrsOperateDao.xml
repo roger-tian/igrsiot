@@ -3,94 +3,22 @@
 <mapper namespace="com.igrs.igrsiot.dao.IIgrsOperateDao" >
   <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsOperate" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="room" property="room" jdbcType="VARCHAR" />
-    <result column="user" property="user" jdbcType="VARCHAR" />
-    <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP" />
-    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
     <result column="instruction" property="instruction" jdbcType="VARCHAR" />
+    <result column="device" property="device" jdbcType="VARCHAR" />
+    <result column="user" property="user" jdbcType="VARCHAR" />
+    <result column="room" property="room" jdbcType="VARCHAR" />
   </resultMap>
+
   <sql id="Base_Column_List" >
-    id, room, user, operate_time, device_id, instruction
+    id, time, instruction, device, user, room
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from igrs_operate
-    where id = #{id,jdbcType=BIGINT}
-  </select>
+
   <select id="getOperatesByRoom" resultMap="BaseResultMap" parameterType="String">
-    select * from igrs_operate where room=#{room} order by operate_time desc
+    select * from igrs_operate where room=#{room} order by time desc
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from igrs_operate
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsOperate" >
-    insert into igrs_operate (id, room, user, operate_time, device_id, instruction)
-    values (#{id,jdbcType=BIGINT}, #{room,jdbcType=VARCHAR}, #{user,jdbcType=VARCHAR}, #{operateTime,jdbcType=TIMESTAMP},
-      #{deviceId,jdbcType=VARCHAR}, #{instruction,jdbcType=VARCHAR})
+    insert into igrs_operate(time, instruction, device, user, room) values(#{time}, #{instruction}, #{device}, #{user}, #{room})
   </insert>
-  <insert id="insertSelective" parameterType="com.igrs.igrsiot.model.IgrsOperate" >
-    insert into igrs_operate
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="user != null" >
-        user,
-      </if>
-      <if test="operateTime != null" >
-        operate_time,
-      </if>
-      <if test="deviceId != null" >
-        device_id,
-      </if>
-      <if test="instruction != null" >
-        instruction,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="user != null" >
-        #{user,jdbcType=VARCHAR},
-      </if>
-      <if test="operateTime != null" >
-        #{operateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="deviceId != null" >
-        #{deviceId,jdbcType=VARCHAR},
-      </if>
-      <if test="instruction != null" >
-        #{instruction,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.igrs.igrsiot.model.IgrsOperate" >
-    update igrs_operate
-    <set >
-      <if test="user != null" >
-        user = #{user,jdbcType=VARCHAR},
-      </if>
-      <if test="operateTime != null" >
-        operate_time = #{operateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="deviceId != null" >
-        device_id = #{deviceId,jdbcType=VARCHAR},
-      </if>
-      <if test="instruction != null" >
-        instruction = #{instruction,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.igrs.igrsiot.model.IgrsOperate" >
-    update igrs_operate
-    set user = #{user,jdbcType=VARCHAR},
-      operate_time = #{operateTime,jdbcType=TIMESTAMP},
-      device_id = #{deviceId,jdbcType=VARCHAR},
-      instruction = #{instruction,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 </mapper>

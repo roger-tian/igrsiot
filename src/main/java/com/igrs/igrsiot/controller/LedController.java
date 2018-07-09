@@ -1,11 +1,9 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
-import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
-import com.igrs.igrsiot.service.IIgrsOperateService;
-import com.igrs.igrsiot.service.IgrsWebSocketService;
-import com.igrs.igrsiot.service.SocketService;
+import com.igrs.igrsiot.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,57 +17,52 @@ import java.util.Date;
 @RequestMapping("/control")
 public class LedController {
     @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/led")
-    public String led1OnOff(String room, String index, String onOff) {
+    public String ledSwitch(String room, String index, String onOff) {
         String instruction;
-        String deviceId;
+        String deviceName = "";
 
-        if (index.equals("0")) {
-            String cmd = "{ch_20:" + onOff + "}";
-            SocketService.cmdSend(room, cmd);
-            deviceId = "智能灯一";
-        }
-        else {
-            String cmd = "{ch_21:" + onOff + "}";
-            SocketService.cmdSend(room, cmd);
-            deviceId = "智能灯二";
+        IgrsDevice igrsDevice = new IgrsDevice();
+        igrsDevice.setType("led");
+        igrsDevice.setIndex(index);
+        igrsDevice.setRoom(room);
+        IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
+        if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
+            deviceName = result.getName();
+            String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + onOff + "}";
+            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
         }
 
-        String msg = "room:" + room;
-        msg += "," + "led" + index + "Switch:" + onOff;
+        String msg = "room:" + room + "," + "led" + index + "Switch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setRoom(room);
-        igrsDeviceStatus.setDeviceId("led" + index);
+        igrsDeviceStatus.setDevice(result.getId());
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
-        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+            igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
         }
         else {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setRoom(room);
-        igrsOperate.setDeviceId(deviceId);
-        igrsOperate.setUser("admin");
-        if (onOff.equals("1")) {
-            instruction = "开关打开";
-        }
-        else {
-            instruction = "开关关闭";
-        }
-        igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        igrsOperate.setOperateTime(time);
+        igrsOperate.setTime(time);
+        instruction = onOff.equals("1") ? "开关打开" : "开关关闭";
+        igrsOperate.setInstruction(instruction);
+        igrsOperate.setUser("admin");
+        igrsOperate.setRoom(room);
+        igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";

@@ -16,14 +16,8 @@ public class IgrsRoomServiceImpl implements IIgrsRoomService {
     private IIgrsRoomDao igrsRoomDao;
 
     @Override
-    public List<IgrsRoom> selectByRoom(String room) {
-        return igrsRoomDao.selectByRoom(room);
-    }
-
-    @Override
-    public List<IgrsRoom> selectAll() {
-
-        return igrsRoomDao.selectAll();
+    public List<IgrsRoom> getAllRooms() {
+        return igrsRoomDao.getAllRooms();
     }
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsRoomServiceImpl.class);

@@ -9,20 +9,12 @@ public class IgrsDeviceStatus {
         this.id = id;
     }
 
-    public String getRoom() {
-        return room;
+    public Long getDevice() {
+        return device;
     }
 
-    public void setRoom(String room) {
-        this.room = room;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId == null ? null : deviceId.trim();
+    public void setDevice(Long device) {
+        this.device = device;
     }
 
     public String getAttribute() {
@@ -30,7 +22,7 @@ public class IgrsDeviceStatus {
     }
 
     public void setAttribute(String attribute) {
-        this.attribute = attribute == null ? null : attribute.trim();
+        this.attribute = attribute;
     }
 
     public String getValue() {
@@ -38,12 +30,12 @@ public class IgrsDeviceStatus {
     }
 
     public void setValue(String value) {
-        this.value = value == null ? null : value.trim();
+        this.value = value;
     }
 
     private Long id;
-    private String room;
-    private String deviceId;
+    public Long device;
     private String attribute;
     private String value;
+
 }

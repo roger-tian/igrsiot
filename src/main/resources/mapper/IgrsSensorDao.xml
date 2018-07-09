@@ -3,92 +3,29 @@
 <mapper namespace="com.igrs.igrsiot.dao.IIgrsSensorDao" >
   <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsSensor" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="room" property="room" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="value" property="value" jdbcType="REAL" />
-    <result column="date" property="date" jdbcType="TIMESTAMP" />
-    <result column="hour" property="hour" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="room" property="room" jdbcType="VARCHAR" />
   </resultMap>
+
   <sql id="Base_Column_List" >
-    id, room, type, value, date, hour
+    id, type, value, time, room
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from igrs_sensor
-    where id = #{id,jdbcType=BIGINT}
+
+  <select id="getDataByType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsSensor">
+    select * from igrs_sensor where room=#{room} and type=#{type} order by time desc
   </select>
-  <select id="getDataByDateAndType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsSensor">
-    select * from igrs_sensor where room=#{room} and left(date,10) = #{date} and type=#{type} order by hour
+
+  <select id="getAvgDataByType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsSensor">
+    select any_value(id) as id,room,type,avg(value) as value,any_value(time) as time from igrs_sensor where room=#{room} and type=#{type} and left(time,10)=#{time} group by left(time,13) order by time
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from igrs_sensor
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsSensor" >
-    insert into igrs_sensor(room, type, value, date, hour) values(#{room}, #{type}, #{value}, #{date}, #{hour})
+    insert into igrs_sensor(type, value, time, room) values(#{type}, #{value}, #{time}, #{room})
   </insert>
-  <insert id="insertSelective" parameterType="com.igrs.igrsiot.model.IgrsSensor" >
-    insert into igrs_sensor
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="type != null" >
-        type,
-      </if>
-      <if test="value != null" >
-        value,
-      </if>
-      <if test="date != null" >
-        date,
-      </if>
-      <if test="hour != null" >
-        hour,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="type != null" >
-        #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="value != null" >
-        #{value,jdbcType=REAL},
-      </if>
-      <if test="date != null" >
-        #{date,jdbcType=TIMESTAMP},
-      </if>
-      <if test="hour != null" >
-        #{hour,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.igrs.igrsiot.model.IgrsSensor" >
-    update igrs_sensor
-    <set >
-      <if test="type != null" >
-        type = #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="value != null" >
-        value = #{value,jdbcType=REAL},
-      </if>
-      <if test="date != null" >
-        date = #{date,jdbcType=TIMESTAMP},
-      </if>
-      <if test="hour != null" >
-        hour = #{hour,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.igrs.igrsiot.model.IgrsSensor" >
-    update igrs_sensor
-    set type = #{type,jdbcType=VARCHAR},
-      value = #{value,jdbcType=REAL},
-      date = #{date,jdbcType=TIMESTAMP},
-      hour = #{hour,jdbcType=INTEGER}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
+  <delete id="deleteDataByDate" parameterType="com.igrs.igrsiot.model.IgrsSensor">
+    delete from igrs_sensor where left(time, 10) = #{time}
+  </delete>
 </mapper>

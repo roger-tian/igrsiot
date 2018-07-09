@@ -5,17 +5,12 @@ import com.igrs.igrsiot.model.IgrsSensor;
 import java.util.List;
 
 public interface IIgrsSensorDao {
-    List<IgrsSensor> getDataByDateAndType(IgrsSensor igrsSensor);
+    List<IgrsSensor> getDataByType(IgrsSensor igrsSensor);
 
-    int deleteByPrimaryKey(Long id);
+    List<IgrsSensor> getAvgDataByType(IgrsSensor igrsSensor);
 
-    int insert(IgrsSensor record);
+    int insert(IgrsSensor igrsSensor);
 
-    int insertSelective(IgrsSensor record);
+    void deleteDataByDate(IgrsSensor igrsSensor);
 
-    IgrsSensor selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(IgrsSensor record);
-
-    int updateByPrimaryKey(IgrsSensor record);
 }

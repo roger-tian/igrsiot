@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.igrs.igrsiot.dao.IIgrsDeviceDao" >
+  <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsDevice" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="dindex" property="index" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="ctype" property="clientType" jdbcType="VARCHAR" />
+    <result column="cip" property="clientIp" jdbcType="VARCHAR" />
+    <result column="room" property="room" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, type, dindex, name, ctype, cip, room
+  </sql>
+
+  <select id="getAllDevices" resultMap="BaseResultMap" >
+    select * from igrs_device
+  </select>
+
+  <select id="getDevicesByRoom" resultMap="BaseResultMap" parameterType="String" >
+    select * from igrs_device where room=#{room}
+  </select>
+
+  <select id="getByRoomAndType" resultMap="BaseResultMap" parameterMap="com.igrs.igrsiot.model.IgrsDevice" >
+    select * from igrs_device where room=#{room} and type=#{type}
+  </select>
+
+  <select id="getByRoomAndCType" resultMap="BaseResultMap" parameterMap="com.igrs.igrsiot.model.IgrsDevice" >
+    select * from igrs_device where room=#{room} and ctype=#{clientType}
+  </select>
+
+  <select id="getByRoomTypeIndex" resultMap="BaseResultMap" parameterMap="com.igrs.igrsiot.model.IgrsDevice" >
+    select * from igrs_device where room=#{room} and type=#{type} and dindex=#{index}
+  </select>
+</mapper>

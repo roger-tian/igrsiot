@@ -1,11 +1,9 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
-import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
-import com.igrs.igrsiot.service.IIgrsOperateService;
-import com.igrs.igrsiot.service.IgrsWebSocketService;
-import com.igrs.igrsiot.service.SocketService;
+import com.igrs.igrsiot.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,48 +17,52 @@ import java.util.Date;
 @RequestMapping("/control")
 public class CurtainController {
     @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/curtain")
-    public String curtainOnOff(String room, String onOff) {
+    public String curtainSwitch(String room, String index, String onOff) {
         String instruction;
+        String deviceName = "";
 
-        String cmd = "{ch_60:" + onOff + "}";   // 0,1,2--off,on,pause
-        SocketService.cmdSend(room, cmd);
+        IgrsDevice igrsDevice = new IgrsDevice();
+        igrsDevice.setType("curtain");
+        igrsDevice.setIndex(index);
+        igrsDevice.setRoom(room);
+        IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
+        if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
+            deviceName = result.getName();
+            String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + onOff + "}";
+            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
+        }
 
-        String msg = "room:" + room;
-        msg += "," + "curtainSwitch:" + onOff;
+        String msg = "room:" + room + "," + "curtainSwitch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setRoom(room);
-        igrsDeviceStatus.setDeviceId("curtain");
+        igrsDeviceStatus.setDevice(result.getId());
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
-        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+            igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
         }
         else {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setRoom(room);
-        igrsOperate.setDeviceId("智能窗帘");
-        igrsOperate.setUser("admin");
-        if (onOff.equals("1")) {
-            instruction = "开关打开";
-        }
-        else {
-            instruction = "开关关闭";
-        }
-        igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        igrsOperate.setOperateTime(time);
+        igrsOperate.setTime(time);
+        instruction = onOff.equals("1") ? "开关打开" : "开关关闭";
+        igrsOperate.setInstruction(instruction);
+        igrsOperate.setUser("admin");
+        igrsOperate.setRoom(room);
+        igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";

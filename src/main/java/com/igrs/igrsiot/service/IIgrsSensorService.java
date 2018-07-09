@@ -5,7 +5,11 @@ import com.igrs.igrsiot.model.IgrsSensor;
 import java.util.List;
 
 public interface IIgrsSensorService {
-    public void insert(IgrsSensor igrsSensor);
+    List<IgrsSensor> getDataByType(IgrsSensor igrsSensor);
 
-    public List<IgrsSensor> getDataByDateAndType(IgrsSensor igrsSensor);
+    List<IgrsSensor> getAvgDataByType(IgrsSensor igrsSensor);
+
+    int insert(IgrsSensor igrsSensor);
+
+    void deleteDataByDate(IgrsSensor igrsSensor);
 }

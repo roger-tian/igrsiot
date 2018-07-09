@@ -3,23 +3,20 @@ package com.igrs.igrsiot.dao;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IIgrsDeviceStatusDao {
-    int deleteByPrimaryKey(Long id);
+    List<IgrsDeviceStatus> getStatusByRoom(String room);
 
-    List<IgrsDeviceStatus> getAllStatus(IgrsDeviceStatus igrsDeviceStatus);
+    IgrsDeviceStatus getByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus);
 
-    IgrsDeviceStatus selectByDeviceIdAndAttribute(IgrsDeviceStatus igrsDeviceStatus);
+    IgrsDeviceStatus getByRoomChAndAttr(Map<String, String> map);
 
-    int updateByDeviceIdAndAttribute(IgrsDeviceStatus igrsDeviceStatus);
+    int updateByDeviceIdAndAttr(IgrsDeviceStatus igrsDeviceStatus);
 
-    int insert(IgrsDeviceStatus record);
+    int updateByRoomChAndAttr(Map<String, String> map);
 
-    int insertSelective(IgrsDeviceStatus record);
+    int insert(IgrsDeviceStatus igrsDeviceStatus);
 
-    IgrsDeviceStatus selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(IgrsDeviceStatus record);
-
-    int updateByPrimaryKey(IgrsDeviceStatus record);
+    int insertByRoomChAndAttr(Map<String, String> map);
 }

@@ -21,7 +21,7 @@ public class OperateController {
     IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/operate")
-    public List<IgrsOperate> getOperateData(HttpServletRequest request) throws ParseException {
+    public List<IgrsOperate> getOperate(HttpServletRequest request) throws ParseException {
         List<IgrsOperate> listResult = new ArrayList<>();
         String room = request.getParameter("room");
         String totalPage;
@@ -38,9 +38,9 @@ public class OperateController {
             IgrsOperate operate = new IgrsOperate();
             operate.setRoom(list.get(i).getRoom());
             operate.setUser(list.get(i).getUser());
-            operate.setDeviceId(list.get(i).getDeviceId());
+            operate.setDevice(list.get(i).getDevice());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            operate.setOperateTime(df.format(df.parse(list.get(i).getOperateTime())));
+            operate.setTime(df.format(df.parse(list.get(i).getTime())));
             operate.setInstruction(list.get(i).getInstruction());
             operate.setTotalPage(totalPage);
 

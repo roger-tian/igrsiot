@@ -25,7 +25,16 @@ public class IgrsUser {
         this.password = password == null ? null : password.trim();
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     private Long id;
     private String user;
     private String password;
+    private String role;
 }

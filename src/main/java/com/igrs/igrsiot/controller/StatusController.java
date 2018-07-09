@@ -1,12 +1,10 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.model.IgrsRoom;
-import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
-import com.igrs.igrsiot.service.IIgrsOperateService;
-import com.igrs.igrsiot.service.IIgrsRoomService;
-import com.igrs.igrsiot.service.IgrsWebSocketService;
+import com.igrs.igrsiot.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,8 @@ import java.util.List;
 @RequestMapping("/control")
 public class StatusController {
     @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
@@ -29,47 +29,46 @@ public class StatusController {
 
     @RequestMapping("/status")
     public List<IgrsDeviceStatus> getDeviceStatus(String room) {
-        logger.debug("--------room: {}", room);
-        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setRoom(room);
-        return igrsDeviceStatusService.getAllStatus(igrsDeviceStatus);
+        return igrsDeviceStatusService.getStatusByRoom(room);
     }
 
     @RequestMapping("/welcomemode")
     public String welcomeMode(String room, String onOff) {
         String instruction;
+        String deviceName = "";
 
-        String msg = "room:" + room;
-        msg += "," + "welcomeModeSwitch:" + onOff;
+        String msg = "room:" + room + "," + "welcomeModeSwitch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
+        IgrsDevice igrsDevice = new IgrsDevice();
+        igrsDevice.setType("welcome");
+        igrsDevice.setRoom(room);
+        List<IgrsDevice> result = igrsDeviceService.getByRoomAndType(igrsDevice);
+        if (result != null) {
+            deviceName = result.get(0).getName();
+        }
+
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setRoom(room);
-        igrsDeviceStatus.setDeviceId("welcomemode");
+        igrsDeviceStatus.setDevice(result.get(0).getId());
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
-        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+            igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
         }
         else {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setRoom(room);
-        igrsOperate.setDeviceId("迎宾模式");
-        igrsOperate.setUser("admin");
-        if (onOff.equals("1")) {
-            instruction = "开关打开";
-        }
-        else {
-            instruction = "开关关闭";
-        }
-        igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        igrsOperate.setOperateTime(time);
+        igrsOperate.setTime(time);
+        instruction = onOff.equals("1") ? "开关打开" : "开关关闭";
+        igrsOperate.setInstruction(instruction);
+        igrsOperate.setUser("admin");
+        igrsOperate.setRoom(room);
+        igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";
@@ -77,22 +76,29 @@ public class StatusController {
 
     @RequestMapping("/welcomemode/auto")
     public String welcomeModeAuto() {
-        List<IgrsRoom> list = igrsRoomService.selectAll();
+        IgrsDevice igrsDevice = new IgrsDevice();
+        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+
+        List<IgrsRoom> list = igrsRoomService.getAllRooms();
         for (int i=0; i<list.size(); i++) {
             String msg = "room:" + list.get(i).getRoom() + ",welcomemode:1";
             IgrsWebSocketService.sendAllMessage(msg);
-        }
 
-        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDeviceId("welcomemode");
-        igrsDeviceStatus.setAttribute("switch");
-        igrsDeviceStatus.setValue("1");
-        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-        }
-        else {
-            igrsDeviceStatusService.insert(igrsDeviceStatus);
+            igrsDevice.setRoom(list.get(i).getRoom());
+            igrsDevice.setType("welcome");
+            List<IgrsDevice> deviceList = igrsDeviceService.getByRoomAndType(igrsDevice);
+            for (int j=0; j<deviceList.size(); j++) {
+                igrsDeviceStatus.setDevice(deviceList.get(i).getId());
+                igrsDeviceStatus.setAttribute("welcome");
+                igrsDeviceStatus.setValue("1");
+                IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                if (status != null) {
+                    igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
+                }
+                else {
+                    igrsDeviceStatusService.insert(igrsDeviceStatus);
+                }
+            }
         }
 
         return "SUCCESS";

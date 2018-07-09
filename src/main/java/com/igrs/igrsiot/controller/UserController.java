@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/control")
-public class UserLoginController {
+public class UserController {
     @Autowired
     private IIgrsUserService igrsUserService;
 
     @RequestMapping("/user/login")
     String UserLogin(String userName, String password) {
-        IgrsUser igrsUser = igrsUserService.getUserByUserName(userName);
+        IgrsUser igrsUser = igrsUserService.getUserByName(userName);
         logger.debug("user: {}", igrsUser);
         if (igrsUser != null) {
             if (userName.equals(igrsUser.getUser()) && password.equals(igrsUser.getPassword())) {
@@ -34,5 +34,5 @@ public class UserLoginController {
         }
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(UserLoginController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 }

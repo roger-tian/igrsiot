@@ -1,8 +1,8 @@
 package com.igrs.igrsiot.controller;
 
 import com.igrs.igrsiot.model.IgrsSensor;
-import com.igrs.igrsiot.model.IgrsSensorDetail;
-import com.igrs.igrsiot.service.IIgrsSensorDetailService;
+import com.igrs.igrsiot.model.IgrsSensorHistory;
+import com.igrs.igrsiot.service.IIgrsSensorHistoryService;
 import com.igrs.igrsiot.service.IIgrsSensorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,22 +21,22 @@ import java.util.List;
 @RequestMapping("/control")
 public class SensorController {
     @Autowired
-    private IIgrsSensorDetailService igrsSensorDetailService;
-    @Autowired
     private IIgrsSensorService igrsSensorService;
+    @Autowired
+    private IIgrsSensorHistoryService igrsSensorHistoryService;
 
     @RequestMapping("/sensor")
     public String getSensorData(String room) {
         String result = "";
-        List<IgrsSensorDetail> list;
+        List<IgrsSensor> list;
         String[] type = {"pm25", "co2", "tvoc", "temperature", "humidity", "formaldehyde"};
 
-        IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
-        igrsSensorDetail.setRoom(room);
+        IgrsSensor igrsSensor = new IgrsSensor();
+        igrsSensor.setRoom(room);
 
         for (int i=0; i<type.length; i++) {
-            igrsSensorDetail.setType(type[i]);
-            list = igrsSensorDetailService.getDataByType(igrsSensorDetail);
+            igrsSensor.setType(type[i]);
+            list = igrsSensorService.getDataByType(igrsSensor);
             if (list.size() != 0) {
                 if (i == 0) {
                     result = list.get(0).getValue();
@@ -60,7 +60,7 @@ public class SensorController {
     }
 
     @RequestMapping("/sensor/history")
-    public List<IgrsSensor> getSensorHistoryData(String room, String date, String type) throws ParseException {
+    public List<IgrsSensorHistory> getSensorHistoryData(String room, String date, String type) throws ParseException {
         if (date.contains("T")) {
             date = date.replace("Z", " UTC");
             SimpleDateFormat uf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
@@ -72,26 +72,26 @@ public class SensorController {
         String curDate = df.format(new Date());
 
         if (date.equals("") || date.equals(curDate)) {
-            List<IgrsSensor> result = new ArrayList<>();
+            List<IgrsSensorHistory> result = new ArrayList<>();
             try {
-                IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
-                igrsSensorDetail.setRoom(room);
-                igrsSensorDetail.setType(type);
-                igrsSensorDetail.setTime(curDate);
-                List<IgrsSensorDetail> list = igrsSensorDetailService.getAvgDataByType(igrsSensorDetail);
+                IgrsSensor igrsSensor = new IgrsSensor();
+                igrsSensor.setRoom(room);
+                igrsSensor.setType(type);
+                igrsSensor.setTime(curDate);
+                List<IgrsSensor> list = igrsSensorService.getAvgDataByType(igrsSensor);
                 if (list.size() != 0) {
                     String[] str;
                     String[] strTime;
                     for (int i=0; i<list.size(); i++) {
-                        IgrsSensor igrsSensor = new IgrsSensor();
-                        igrsSensor.setRoom(room);
-                        igrsSensor.setType(type);
-                        igrsSensor.setValue(list.get(i).getValue());
+                        IgrsSensorHistory igrsSensorHistory = new IgrsSensorHistory();
+                        igrsSensorHistory.setType(type);
+                        igrsSensorHistory.setValue(list.get(i).getValue());
                         str = list.get(i).getTime().split(" ");
                         strTime = str[1].split(":");
-                        igrsSensor.setDate(str[0]);
-                        igrsSensor.setHour(strTime[0]);
-                        result.add(igrsSensor);
+                        igrsSensorHistory.setDate(str[0]);
+                        igrsSensorHistory.setHour(strTime[0]);
+                        igrsSensorHistory.setRoom(room);
+                        result.add(igrsSensorHistory);
                     }
                 }
             }
@@ -103,11 +103,11 @@ public class SensorController {
             return result;
         }
         else {
-            IgrsSensor igrsSensor = new IgrsSensor();
-            igrsSensor.setRoom(room);
-            igrsSensor.setDate(date);
-            igrsSensor.setType(type);
-            return igrsSensorService.getDataByDateAndType(igrsSensor);
+            IgrsSensorHistory igrsSensorHistory = new IgrsSensorHistory();
+            igrsSensorHistory.setRoom(room);
+            igrsSensorHistory.setDate(date);
+            igrsSensorHistory.setType(type);
+            return igrsSensorHistoryService.getDataByDateAndType(igrsSensorHistory);
         }
     }
 
@@ -125,29 +125,29 @@ public class SensorController {
         logger.debug(date);
 
         String[] type = {"pm25", "co2", "tvoc", "temperature", "humidity", "formaldehyde"};
-        List<IgrsSensorDetail> list = new ArrayList<>();
+        List<IgrsSensor> list;
         try {
             String[] str, strTime;
-            IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
             IgrsSensor igrsSensor = new IgrsSensor();
-            igrsSensorDetail.setTime(date);
+            IgrsSensorHistory igrsSensorHistory = new IgrsSensorHistory();
+            igrsSensor.setTime(date);
             for (int i=0; i<type.length; i++) {
-                igrsSensorDetail.setType(type[i]);
-                list = igrsSensorDetailService.getAvgDataByType(igrsSensorDetail);
+                igrsSensor.setType(type[i]);
+                list = igrsSensorService.getAvgDataByType(igrsSensor);
                 if (list.size() != 0) {
                     for (int j=0; j<list.size(); j++) {
-                        igrsSensor.setRoom(list.get(j).getRoom());
-                        igrsSensor.setType(type[i]);
-                        igrsSensor.setValue(list.get(j).getValue());
+                        igrsSensorHistory.setType(type[i]);
+                        igrsSensorHistory.setValue(list.get(j).getValue());
                         str = list.get(j).getTime().split(" ");
-                        igrsSensor.setDate(str[0]);
+                        igrsSensorHistory.setDate(str[0]);
                         strTime = str[1].split(":");
-                        igrsSensor.setHour(strTime[0]);
+                        igrsSensorHistory.setHour(strTime[0]);
+                        igrsSensorHistory.setRoom(list.get(j).getRoom());
                         igrsSensorService.insert(igrsSensor);
                     }
                 }
             }
-            igrsSensorDetailService.deleteDataByDate(igrsSensorDetail);
+            igrsSensorService.deleteDataByDate(igrsSensor);
         }
         catch (Exception e) {
             e.printStackTrace();

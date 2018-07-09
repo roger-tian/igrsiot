@@ -1,11 +1,9 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
-import com.igrs.igrsiot.model.IgrsSensorDetail;
-import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
-import com.igrs.igrsiot.service.IIgrsSensorDetailService;
-import com.igrs.igrsiot.service.IgrsWebSocketService;
-import com.igrs.igrsiot.service.SocketService;
+import com.igrs.igrsiot.model.IgrsSensor;
+import com.igrs.igrsiot.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,92 +12,98 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/control")
 public class SocketController {
     @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
-    private IIgrsSensorDetailService igrsSensorDetailService;
+    private IIgrsSensorService igrsSensorService;
 
     @RequestMapping("/socketdata/handle")
     public String socketDataHandler(String room, String buf) throws InterruptedException {
         String buff;
+        String cmd;
 
         if (buf.contains("ch_40:")) {
+            IgrsDevice igrsDevice = new IgrsDevice();
+            igrsDevice.setType("welcome");
+            igrsDevice.setRoom(room);
+            List<IgrsDevice> deviceList = igrsDeviceService.getByRoomAndType(igrsDevice);
+
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setRoom(room);
-            igrsDeviceStatus.setDeviceId("welcomemode");
+            igrsDeviceStatus.setDevice(deviceList.get(0).getId());
             igrsDeviceStatus.setAttribute("switch");
-            IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+            IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
             if ((status != null) && (status.getValue().equals("1"))) {
                 igrsDeviceStatus.setValue("0");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
 
                 String msg = "room:" + room + ",welcomeModeSwitch:0";
                 IgrsWebSocketService.sendAllMessage(msg);
 
                 float temp;
-                IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
-                igrsSensorDetail.setRoom(room);
-                igrsSensorDetail.setType("temperature");
-                List<IgrsSensorDetail> list = igrsSensorDetailService.getDataByType(igrsSensorDetail);
-                if (list.size() != 0) {
-                    temp = Float.parseFloat(list.get(0).getValue());
+                IgrsSensor igrsSensor = new IgrsSensor();
+                igrsSensor.setRoom(room);
+                igrsSensor.setType("temperature");
+                List<IgrsSensor> sensorList = igrsSensorService.getDataByType(igrsSensor);
+                if (sensorList.size() != 0) {
+                    temp = Float.parseFloat(sensorList.get(0).getValue());
                 }
                 else {
                     temp = (float) 0.0;
                 }
-
                 logger.debug("temp: {}", temp);
+
+                igrsDevice.setClientType("0");
+                igrsDevice.setRoom(room);
+                deviceList = igrsDeviceService.getByRoomAndCType(igrsDevice);
+                String ctype = "", cip = "";
+                for (int i=0; i<deviceList.size(); i++) {
+                    if (deviceList.get(i).getClientType().equals("0") && deviceList.get(i).getClientIp() != null) {
+                        ctype = deviceList.get(i).getClientType();
+                        cip = deviceList.get(i).getClientIp();
+                        break;
+                    }
+                }
                 if (temp < 26.0) {
                     buff = "{ch_30:1}";
-                    SocketService.cmdSend(room, buff);
+                    SocketService.cmdSend(ctype, cip, buff);
                 }
                 else {
                     buff = "{ch_30:2}";
-                    SocketService.cmdSend(room, buff);
+                    SocketService.cmdSend(ctype, cip, buff);
                 }
-
                 Thread.sleep(12000);
 
-                buff = "{ch_10:1,ch_20:1,ch_21:1}";
-                SocketService.cmdSend(room, buff);
+                List<IgrsDevice> list = igrsDeviceService.getDevicesByRoom(room);
+                if (list.size() == 0) {
+                    return "FAIL";
+                }
 
-                Thread.sleep(1000);
-                buff = "{ch_60:1}";
-                SocketService.cmdSend(room, buff);
+                for (int i=0; i<list.size(); i++) {
+                    igrsDevice = list.get(i);
+                    if (igrsDevice.getClientType().equals("0")) {
+                        if ((igrsDevice.getClientIp() != null) && (igrsDevice.getClientChannel() != null)) {
+                            cmd = "{ch_" + igrsDevice.getClientChannel() + ":1}";
+                            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
 
-                Thread.sleep(1000);
-                buff = "{ch_50:1}";
-                SocketService.cmdSend(room, buff);
-
-                igrsDeviceStatus.setDeviceId("machine0");
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("1");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-                igrsDeviceStatus.setDeviceId("machine1");
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("1");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-                igrsDeviceStatus.setDeviceId("led0");
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("1");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-                igrsDeviceStatus.setDeviceId("led1");
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("1");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-                igrsDeviceStatus.setDeviceId("curtain");
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("1");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                            igrsDeviceStatus.setDevice(igrsDevice.getId());
+                            igrsDeviceStatus.setAttribute("switch");
+                            igrsDeviceStatus.setValue("1");
+                            igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                        }
+                    }
+                    else if (igrsDevice.getClientType().equals("1")) {
+                        // todo
+                    }
+                }
 
                 msg = "room:" + room + ",allSwitch:1";
                 IgrsWebSocketService.sendAllMessage(msg);
@@ -108,111 +112,61 @@ public class SocketController {
         else if (buf.contains("ch_2:")) {        //device return "ok"
 
         }
-        else if (buf.contains("ch_10:")) {
+        else if (buf.contains("ch_")) {
+            buf = buf.substring(1, buf.length()-2);
+            String[] str = buf.split(",");
+            String[] str1;
+            String channel;
+            String value;
             String msg;
+            IgrsDevice igrsDevice = new IgrsDevice();
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setRoom(room);
-            igrsDeviceStatus.setDeviceId("machine0");
-            if (buf.endsWith(":1}")) {
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("1");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+            if (str.length == 0) {
+                str1 = buf.split(":");
+                channel = str1[0].substring(3, str1[0].length()-3);
+                value = str1[1];
+                logger.debug("channel: {}, value: {}", channel, value);
 
-                msg = "room:" + room + ",machine0Switch:1";
+                Map<String, String> map = new HashMap<>();
+                map.put("room", room);
+                map.put("value", value);
+                map.put("channel", channel);
+                map.put("attribute", "switch");
+                igrsDeviceStatus = igrsDeviceStatusService.getByRoomChAndAttr(map);
+                if (igrsDeviceStatus != null) {
+                    igrsDeviceStatusService.updateByRoomChAndAttr(map);
+                }
+                else {
+                    igrsDeviceStatusService.insertByRoomChAndAttr(map);
+                }
+
+                msg = "room:" + room + "," + igrsDevice.getType() + igrsDevice.getIndex() + ":" + value;
                 IgrsWebSocketService.sendAllMessage(msg);
             }
             else {
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("0");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                for (int i=0; i<str.length; i++) {
+                    str1 = str[i].split(":");
+                    channel = str1[0].substring(3, str1[0].length()-3);
+                    value = str1[1];
+                    logger.debug("channel: {}, value: {}", channel, value);
 
-                igrsDeviceStatus.setAttribute("sig_source");
-                igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                    Map<String, String> map = new HashMap<>();
+                    map.put("room", room);
+                    map.put("value", value);
+                    map.put("channel", channel);
+                    map.put("attribute", "switch");
+                    igrsDeviceStatus = igrsDeviceStatusService.getByRoomChAndAttr(map);
+                    if (igrsDeviceStatus != null) {
+                        igrsDeviceStatusService.updateByRoomChAndAttr(map);
+                    }
+                    else {
+                        igrsDeviceStatusService.insertByRoomChAndAttr(map);
+                    }
 
-                msg = "room:" + room + ",machine0Switch:0";
-                IgrsWebSocketService.sendAllMessage(msg);
+                    msg = "room:" + room + "," + igrsDevice.getType() + igrsDevice.getIndex() + ":" + value;
+                    IgrsWebSocketService.sendAllMessage(msg);
+                }
             }
-        }
-        else if (buf.contains("ch_20:")) {
-            String msg;
-            IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setRoom(room);
-            igrsDeviceStatus.setDeviceId("led0");
-            igrsDeviceStatus.setAttribute("switch");
-            if (buf.endsWith(":1}")) {
-                igrsDeviceStatus.setValue("1");
-                msg = "room:" + room + ",led0Switch:1";
-            }
-            else {
-                igrsDeviceStatus.setValue("0");
-                msg = "room:" + room + ",led0Switch:0";
-            }
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-            IgrsWebSocketService.sendAllMessage(msg);
-        }
-        else if (buf.contains("ch_21:")) {
-            String msg;
-            IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setRoom(room);
-            igrsDeviceStatus.setDeviceId("led1");
-            igrsDeviceStatus.setAttribute("switch");
-            if (buf.endsWith(":1}")) {
-                igrsDeviceStatus.setValue("1");
-                msg = "room:" + room + ",led1Switch:1";
-            }
-            else {
-                igrsDeviceStatus.setValue("0");
-                msg = "room:" + room + ",led1Switch:0";
-            }
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-            IgrsWebSocketService.sendAllMessage(msg);
-        }
-        else if (buf.contains("ch_50:")) {
-            String msg;
-            IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setRoom(room);
-            igrsDeviceStatus.setDeviceId("machine1");
-            if (buf.endsWith(":1}")) {
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("1");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-                msg = "room:" + room + ",machine1Switch:1";
-                IgrsWebSocketService.sendAllMessage(msg);
-            }
-            else {
-                igrsDeviceStatus.setAttribute("switch");
-                igrsDeviceStatus.setValue("0");
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-                igrsDeviceStatus.setAttribute("sig_source");
-                igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-                msg = "room:" + room + ",machine1Switch:0";
-                IgrsWebSocketService.sendAllMessage(msg);
-            }
-        }
-        else if (buf.contains("ch_60:")) {
-            String msg;
-            IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-            igrsDeviceStatus.setRoom(room);
-            igrsDeviceStatus.setDeviceId("curtain");
-            igrsDeviceStatus.setAttribute("switch");
-            if (buf.endsWith(":1}")) {
-                igrsDeviceStatus.setValue("1");
-                msg = "room:" + room + ",curtainSwitch:1";
-            }
-            else {
-                igrsDeviceStatus.setValue("0");
-                msg = "room:" + room + ",curtainSwitch:0";
-            }
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-
-            IgrsWebSocketService.sendAllMessage(msg);
         }
         else if (buf.contains("pm25")) {
             String results[];
@@ -227,9 +181,9 @@ public class SocketController {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String time = df.format(new Date());
 
-            IgrsSensorDetail igrsSensorDetail = new IgrsSensorDetail();
-            igrsSensorDetail.setRoom(room);
-            igrsSensorDetail.setTime(time);
+            IgrsSensor igrsSensor = new IgrsSensor();
+            igrsSensor.setRoom(room);
+            igrsSensor.setTime(time);
 
             results = buf.split(",");
 
@@ -237,46 +191,46 @@ public class SocketController {
                 cells = results[i].split(":");
                 if (cells[0].contains("pm25")) {
                     pm25 = cells[1];
-                    igrsSensorDetail.setType("pm25");
-                    igrsSensorDetail.setValue(pm25);
-                    logger.debug("pm25: {}", igrsSensorDetail.getValue());
-                    igrsSensorDetailService.insert(igrsSensorDetail);
+                    igrsSensor.setType("pm25");
+                    igrsSensor.setValue(pm25);
+                    logger.debug("pm25: {}", igrsSensor.getValue());
+                    igrsSensorService.insert(igrsSensor);
                 }
                 else if (cells[0].contains("co2")) {
                     co2 = cells[1];
-                    igrsSensorDetail.setType("co2");
-                    igrsSensorDetail.setValue(co2);
-                    logger.debug("co2: {}", igrsSensorDetail.getValue());
-                    igrsSensorDetailService.insert(igrsSensorDetail);
+                    igrsSensor.setType("co2");
+                    igrsSensor.setValue(co2);
+                    logger.debug("co2: {}", igrsSensor.getValue());
+                    igrsSensorService.insert(igrsSensor);
                 }
                 else if (cells[0].contains("voc")) {
                     tvoc = cells[1];
-                    igrsSensorDetail.setType("tvoc");
-                    igrsSensorDetail.setValue(tvoc);
-                    logger.debug("tvoc: {}", igrsSensorDetail.getValue());
-                    igrsSensorDetailService.insert(igrsSensorDetail);
+                    igrsSensor.setType("tvoc");
+                    igrsSensor.setValue(tvoc);
+                    logger.debug("tvoc: {}", igrsSensor.getValue());
+                    igrsSensorService.insert(igrsSensor);
                 }
                 else if (cells[0].contains("temp")) {
                     temperature = cells[1];
-                    igrsSensorDetail.setType("temperature");
-                    igrsSensorDetail.setValue(temperature);
-                    logger.debug("temperature: {}", igrsSensorDetail.getValue());
-                    igrsSensorDetailService.insert(igrsSensorDetail);
+                    igrsSensor.setType("temperature");
+                    igrsSensor.setValue(temperature);
+                    logger.debug("temperature: {}", igrsSensor.getValue());
+                    igrsSensorService.insert(igrsSensor);
                 }
                 else if (cells[0].contains("hum")) {
                     humidity = cells[1];
-                    igrsSensorDetail.setType("humidity");
-                    igrsSensorDetail.setValue(humidity);
-                    logger.debug("humidity: {}", igrsSensorDetail.getValue());
-                    igrsSensorDetailService.insert(igrsSensorDetail);
+                    igrsSensor.setType("humidity");
+                    igrsSensor.setValue(humidity);
+                    logger.debug("humidity: {}", igrsSensor.getValue());
+                    igrsSensorService.insert(igrsSensor);
                 }
                 else if (cells[0].contains("hcho")) {
                     formaldehyde = cells[1].substring(0, cells[1].length()-2);
                     logger.debug("cells[1]: {}, formaldehyde: {}", cells[1], formaldehyde);
-                    igrsSensorDetail.setType("formaldehyde");
-                    igrsSensorDetail.setValue(formaldehyde);
-                    logger.debug("formaldehyde: {}", igrsSensorDetail.getValue());
-                    igrsSensorDetailService.insert(igrsSensorDetail);
+                    igrsSensor.setType("formaldehyde");
+                    igrsSensor.setValue(formaldehyde);
+                    logger.debug("formaldehyde: {}", igrsSensor.getValue());
+                    igrsSensorService.insert(igrsSensor);
                 }
             }
 

@@ -1,7 +1,6 @@
 package com.igrs.igrsiot.controller;
 
 import com.igrs.igrsiot.model.IgrsRoom;
-import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import com.igrs.igrsiot.service.IIgrsRoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,22 +17,8 @@ public class RoomController {
     private IIgrsRoomService igrsRoomService;
 
     @RequestMapping("/room")
-    public String getAllRooms() {
-        String result = null;
-
-        List<IgrsRoom> list = igrsRoomService.selectAll();
-        if (list.size() != 0) {
-            for (int i=0; i<list.size(); i++) {
-                if (i == 0) {
-                    result = list.get(i).getRoom() + ":" + list.get(i).getClientIp();
-                }
-                else {
-                    result += "," + list.get(i).getRoom() + ":" + list.get(i).getClientIp();
-                }
-            }
-        }
-
-        return result;
+    public List<IgrsRoom> getAllRooms() {
+        return igrsRoomService.getAllRooms();
     }
 
     private static final Logger logger = LoggerFactory.getLogger(RoomController.class);

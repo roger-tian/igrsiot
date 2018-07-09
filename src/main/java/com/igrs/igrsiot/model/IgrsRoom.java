@@ -17,15 +17,15 @@ public class IgrsRoom {
         this.room = room;
     }
 
-    public String getClientIp() {
-        return clientIp;
+    public String getName() {
+        return name;
     }
 
-    public void setClientIp(String clientIp) {
-        this.clientIp = clientIp;
+    public void setName(String name) {
+        this.name = name;
     }
 
     private Long id;
     private String room;
-    private String clientIp;
+    private String name;
 }

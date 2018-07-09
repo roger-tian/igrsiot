@@ -1,6 +1,6 @@
 package com.igrs.igrsiot.service;
 
-import com.igrs.igrsiot.model.IgrsRoom;
+import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.utils.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,10 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SocketService implements ServletContextListener {
     public class socketThread extends Thread {
@@ -52,10 +55,10 @@ public class SocketService implements ServletContextListener {
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
-                                            for (int i=0; i<igrsClient.size(); i++) {
-                                                if (remoteAddress.contains(igrsClient.get(i).getClientIp())) {
+                                            for (int i=0; i<igrsDeviceList.size(); i++) {
+                                                if (remoteAddress.contains(igrsDeviceList.get(i).getClientIp())) {
                                                     String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
-                                                    String param = "room=" + igrsClient.get(i).getRoom() + "&" + "buf=" + buf;
+                                                    String param = "room=" + igrsDeviceList.get(i).getRoom() + "&" + "buf=" + buf;
                                                     logger.debug("param: {}", param);
                                                     String result = HttpRequest.sendPost(url, param);
                                                 }
@@ -97,10 +100,10 @@ public class SocketService implements ServletContextListener {
         }
     }
 
-    public static int cmdSend(String room, String buf) {
+    public static int cmdSend(String ctype, String cip, String buf) {
         int i;
-        for (i=0; i<igrsClient.size(); i++) {
-            if (igrsClient.get(i).getRoom().equals(room)) {
+        for (i=0; i<igrsDeviceList.size(); i++) {
+            if (igrsDeviceList.get(i).getClientType().equals(ctype) && igrsDeviceList.get(i).getClientIp().equals(cip)) {
                 break;
             }
         }
@@ -111,8 +114,8 @@ public class SocketService implements ServletContextListener {
                 if (targetChannel instanceof SocketChannel) {
                     SocketChannel dest = (SocketChannel) targetChannel;
                     String remoteAddress = String.valueOf(dest.getRemoteAddress());
-                    if (remoteAddress.contains(igrsClient.get(i).getClientIp())) {
-                        logger.debug("send command {} to {}", buf, igrsClient.get(i).getClientIp());
+                    if (remoteAddress.contains(igrsDeviceList.get(i).getClientIp())) {
+                        logger.debug("send command {} to {}", buf, igrsDeviceList.get(i).getClientIp());
                         dest.write(charset.encode(buf));
                     }
                 }
@@ -144,23 +147,13 @@ public class SocketService implements ServletContextListener {
                     //param = "deviceId=" + "#lemx500s#78b3b912418f";
                     //HttpRequest.sendPost(url, param);
 
-                    if (igrsClient == null) {
-                        url = "http://localhost:8080/igrsiot/control/room";
+                    if (igrsDeviceList == null) {
+                        url = "http://localhost:8080/igrsiot/control/devices";
                         param = "";
                         String result = HttpRequest.sendPost(url, param);
                         logger.debug("result: {}", result);
-                        if (result.length() != 0) {
-                            igrsClient = new ArrayList<>();
-                            String[] list = result.split(",");
-                            String[] list1;
-                            for (int i=0; i<list.length; i++) {
-                                list1 = list[i].split(":");
-                                IgrsRoom igrsRoom = new IgrsRoom();
-                                igrsRoom.setRoom(list1[0]);
-                                igrsRoom.setClientIp(list1[1]);
-                                igrsClient.add(igrsRoom);
-                            }
-                        }
+
+                        // todo
                     }
 
                     Calendar cl = Calendar.getInstance();
@@ -200,7 +193,7 @@ public class SocketService implements ServletContextListener {
     private ServerSocketChannel server;
     private static Selector selector;
     private SocketChannel sc;
-    private static List<IgrsRoom> igrsClient = null;
+    private static List<IgrsDevice> igrsDeviceList = null;
 
     private static final Logger logger = LoggerFactory.getLogger(SocketService.class);
 }

@@ -1,11 +1,9 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
-import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
-import com.igrs.igrsiot.service.IIgrsOperateService;
-import com.igrs.igrsiot.service.IgrsWebSocketService;
-import com.igrs.igrsiot.service.SocketService;
+import com.igrs.igrsiot.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,38 +17,38 @@ import java.util.Date;
 @RequestMapping("/control")
 public class MachineController {
     @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/machine")
-    public String machineOnOff(String room, String index, String onOff) {
+    public String machineSwitch(String room, String index, String onOff) {
         String instruction;
-        String deviceId;
+        String deviceName = "";
 
-        if (index.equals("0")) {
-            String cmd = "{ch_10:" + onOff + "}";
-            SocketService.cmdSend(room, cmd);
-            deviceId = "前交互大屏";
-        }
-        else {
-            String cmd = "{ch_50:" + onOff + "}";
-            SocketService.cmdSend(room, cmd);
-            deviceId = "后交互大屏";
+        IgrsDevice igrsDevice = new IgrsDevice();
+        igrsDevice.setType("machine");
+        igrsDevice.setIndex(index);
+        igrsDevice.setRoom(room);
+        IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
+        if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
+            deviceName = result.getName();
+            String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + onOff + "}";
+            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
         }
 
-        String msg = "room:" + room;
-        msg += "," + "machine" + index + "Switch:" + onOff;
+        String msg = "room:" + room + "," + "machine" + index + "Switch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setRoom(room);
-        igrsDeviceStatus.setDeviceId("machine" + index);
+        igrsDeviceStatus.setDevice(result.getId());
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
-        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+            igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
         }
         else {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
@@ -59,9 +57,9 @@ public class MachineController {
         if (onOff.equals("0")) {
             igrsDeviceStatus.setAttribute("sig_source");
             igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
-            status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+            status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
             if (status != null) {
-                igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
             }
             else {
                 igrsDeviceStatusService.insert(igrsDeviceStatus);
@@ -69,19 +67,14 @@ public class MachineController {
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setRoom(room);
-        igrsOperate.setDeviceId(deviceId);
-        igrsOperate.setUser("admin");
-        if (onOff.equals("1")) {
-            instruction = "开关打开";
-        }
-        else {
-            instruction = "开关关闭";
-        }
-        igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        igrsOperate.setOperateTime(time);
+        igrsOperate.setTime(time);
+        instruction = onOff.equals("1") ? "开关打开" : "开关关闭";
+        igrsOperate.setInstruction(instruction);
+        igrsOperate.setUser("admin");
+        igrsOperate.setRoom(room);
+        igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";
@@ -90,40 +83,38 @@ public class MachineController {
     @RequestMapping("/machineSig")
     public String machineSigSource(String room, String index, String sigSource) {
         String instruction;
-        String deviceId;
+        String deviceName = "";
 
-        if (index.equals("0")) {
-            String cmd = "{ch_12:" + sigSource + "}";
-            SocketService.cmdSend(room, cmd);
-            deviceId = "前交互大屏";
-        }
-        else {
-            String cmd = "{ch_52:" + sigSource + "}";
-            SocketService.cmdSend(room, cmd);
-            deviceId = "后交互大屏";
+        IgrsDevice igrsDevice = new IgrsDevice();
+        igrsDevice.setType("machine");
+        igrsDevice.setIndex(index);
+        igrsDevice.setRoom(room);
+        IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
+        if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
+            deviceName = result.getName();
+            String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + sigSource + "}";
+            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
         }
 
-        String msg = "room:" + room;
-        msg += "," + "machine" + index + "Sig:" + sigSource;
+        String msg = "room:" + room + "," + "machine" + index + "Sig:" + sigSource;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setRoom(room);
-        igrsDeviceStatus.setDeviceId("machine" + index);
+        igrsDeviceStatus.setDevice(result.getId());
         igrsDeviceStatus.setAttribute("sig_source");
         igrsDeviceStatus.setValue(sigSource);
-        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+            igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
         }
         else {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setRoom(room);
-        igrsOperate.setDeviceId(deviceId);
-        igrsOperate.setUser("admin");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = df.format(new Date());
+        igrsOperate.setTime(time);
         if (sigSource.equals("1")) {
             instruction = "信号源切换到主页";
         }
@@ -137,12 +128,12 @@ public class MachineController {
             instruction = "信号源切换到内置电脑";
         }
         else {
-            instruction = null;
+            instruction = "";
         }
         igrsOperate.setInstruction(instruction);
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = df.format(new Date());
-        igrsOperate.setOperateTime(time);
+        igrsOperate.setUser("admin");
+        igrsOperate.setRoom(room);
+        igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";
@@ -151,25 +142,25 @@ public class MachineController {
     @RequestMapping("/machineVol")
     public String machineVolume(String room, String index, String volume) {
         String instruction;
-        String deviceId;
+        String deviceName = "";
 
-        if (index.equals("0")) {
-            String cmd = "{ch_11:" + volume + "}";
-            SocketService.cmdSend(room, cmd);
-            deviceId = "前交互大屏";
-        }
-        else {
-            String cmd = "{ch_51:" + volume + "}";
-            SocketService.cmdSend(room, cmd);
-            deviceId = "后交互大屏";
+        IgrsDevice igrsDevice = new IgrsDevice();
+        igrsDevice.setType("machine");
+        igrsDevice.setIndex(index);
+        igrsDevice.setRoom(room);
+        IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
+        if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
+            deviceName = result.getName();
+            String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + volume + "}";
+            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
         }
 
         int vol = 0;
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setRoom(room);
-        igrsDeviceStatus.setDeviceId("machine" + index);
+        igrsDeviceStatus.setDevice(result.getId());
         igrsDeviceStatus.setAttribute("volume");
-        IgrsDeviceStatus status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+        igrsDeviceStatus.setValue(volume);
+        IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
             vol = Integer.parseInt(status.getValue());
             if (volume.equals("1")) {   //volume increase
@@ -185,31 +176,25 @@ public class MachineController {
                 }
             }
             igrsDeviceStatus.setValue(String.valueOf(vol));
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+            igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
         }
         else {
             igrsDeviceStatus.setValue("0");
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        String msg = "room:" + room;
-        msg += "," + "machine" + index + "Volume:" + vol;
+        String msg = "room:" + room + "," + "machine" + index + "Volume:" + vol;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setRoom(room);
-        igrsOperate.setDeviceId(deviceId);
-        igrsOperate.setUser("admin");
-        if (volume.equals("1")) {
-            instruction = "音量增加";
-        }
-        else {
-            instruction = "音量减少";
-        }
-        igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        igrsOperate.setOperateTime(time);
+        igrsOperate.setTime(time);
+        instruction = volume.equals("1") ? "音量增加" : "音量减少";
+        igrsOperate.setInstruction(instruction);
+        igrsOperate.setUser("admin");
+        igrsOperate.setRoom(room);
+        igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";

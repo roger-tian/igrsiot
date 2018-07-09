@@ -1,7 +1,9 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
+import com.igrs.igrsiot.service.IIgrsDeviceService;
 import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import com.igrs.igrsiot.service.IIgrsOperateService;
 import com.igrs.igrsiot.service.IgrsWebSocketService;
@@ -15,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/control")
 public class PurifierController {
+    @Autowired
+    private IIgrsDeviceService igrsDeviceService;
     @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
@@ -53,10 +58,10 @@ public class PurifierController {
             IgrsOperate igrsOperate = new IgrsOperate();
             igrsOperate.setRoom(room);
             igrsOperate.setUser("admin");
-            igrsOperate.setDeviceId("智能净化器");
+            igrsOperate.setDevice("智能净化器");
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String time = df.format(new Date());
-            igrsOperate.setOperateTime(time);
+            igrsOperate.setTime(time);
             if (power.equals("1")) {
                 instruction = "开关打开";
             }
@@ -92,10 +97,20 @@ public class PurifierController {
     }
 
     private String purifierDataHandler(String room, String data) {
+        String deviceName = "";
+
+        IgrsDevice igrsDevice = new IgrsDevice();
+        igrsDevice.setType("purifier");
+        igrsDevice.setRoom(room);
+        List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
+        if (list != null) {
+            deviceName = list.get(0).getName();
+        }
+
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setDevice(list.get(0).getId());
+
         IgrsDeviceStatus status;
-        igrsDeviceStatus.setRoom(room);
-        igrsDeviceStatus.setDeviceId("purifier");
 
         String strSet1[] = data.split(",");
         String strSet2[];
@@ -110,9 +125,9 @@ public class PurifierController {
                     else {
                         igrsDeviceStatus.setValue("0");
                     }
-                    status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+                    status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
-                        igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                        igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
                     }
                     else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
@@ -126,9 +141,9 @@ public class PurifierController {
                     else {
                         igrsDeviceStatus.setValue("0");
                     }
-                    status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+                    status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
-                        igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                        igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
                     }
                     else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
@@ -142,9 +157,9 @@ public class PurifierController {
                     else {
                         igrsDeviceStatus.setValue("0");
                     }
-                    status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+                    status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
-                        igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                        igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
                     }
                     else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
@@ -158,9 +173,9 @@ public class PurifierController {
                     else {
                         igrsDeviceStatus.setValue("0");
                     }
-                    status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+                    status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
-                        igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                        igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
                     }
                     else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
@@ -174,9 +189,9 @@ public class PurifierController {
                     else {
                         igrsDeviceStatus.setValue("0");
                     }
-                    status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+                    status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
-                        igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                        igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
                     }
                     else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
@@ -190,9 +205,9 @@ public class PurifierController {
                     else {
                         igrsDeviceStatus.setValue("0");
                     }
-                    status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+                    status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
-                        igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                        igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
                     }
                     else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
@@ -206,9 +221,9 @@ public class PurifierController {
                     else {
                         igrsDeviceStatus.setValue("0");
                     }
-                    status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+                    status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
-                        igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                        igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
                     }
                     else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
@@ -229,9 +244,9 @@ public class PurifierController {
                     else {
                         igrsDeviceStatus.setValue("1");
                     }
-                    status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
+                    status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
-                        igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
+                        igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
                     }
                     else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);

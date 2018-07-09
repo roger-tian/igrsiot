@@ -5,73 +5,14 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="user" property="user" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="role" property="role" jdbcType="VARCHAR" />
   </resultMap>
+
   <sql id="Base_Column_List" >
-    id, user, password
+    id, user, password, role
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from igrs_user
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <select id="selectByUserName" resultType="IgrsUser" parameterType="String">
+
+  <select id="getUserByName" resultType="IgrsUser" parameterType="String">
     SELECT * FROM igrs_user WHERE user = #{user}
   </select>
-  <select id="selectByUserPass" resultType="IgrsUser">
-    SELECT * FROM igrs_user u WHERE u.user = #{user} and u.password = #{password}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from igrs_user
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsUser" >
-    insert into igrs_user (id, user, password
-      )
-    values (#{id,jdbcType=BIGINT}, #{user,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.igrs.igrsiot.model.IgrsUser" >
-    insert into igrs_user
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="user != null" >
-        user,
-      </if>
-      <if test="password != null" >
-        password,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="user != null" >
-        #{user,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null" >
-        #{password,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.igrs.igrsiot.model.IgrsUser" >
-    update igrs_user
-    <set >
-      <if test="user != null" >
-        user = #{user,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null" >
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.igrs.igrsiot.model.IgrsUser" >
-    update igrs_user
-    set user = #{user,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 </mapper>

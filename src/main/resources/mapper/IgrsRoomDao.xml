@@ -4,33 +4,14 @@
   <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsRoom" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="room" property="room" jdbcType="VARCHAR" />
-    <result column="client_ip" property="clientIp" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, room, client_ip
+    id, room, name
   </sql>
 
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from igrs_room
-    where id = #{id,jdbcType=BIGINT}
+  <select id="getAllRooms" resultMap="BaseResultMap">
+    select * from igrs_room
   </select>
-
-  <select id="selectByRoom" resultMap="BaseResultMap" parameterType="String">
-    select * from igrs_room where room = #{room}
-  </select>
-
-  <select id="selectAll" resultMap="BaseResultMap">
-    select * from igrs_room where 1=1;
-  </select>
-
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from igrs_room where id = #{id,jdbcType=BIGINT}
-  </delete>
-
-  <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsRoom" >
-    insert into igrs_room (room, clientIp) values (#{room,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR})
-  </insert>
 </mapper>

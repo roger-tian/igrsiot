@@ -14,13 +14,22 @@ public class IgrsSensorServiceImpl implements IIgrsSensorService {
     private IIgrsSensorDao igrsSensorDao;
 
     @Override
-    public void insert(IgrsSensor igrsSensor) {
-        igrsSensorDao.insert(igrsSensor);
-        return;
+    public List<IgrsSensor> getDataByType(IgrsSensor igrsSensor) {
+        return igrsSensorDao.getDataByType(igrsSensor);
     }
 
     @Override
-    public List<IgrsSensor> getDataByDateAndType(IgrsSensor igrsSensor) {
-        return igrsSensorDao.getDataByDateAndType(igrsSensor);
+    public List<IgrsSensor> getAvgDataByType(IgrsSensor igrsSensor) {
+        return igrsSensorDao.getAvgDataByType(igrsSensor);
+    }
+
+    @Override
+    public int insert(IgrsSensor igrsSensor) {
+        return igrsSensorDao.insert(igrsSensor);
+    }
+
+    @Override
+    public void deleteDataByDate(IgrsSensor igrsSensor) {
+        igrsSensorDao.deleteDataByDate(igrsSensor);
     }
 }

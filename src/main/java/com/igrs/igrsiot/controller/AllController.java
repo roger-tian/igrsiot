@@ -1,11 +1,9 @@
 package com.igrs.igrsiot.controller;
 
+import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
-import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
-import com.igrs.igrsiot.service.IIgrsOperateService;
-import com.igrs.igrsiot.service.IgrsWebSocketService;
-import com.igrs.igrsiot.service.SocketService;
+import com.igrs.igrsiot.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/control")
@@ -21,101 +20,65 @@ public class AllController {
     @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/all")
-    public String allOnOff(String room, String onOff) throws InterruptedException {
+    public String allSwitch(String room, String onOff) throws InterruptedException {
         String cmd;
         String instruction;
-        if (onOff.equals("1")) {
-            cmd = "{ch_10:1,ch_20:1,ch_21:1}";
-            SocketService.cmdSend(room, cmd);
-            Thread.sleep(1000);
-            cmd = "{ch_60:1}";
-            SocketService.cmdSend(room, cmd);
-            Thread.sleep(1000);
-            cmd = "{ch_50:1}";
-            SocketService.cmdSend(room, cmd);
-            instruction = "总开关打开";
-        }
-        else {
-            cmd = "{ch_10:0,ch_50:0,ch_20:0,ch_21:0,ch_60:0}";
-            SocketService.cmdSend(room, cmd);
-            Thread.sleep(5000);
-            cmd = "{ch_10:0,ch_50:0}";
-            SocketService.cmdSend(room, cmd);
-            instruction = "总开关关闭";
+        List<IgrsDevice> list = igrsDeviceService.getDevicesByRoom(room);
+        if (list.size() == 0) {
+            return "FAIL";
         }
 
-        String msg = "room:" + room;
-        msg += "," + "allSwitch:" + onOff;
+        IgrsDevice igrsDevice;
+        for (int i=0; i<list.size(); i++) {
+            igrsDevice = list.get(i);
+            if (igrsDevice.getClientType().equals("0")) {
+                if ((igrsDevice.getClientIp() != null) && (igrsDevice.getClientChannel() != null)) {
+                    cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + onOff + "}";
+                    SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
+                }
+            }
+            else if (igrsDevice.getClientType().equals("1")) {
+                // todo
+            }
+        }
+
+        String msg = "room:" + room + "," + "allSwitch:" + onOff;
         IgrsWebSocketService.sendAllMessage(msg);
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         IgrsDeviceStatus status;
 
         //update db
-        igrsDeviceStatus.setRoom(room);
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
-        //machine0 switch
-        igrsDeviceStatus.setDeviceId("machine0");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-        }
-        else {
-            igrsDeviceStatusService.insert(igrsDeviceStatus);
-        }
-
-        //machine1 switch
-        igrsDeviceStatus.setDeviceId("machine1");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-        }
-        else {
-            igrsDeviceStatusService.insert(igrsDeviceStatus);
-        }
-
-        //led0 switch
-        igrsDeviceStatus.setDeviceId("led0");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-        }
-        else {
-            igrsDeviceStatusService.insert(igrsDeviceStatus);
-        }
-
-        //led1 switch
-        igrsDeviceStatus.setDeviceId("led1");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-        }
-        else {
-            igrsDeviceStatusService.insert(igrsDeviceStatus);
-        }
-
-        //curtain switch
-        igrsDeviceStatus.setDeviceId("curtain");
-        status = igrsDeviceStatusService.selectByDeviceIdAndAttribute(igrsDeviceStatus);
-        if (status != null) {
-            igrsDeviceStatusService.updateByDeviceIdAndAttribute(igrsDeviceStatus);
-        }
-        else {
-            igrsDeviceStatusService.insert(igrsDeviceStatus);
+        for (int i=0; i<list.size(); i++) {
+            igrsDevice = list.get(i);
+            if ((igrsDevice.getClientIp() != null) && (igrsDevice.getClientChannel() != null)) {
+                igrsDeviceStatus.setDevice(igrsDevice.getId());
+                status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                if (status != null) {
+                    igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
+                }
+                else {
+                    igrsDeviceStatusService.insert(igrsDeviceStatus);
+                }
+            }
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();
-        igrsOperate.setRoom(room);
-        igrsOperate.setDeviceId("总开关");
-        igrsOperate.setUser("admin");
-        igrsOperate.setInstruction(instruction);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
-        igrsOperate.setOperateTime(time);
+        igrsOperate.setTime(time);
+        instruction = onOff.equals("1") ? "总开关打开" : "总开关关闭";
+        igrsOperate.setInstruction(instruction);
+        igrsOperate.setUser("admin");
+        igrsOperate.setRoom(room);
+        igrsOperate.setDevice("总开关");
         igrsOperateService.insert(igrsOperate);
 
         return "SUCCESS";

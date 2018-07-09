@@ -3,13 +3,20 @@ package com.igrs.igrsiot.service;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IIgrsDeviceStatusService {
-    public List<IgrsDeviceStatus> getAllStatus(IgrsDeviceStatus igrsDeviceStatus);
+    List<IgrsDeviceStatus> getStatusByRoom(String room);
 
-    public IgrsDeviceStatus selectByDeviceIdAndAttribute(IgrsDeviceStatus igrsDeviceStatus);
+    IgrsDeviceStatus getByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus);
 
-    public int updateByDeviceIdAndAttribute(IgrsDeviceStatus igrsDeviceStatus);
+    IgrsDeviceStatus getByRoomChAndAttr(Map<String, String> map);
 
-    public int insert(IgrsDeviceStatus igrsDeviceStatus);
+    int updateByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus);
+
+    int updateByRoomChAndAttr(Map<String, String> map);
+
+    int insert(IgrsDeviceStatus igrsDeviceStatus);
+
+    int insertByRoomChAndAttr(Map<String, String> map);
 }

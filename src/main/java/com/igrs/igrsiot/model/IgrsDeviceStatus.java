@@ -37,5 +37,4 @@ public class IgrsDeviceStatus {
     public Long device;
     private String attribute;
     private String value;
-
 }

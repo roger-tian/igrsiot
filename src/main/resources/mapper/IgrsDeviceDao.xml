@@ -8,10 +8,12 @@
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="ctype" property="clientType" jdbcType="VARCHAR" />
     <result column="cip" property="clientIp" jdbcType="VARCHAR" />
+    <result column="cchannel" property="clientChannel" jdbcType="VARCHAR" />
     <result column="room" property="room" jdbcType="VARCHAR" />
   </resultMap>
+
   <sql id="Base_Column_List" >
-    id, type, dindex, name, ctype, cip, room
+    id, type, dindex, name, ctype, cip, cchannel, room
   </sql>
 
   <select id="getAllDevices" resultMap="BaseResultMap" >
@@ -22,15 +24,15 @@
     select * from igrs_device where room=#{room}
   </select>
 
-  <select id="getByRoomAndType" resultMap="BaseResultMap" parameterMap="com.igrs.igrsiot.model.IgrsDevice" >
+  <select id="getByRoomAndType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDevice" >
     select * from igrs_device where room=#{room} and type=#{type}
   </select>
 
-  <select id="getByRoomAndCType" resultMap="BaseResultMap" parameterMap="com.igrs.igrsiot.model.IgrsDevice" >
+  <select id="getByRoomAndCType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDevice" >
     select * from igrs_device where room=#{room} and ctype=#{clientType}
   </select>
 
-  <select id="getByRoomTypeIndex" resultMap="BaseResultMap" parameterMap="com.igrs.igrsiot.model.IgrsDevice" >
+  <select id="getByRoomTypeIndex" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDevice" >
     select * from igrs_device where room=#{room} and type=#{type} and dindex=#{index}
   </select>
 </mapper>

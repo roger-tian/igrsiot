@@ -20,6 +20,15 @@ import java.util.TimerTask;
 public class SocketService implements ServletContextListener {
     public class socketThread extends Thread {
         public void run() {
+            if (igrsDeviceList == null) {
+                String url = "http://localhost:8080/igrsiot/control/devices";
+                String param = "";
+                String result = HttpRequest.sendPost(url, param);
+                logger.debug("result: {}", result);
+
+                // todo
+            }
+
             try {
                 while (selector.select() > 0) {
                     for (SelectionKey sk : selector.selectedKeys()) {
@@ -46,22 +55,19 @@ public class SocketService implements ServletContextListener {
 //                                    cmdSend(content);
 
                                     final String buf = content;
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            String remoteAddress = null;
-                                            try {
-                                                remoteAddress = String.valueOf(sc.getRemoteAddress());
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                            for (int i=0; i<igrsDeviceList.size(); i++) {
-                                                if (remoteAddress.contains(igrsDeviceList.get(i).getClientIp())) {
-                                                    String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
-                                                    String param = "room=" + igrsDeviceList.get(i).getRoom() + "&" + "buf=" + buf;
-                                                    logger.debug("param: {}", param);
-                                                    String result = HttpRequest.sendPost(url, param);
-                                                }
+                                    new Thread(() -> {
+                                        String remoteAddress = null;
+                                        try {
+                                            remoteAddress = String.valueOf(sc.getRemoteAddress());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        for (int i=0; i<igrsDeviceList.size(); i++) {
+                                            if (remoteAddress.contains(igrsDeviceList.get(i).getClientIp())) {
+                                                String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
+                                                String param = "room=" + igrsDeviceList.get(i).getRoom() + "&" + "buf=" + buf;
+                                                logger.debug("param: {}", param);
+                                                String result = HttpRequest.sendPost(url, param);
                                             }
                                         }
                                     }).start();
@@ -92,8 +98,8 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
-//            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
+//            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
             server.socket().bind(isa);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT);
@@ -146,15 +152,6 @@ public class SocketService implements ServletContextListener {
                     //url = "http://localhost:8080/igrsiot/control/purifier/query";
                     //param = "deviceId=" + "#lemx500s#78b3b912418f";
                     //HttpRequest.sendPost(url, param);
-
-                    if (igrsDeviceList == null) {
-                        url = "http://localhost:8080/igrsiot/control/devices";
-                        param = "";
-                        String result = HttpRequest.sendPost(url, param);
-                        logger.debug("result: {}", result);
-
-                        // todo
-                    }
 
                     Calendar cl = Calendar.getInstance();
                     int hour = cl.get(Calendar.HOUR_OF_DAY);

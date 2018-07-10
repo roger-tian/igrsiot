@@ -25,7 +25,7 @@ public class AllController {
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/all")
-    public String allSwitch(String room, String onOff) throws InterruptedException {
+    public String allSwitch(String room, String onOff) {
         String cmd;
         String instruction;
         List<IgrsDevice> list = igrsDeviceService.getDevicesByRoom(room);

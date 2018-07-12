@@ -120,6 +120,11 @@
       <artifactId>spring-test</artifactId>
       <version>${spring.version}</version>
     </dependency>
+      <dependency>
+          <groupId>com.alibaba</groupId>
+          <artifactId>fastjson</artifactId>
+          <version>1.2.32</version>
+      </dependency>
   </dependencies>
 
   <build>

@@ -31,7 +31,7 @@ public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
 
     @Override
     public int updateByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus) {
-        return igrsDeviceStatusDao.updateByDeviceIdAndAttr(igrsDeviceStatus);
+        return igrsDeviceStatusDao.updateByDeviceAndAttr(igrsDeviceStatus);
     }
 
     @Override

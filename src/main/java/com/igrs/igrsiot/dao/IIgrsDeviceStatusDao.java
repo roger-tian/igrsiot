@@ -12,7 +12,7 @@ public interface IIgrsDeviceStatusDao {
 
     IgrsDeviceStatus getByRoomChAndAttr(Map<String, String> map);
 
-    int updateByDeviceIdAndAttr(IgrsDeviceStatus igrsDeviceStatus);
+    int updateByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus);
 
     int updateByRoomChAndAttr(Map<String, String> map);
 

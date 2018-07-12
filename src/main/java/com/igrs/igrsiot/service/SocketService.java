@@ -1,5 +1,7 @@
 package com.igrs.igrsiot.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.utils.HttpRequest;
 import org.slf4j.Logger;
@@ -12,24 +14,43 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class SocketService implements ServletContextListener {
     public class socketThread extends Thread {
         public void run() {
-            if (igrsDeviceList == null) {
-                String url = "http://localhost:8080/igrsiot/control/devices";
-                String param = "";
-                String result = HttpRequest.sendPost(url, param);
-                logger.debug("result: {}", result);
-
-                // todo
-            }
-
             try {
+                while (true) {
+                    if (igrsDeviceList.size() == 0) {
+                        String url = "http://localhost:8080/igrsiot/control/devices";
+                        String param = "";
+                        String result = HttpRequest.sendPost(url, param);
+                        logger.debug("result: {}", result);
+
+                        if (!result.isEmpty()) {
+                            JSONArray jsonArray = JSONArray.parseArray(result);
+                            for (Object obj : jsonArray) {
+                                JSONObject jsonObject = (JSONObject) obj;
+                                IgrsDevice igrsDevice = new IgrsDevice();
+                                igrsDevice.setId(Long.valueOf(jsonObject.getString("id")));
+                                igrsDevice.setType(jsonObject.getString("type"));
+                                igrsDevice.setIndex(jsonObject.getString("index"));
+                                igrsDevice.setName(jsonObject.getString("name"));
+                                igrsDevice.setClientType(jsonObject.getString("clientType"));
+                                igrsDevice.setClientIp(jsonObject.getString("clientIp"));
+                                igrsDevice.setClientChannel(jsonObject.getString("clientChannel"));
+                                igrsDevice.setRoom(jsonObject.getString("room"));
+                                igrsDeviceList.add(igrsDevice);
+                            }
+                        }
+                    }
+                    else {
+                        break;
+                    }
+
+                    Thread.sleep(1000);
+                }
+
                 while (selector.select() > 0) {
                     for (SelectionKey sk : selector.selectedKeys()) {
                         selector.selectedKeys().remove(sk);
@@ -91,6 +112,8 @@ public class SocketService implements ServletContextListener {
                 }
             }
             catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -190,7 +213,7 @@ public class SocketService implements ServletContextListener {
     private ServerSocketChannel server;
     private static Selector selector;
     private SocketChannel sc;
-    private static List<IgrsDevice> igrsDeviceList = null;
+    private static List<IgrsDevice> igrsDeviceList = new ArrayList<>();
 
     private static final Logger logger = LoggerFactory.getLogger(SocketService.class);
 }

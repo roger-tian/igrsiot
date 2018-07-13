@@ -329,7 +329,7 @@ angular.module('starter.controllers', [])
         var switch_led1 = document.getElementById("onoffswitch_led1");
         var switch_led2 = document.getElementById("onoffswitch_led2");
         var switch_curtain = document.getElementById("onoffswitch_curtain");
-        var index = 1;
+        var index = 0;
         var onOff;
         var instruction;
         if (!switch_machine1.checked) {
@@ -352,6 +352,7 @@ angular.module('starter.controllers', [])
             type: 'POST',
             url:'/igrsiot/control/machine',
             data:{
+                room:'100',
                 index:index,
                 onOff:onOff
             },

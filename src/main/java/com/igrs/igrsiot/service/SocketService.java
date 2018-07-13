@@ -130,6 +130,8 @@ public class SocketService implements ServletContextListener {
     }
 
     public static int cmdSend(String ctype, String cip, String buf) {
+        logger.debug("cmd: {}", buf);
+
         int i;
         for (i=0; i<igrsDeviceList.size(); i++) {
             if (igrsDeviceList.get(i).getClientType().equals(ctype) && igrsDeviceList.get(i).getClientIp().equals(cip)) {
@@ -146,6 +148,34 @@ public class SocketService implements ServletContextListener {
                     if (remoteAddress.contains(igrsDeviceList.get(i).getClientIp())) {
                         logger.debug("send command {} to {}", buf, igrsDeviceList.get(i).getClientIp());
                         dest.write(charset.encode(buf));
+                    }
+                }
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public static int cmdSend(String ctype, String cip, char[] buf) {
+        int i;
+        for (i=0; i<igrsDeviceList.size(); i++) {
+            if (igrsDeviceList.get(i).getClientType().equals(ctype) && igrsDeviceList.get(i).getClientIp().equals(cip)) {
+                break;
+            }
+        }
+
+        try {
+            for (SelectionKey key : selector.keys()) {
+                Channel targetChannel = key.channel();
+                if (targetChannel instanceof SocketChannel) {
+                    SocketChannel dest = (SocketChannel) targetChannel;
+                    String remoteAddress = String.valueOf(dest.getRemoteAddress());
+                    if (remoteAddress.contains(igrsDeviceList.get(i).getClientIp())) {
+                        logger.debug("send command {} to {}", buf, igrsDeviceList.get(i).getClientIp());
+                        dest.write(charset.encode(buf.toString()));
                     }
                 }
             }

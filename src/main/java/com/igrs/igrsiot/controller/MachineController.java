@@ -4,6 +4,7 @@ import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.service.*;
+import com.igrs.igrsiot.utils.CmdAnalyze;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,19 @@ public class MachineController {
         igrsDevice.setType("machine");
         igrsDevice.setIndex(index);
         igrsDevice.setRoom(room);
+        logger.debug("room: {}-{}", room, igrsDevice.getRoom());
         IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
         if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
             deviceName = result.getName();
-            String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + onOff + "}";
-            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
+            String cmd = "{ch_" + result.getClientChannel() + ":" + onOff + "}";
+            if (result.getClientType().equals("0")) {
+                SocketService.cmdSend(result.getClientType(), result.getClientIp(), cmd);
+            }
+            else {
+                char[] c = CmdAnalyze.doAnalyze(result.getClientType(), cmd);
+                logger.debug("{}-{}", cmd, c);
+                SocketService.cmdSend(result.getClientType(), result.getClientIp(), c);
+            }
         }
 
         String msg = "room:" + room + "," + "machine" + index + "Switch:" + onOff;
@@ -93,7 +102,13 @@ public class MachineController {
         if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
             deviceName = result.getName();
             String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + sigSource + "}";
-            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
+            if (result.getClientType().equals("0")) {
+                SocketService.cmdSend(result.getClientType(), result.getClientIp(), cmd);
+            }
+            else {
+                char[] c = CmdAnalyze.doAnalyze(result.getClientType(), cmd);
+                SocketService.cmdSend(result.getClientType(), result.getClientIp(), c);
+            }
         }
 
         String msg = "room:" + room + "," + "machine" + index + "Sig:" + sigSource;
@@ -152,6 +167,13 @@ public class MachineController {
         if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
             deviceName = result.getName();
             String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + volume + "}";
+            if (result.getClientType().equals("0")) {
+                SocketService.cmdSend(result.getClientType(), result.getClientIp(), cmd);
+            }
+            else {
+                char[] c = CmdAnalyze.doAnalyze(result.getClientType(), cmd);
+                SocketService.cmdSend(result.getClientType(), result.getClientIp(), c);
+            }
             SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
         }
 

@@ -1,5 +1,7 @@
 package com.igrs.igrsiot.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/control")
@@ -28,8 +31,38 @@ public class StatusController {
     private IIgrsRoomService igrsRoomService;
 
     @RequestMapping("/status")
-    public List<IgrsDeviceStatus> getDeviceStatus(String room) {
-        return igrsDeviceStatusService.getStatusByRoom(room);
+    public JSONObject getDeviceStatus(String room) {
+        JSONObject jsonResult = new JSONObject();
+        List<Map<String, String>> list = igrsDeviceStatusService.getStatusByRoom(room);
+        int itemIndex = 0;
+        for (Map<String, String> obj : list) {
+            String type = obj.get("type");
+            JSONArray itemArray = (JSONArray) jsonResult.get(type);
+            if (null == itemArray) {
+                itemArray = new JSONArray();
+                jsonResult.put(type, itemArray);
+            }
+            int index = Integer.parseInt(obj.get("dindex"));
+            JSONObject itemObj;
+            if (itemArray.size() == 0 || itemIndex != index) {
+                itemObj = new JSONObject();
+                itemArray.add(itemObj);
+            } else {
+                itemObj = (JSONObject) itemArray.get(index);
+            }
+            itemIndex = index;
+            itemObj.put("index", obj.get("dindex"));
+            itemObj.put(obj.get("attribute"), obj.get("value"));
+            itemObj.put("name", obj.get("name"));
+            String id = obj.get("id");
+            if (null != id && !"".equals(id)) {
+                itemObj.put("id",id);
+            }
+
+        }
+        logger.debug("jsonResult: {}", jsonResult);
+
+        return jsonResult;
     }
 
     @RequestMapping("/welcomemode")

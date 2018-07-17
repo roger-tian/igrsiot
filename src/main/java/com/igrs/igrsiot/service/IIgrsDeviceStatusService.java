@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IIgrsDeviceStatusService {
-    List<IgrsDeviceStatus> getStatusByRoom(String room);
+    List<Map<String, String>> getStatusByRoom(String room);
 
     IgrsDeviceStatus getByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus);
 

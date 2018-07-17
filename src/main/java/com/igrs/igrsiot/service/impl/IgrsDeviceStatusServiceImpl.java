@@ -15,7 +15,7 @@ public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
     IIgrsDeviceStatusDao igrsDeviceStatusDao;
 
     @Override
-    public List<IgrsDeviceStatus> getStatusByRoom(String room) {
+    public List<Map<String, String>> getStatusByRoom(String room) {
         return igrsDeviceStatusDao.getStatusByRoom(room);
     }
 

@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsSensor;
@@ -45,8 +46,13 @@ public class SocketController {
                 igrsDeviceStatus.setValue("0");
                 igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
 
-                String msg = "room:" + room + ",welcomeModeSwitch:0";
-                IgrsWebSocketService.sendAllMessage(msg);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("type", "welcome");
+                jsonObject.put("index", "0");
+                jsonObject.put("attribute", "switch");
+                jsonObject.put("value", "0");
+                jsonObject.put("room", room);
+                IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
                 float temp;
                 IgrsSensor igrsSensor = new IgrsSensor();
@@ -105,8 +111,13 @@ public class SocketController {
                     }
                 }
 
-                msg = "room:" + room + ",allSwitch:1";
-                IgrsWebSocketService.sendAllMessage(msg);
+                jsonObject.clear();
+                jsonObject.put("type", "allSwitch");
+                jsonObject.put("index", "0");
+                jsonObject.put("attribute", "switch");
+                jsonObject.put("value", "1");
+                jsonObject.put("room", room);
+                IgrsWebSocketService.sendAllMessage(jsonObject.toString());
             }
         }
         else if (buf.contains("ch_2:")) {        //device return "ok"
@@ -140,8 +151,13 @@ public class SocketController {
                     igrsDeviceStatusService.insertByRoomChAndAttr(map);
                 }
 
-                msg = "room:" + room + "," + igrsDevice.getType() + igrsDevice.getIndex() + ":" + value;
-                IgrsWebSocketService.sendAllMessage(msg);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("type", igrsDevice.getType());
+                jsonObject.put("index", igrsDevice.getIndex());
+                jsonObject.put("attribute", "switch");
+                jsonObject.put("value", value);
+                jsonObject.put("room", room);
+                IgrsWebSocketService.sendAllMessage(jsonObject.toString());
             }
             else {
                 for (int i=0; i<str.length; i++) {
@@ -163,8 +179,13 @@ public class SocketController {
                         igrsDeviceStatusService.insertByRoomChAndAttr(map);
                     }
 
-                    msg = "room:" + room + "," + igrsDevice.getType() + igrsDevice.getIndex() + ":" + value;
-                    IgrsWebSocketService.sendAllMessage(msg);
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("type", igrsDevice.getType());
+                    jsonObject.put("index", igrsDevice.getIndex());
+                    jsonObject.put("attribute", "switch");
+                    jsonObject.put("value", value);
+                    jsonObject.put("room", room);
+                    IgrsWebSocketService.sendAllMessage(jsonObject.toString());
                 }
             }
         }
@@ -234,9 +255,15 @@ public class SocketController {
                 }
             }
 
-            String msg = "room:" + room + "," + "pm25:" + pm25 + ",co2:" + co2 + ",tvoc:" + tvoc + ",temperature:" +
-                    temperature + ",humidity:" + humidity + ",formaldehyde:" + formaldehyde;
-            IgrsWebSocketService.sendAllMessage(msg);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("pm25", pm25);
+            jsonObject.put("co2", co2);
+            jsonObject.put("tvoc", tvoc);
+            jsonObject.put("temp", temperature);
+            jsonObject.put("hum", humidity);
+            jsonObject.put("hcho", formaldehyde);
+            jsonObject.put("room", room);
+            IgrsWebSocketService.sendAllMessage(jsonObject.toString());
         }
         else {
 

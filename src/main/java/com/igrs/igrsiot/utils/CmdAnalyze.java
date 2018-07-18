@@ -19,6 +19,10 @@ public class CmdAnalyze {
                         break;
                     }
                 }
+                if (i == cmdSendStr1.length) {
+                    break;
+                }
+
                 result = cmdRecvStr1[i];
                 if ((data[0] == 0x00) && (data[1] == 55) && (data[2] == 0xAA) && (data[3] == 0x3A)) { //set volume level
                     // todo
@@ -44,6 +48,10 @@ public class CmdAnalyze {
                         break;
                     }
                 }
+                if (i == cmdSendStr1.length) {
+                    break;
+                }
+
                 result = cmdSendChar1[i];
                 if ((result[0] == 0x55) && (result[1] == 0x00) && (result[2] == 0xAA) && (result[3] == 0x3A)) { //set volume level
                     // todo

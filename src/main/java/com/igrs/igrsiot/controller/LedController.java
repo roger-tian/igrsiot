@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
@@ -39,8 +40,13 @@ public class LedController {
             SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
         }
 
-        String msg = "room:" + room + "," + "led" + index + "Switch:" + onOff;
-        IgrsWebSocketService.sendAllMessage(msg);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", "led");
+        jsonObject.put("index", index);
+        jsonObject.put("attribute", "switch");
+        jsonObject.put("value", onOff);
+        jsonObject.put("room", room);
+        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setDevice(result.getId());

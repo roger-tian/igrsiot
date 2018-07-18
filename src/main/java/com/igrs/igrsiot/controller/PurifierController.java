@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
@@ -51,9 +52,13 @@ public class PurifierController {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(room, str);
 
-            String msg = "room:" + room;
-            msg += "," + str;
-            IgrsWebSocketService.sendAllMessage(msg);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "purifier");
+            jsonObject.put("index", "0");
+            jsonObject.put("attribute", "switch");
+            jsonObject.put("value", "1");
+            jsonObject.put("room", room);
+            IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
             IgrsOperate igrsOperate = new IgrsOperate();
             igrsOperate.setRoom(room);

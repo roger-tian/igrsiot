@@ -70,8 +70,14 @@ public class StatusController {
         String instruction;
         String deviceName = "";
 
-        String msg = "room:" + room + "," + "welcomeModeSwitch:" + onOff;
-        IgrsWebSocketService.sendAllMessage(msg);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", "welcome");
+        jsonObject.put("index", "0");
+        jsonObject.put("attribute", "switch");
+        jsonObject.put("value", onOff);
+        jsonObject.put("room", room);
+        logger.debug("jsonObject: {}", jsonObject.toString());
+        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         IgrsDevice igrsDevice = new IgrsDevice();
         igrsDevice.setType("welcome");
@@ -114,8 +120,13 @@ public class StatusController {
 
         List<IgrsRoom> list = igrsRoomService.getAllRooms();
         for (int i=0; i<list.size(); i++) {
-            String msg = "room:" + list.get(i).getRoom() + ",welcomemode:1";
-            IgrsWebSocketService.sendAllMessage(msg);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "welcome");
+            jsonObject.put("index", "0");
+            jsonObject.put("attribute", "switch");
+            jsonObject.put("value", "1");
+            jsonObject.put("room", list.get(i).getRoom());
+            IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
             igrsDevice.setRoom(list.get(i).getRoom());
             igrsDevice.setType("welcome");

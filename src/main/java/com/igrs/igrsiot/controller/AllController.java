@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
@@ -47,8 +48,13 @@ public class AllController {
             }
         }
 
-        String msg = "room:" + room + "," + "allSwitch:" + onOff;
-        IgrsWebSocketService.sendAllMessage(msg);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", "allSwitch");
+        jsonObject.put("index", "0");
+        jsonObject.put("attribute", "switch");
+        jsonObject.put("value", onOff);
+        jsonObject.put("room", room);
+        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         IgrsDeviceStatus status;

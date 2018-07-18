@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
@@ -48,8 +49,13 @@ public class MachineController {
             }
         }
 
-        String msg = "room:" + room + "," + "machine" + index + "Switch:" + onOff;
-        IgrsWebSocketService.sendAllMessage(msg);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", "machine");
+        jsonObject.put("index", index);
+        jsonObject.put("attribute", "switch");
+        jsonObject.put("value", onOff);
+        jsonObject.put("room", room);
+        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setDevice(result.getId());
@@ -111,8 +117,13 @@ public class MachineController {
             }
         }
 
-        String msg = "room:" + room + "," + "machine" + index + "Sig:" + sigSource;
-        IgrsWebSocketService.sendAllMessage(msg);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", "machine");
+        jsonObject.put("index", index);
+        jsonObject.put("attribute", "sigSource");
+        jsonObject.put("value", sigSource);
+        jsonObject.put("room", room);
+        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setDevice(result.getId());
@@ -205,8 +216,13 @@ public class MachineController {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        String msg = "room:" + room + "," + "machine" + index + "Volume:" + vol;
-        IgrsWebSocketService.sendAllMessage(msg);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", "machine");
+        jsonObject.put("index", index);
+        jsonObject.put("attribute", "volume");
+        jsonObject.put("value", volume);
+        jsonObject.put("room", room);
+        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         IgrsOperate igrsOperate = new IgrsOperate();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -2,7 +2,6 @@ package com.igrs.igrsiot.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.utils.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,34 +13,22 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SocketService implements ServletContextListener {
     public class socketThread extends Thread {
         public void run() {
             try {
                 while (true) {
-                    if (igrsDeviceList.size() == 0) {
-                        String url = "http://localhost:8080/igrsiot/control/devices";
+                    if (deviceList.size() == 0) {
+                        String url = "http://localhost:8080/igrsiot/control/device/detail";
                         String param = "";
                         String result = HttpRequest.sendPost(url, param);
-                        logger.debug("result: {}", result);
-
                         if (!result.isEmpty()) {
-                            JSONArray jsonArray = JSONArray.parseArray(result);
-                            for (Object obj : jsonArray) {
-                                JSONObject jsonObject = (JSONObject) obj;
-                                IgrsDevice igrsDevice = new IgrsDevice();
-                                igrsDevice.setId(Long.valueOf(jsonObject.getString("id")));
-                                igrsDevice.setType(jsonObject.getString("type"));
-                                igrsDevice.setIndex(jsonObject.getString("index"));
-                                igrsDevice.setName(jsonObject.getString("name"));
-                                igrsDevice.setClientType(jsonObject.getString("clientType"));
-                                igrsDevice.setClientIp(jsonObject.getString("clientIp"));
-                                igrsDevice.setClientChannel(jsonObject.getString("clientChannel"));
-                                igrsDevice.setRoom(jsonObject.getString("room"));
-                                igrsDeviceList.add(igrsDevice);
-                            }
+                            deviceList = JSONArray.parseArray(result);
+                            logger.debug("deviceList: {}", deviceList);
                         }
                     }
                     else {
@@ -73,7 +60,6 @@ public class SocketService implements ServletContextListener {
                                     logger.info("recv: {}", content);
 
                                     sk.interestOps(SelectionKey.OP_READ);
-//                                    cmdSend(content);
 
                                     final String buf = content;
                                     new Thread(() -> {
@@ -83,12 +69,20 @@ public class SocketService implements ServletContextListener {
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        for (int i=0; i<igrsDeviceList.size(); i++) {
-                                            if (remoteAddress.contains(igrsDeviceList.get(i).getClientIp())) {
+
+                                        JSONObject device;
+                                        String cip;
+                                        for (int i=0; i<deviceList.size(); i++) {
+                                            device = (JSONObject) deviceList.get(i);
+                                            cip = device.getString("cip");
+                                            if ((cip.length()!=0) && (remoteAddress.contains(cip))) {
+                                                logger.debug("rip: {}, cip: {}", remoteAddress, device.getString("cip"));
                                                 String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
-                                                String param = "room=" + igrsDeviceList.get(i).getRoom() + "&" + "buf=" + buf;
+                                                String param = "room=" + device.getString("room") + "&" +
+                                                        "cip=" + cip + "&" + "buf=" + buf;
                                                 logger.debug("param: {}", param);
                                                 String result = HttpRequest.sendPost(url, param);
+                                                break;
                                             }
                                         }
                                     }).start();
@@ -121,23 +115,16 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
-//            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
+//            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
             server.socket().bind(isa);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT);
         }
     }
 
-    public static int cmdSend(String ctype, String cip, String buf) {
+    public static int cmdSend(String cip, String buf) {
         logger.debug("cmd: {}", buf);
-
-        int i;
-        for (i=0; i<igrsDeviceList.size(); i++) {
-            if (igrsDeviceList.get(i).getClientType().equals(ctype) && igrsDeviceList.get(i).getClientIp().equals(cip)) {
-                break;
-            }
-        }
 
         try {
             for (SelectionKey key : selector.keys()) {
@@ -145,8 +132,8 @@ public class SocketService implements ServletContextListener {
                 if (targetChannel instanceof SocketChannel) {
                     SocketChannel dest = (SocketChannel) targetChannel;
                     String remoteAddress = String.valueOf(dest.getRemoteAddress());
-                    if (remoteAddress.contains(igrsDeviceList.get(i).getClientIp())) {
-                        logger.debug("send command {} to {}", buf, igrsDeviceList.get(i).getClientIp());
+                    if (remoteAddress.contains(cip)) {
+                        logger.debug("send command {} to {}", buf, cip);
                         dest.write(charset.encode(buf));
                     }
                 }
@@ -159,22 +146,15 @@ public class SocketService implements ServletContextListener {
         return 0;
     }
 
-    public static int cmdSend(String ctype, String cip, char[] buf) {
-        int i;
-        for (i=0; i<igrsDeviceList.size(); i++) {
-            if (igrsDeviceList.get(i).getClientType().equals(ctype) && igrsDeviceList.get(i).getClientIp().equals(cip)) {
-                break;
-            }
-        }
-
+    public static int cmdSend(String cip, char[] buf) {
         try {
             for (SelectionKey key : selector.keys()) {
                 Channel targetChannel = key.channel();
                 if (targetChannel instanceof SocketChannel) {
                     SocketChannel dest = (SocketChannel) targetChannel;
                     String remoteAddress = String.valueOf(dest.getRemoteAddress());
-                    if (remoteAddress.contains(igrsDeviceList.get(i).getClientIp())) {
-                        logger.debug("send command {} to {}", buf, igrsDeviceList.get(i).getClientIp());
+                    if (remoteAddress.contains(cip)) {
+                        logger.debug("send command {} to {}", buf, cip);
                         dest.write(charset.encode(buf.toString()));
                     }
                 }
@@ -243,7 +223,7 @@ public class SocketService implements ServletContextListener {
     private ServerSocketChannel server;
     private static Selector selector;
     private SocketChannel sc;
-    private static List<IgrsDevice> igrsDeviceList = new ArrayList<>();
+    private static JSONArray deviceList = new JSONArray();
 
     private static final Logger logger = LoggerFactory.getLogger(SocketService.class);
 }

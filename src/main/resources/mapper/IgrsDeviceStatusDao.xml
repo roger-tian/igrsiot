@@ -6,41 +6,52 @@
     <result column="device" property="device" jdbcType="BIGINT" />
     <result column="attribute" property="attribute" jdbcType="VARCHAR" />
     <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="cchannel" property="clientChannel" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, device, attribute, value
+    id, device, attribute, value, cchannel
   </sql>
 
   <select id="getStatusByRoom" resultType="java.util.HashMap" parameterType="String" >
     select d.type,d.dindex,d.name,s.attribute,s.value from igrs_device_status s,igrs_device d
-    where device in (select id from igrs_device where room=#{room}) and d.id=s.device
+    where s.device in (select id from igrs_device where room=#{room}) and d.id=s.device
   </select>
 
   <select id="getByDeviceAndAttr" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
     select * from igrs_device_status where device=#{device} and attribute=#{attribute}
   </select>
 
-  <select id="getByRoomChAttr" resultMap="BaseResultMap" parameterType="java.util.Map" >
+  <select id="getByRoomCh" resultType="java.util.Map" parameterType="java.util.Map" >
     select * from igrs_device d, igrs_device_status s
-    where d.id=s.device and d.room=#{room} and d.cchannel=#{channel} and s.attribute=#{attribute}
+    where d.id=s.device and d.room=#{room} and s.cchannel=#{channel}
+  </select>
+
+  <select id="getByRoomChAttr" resultType="java.util.Map" parameterType="java.util.Map" >
+    select * from igrs_device d, igrs_device_status s
+    where d.id=s.device and d.room=#{room} and s.cchannel=#{channel} and s.attribute=#{attribute}
   </select>
 
   <update id="updateByDeviceAndAttr" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
     update igrs_device_status set value=#{value} where device=#{device} and attribute=#{attribute}
   </update>
 
+  <update id="updateByRoomCh" parameterType="java.util.Map" >
+    update igrs_device d, igrs_device_status s set s.value=#{value}
+    where d.id=s.device and d.room=#{room} and s.cchannel=#{channel}
+  </update>
+
   <update id="updateByRoomChAttr" parameterType="java.util.Map" >
     update igrs_device d, igrs_device_status s set s.value=#{value}
-    where d.id=s.device and d.room=#{room} and d.cchannel=#{channel} and s.attribute=#{attribute}
+    where d.id=s.device and d.room=#{room} and s.cchannel=#{channel} and s.attribute=#{attribute}
   </update>
 
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
-    insert into igrs_device_status(device,attribute,value) values(#{device}, #{attribute}, #{value})
+    insert into igrs_device_status(device,attribute,value,cchannel) values(#{device}, #{attribute}, #{value}, "")
   </insert>
 
   <insert id="insertByRoomChAndAttr" parameterType="java.util.Map" >
-    insert into igrs_device_status(device,attribute,value)
-    values((select d.id from igrs_device d where d.room=#{room} and d.cchannel=#{channel}), #{attribute}, #{value})
+    insert into igrs_device_status(device,attribute,value,cchannel)
+    values((select d.id from igrs_device d where d.room=#{room}), #{attribute}, #{value}, #{channel})
   </insert>
 </mapper>

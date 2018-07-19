@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/control")
@@ -38,18 +39,17 @@ public class MachineController {
         igrsDevice.setType("machine");
         igrsDevice.setIndex(index);
         igrsDevice.setRoom(room);
-        logger.debug("room: {}-{}", room, igrsDevice.getRoom());
-        IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
-        if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
-            deviceName = result.getName();
-            String cmd = "{ch_" + result.getClientChannel() + ":" + onOff + "}";
-            if (result.getClientType().equals("0")) {
-                SocketService.cmdSend(result.getClientType(), result.getClientIp(), cmd);
+        HashMap<String, String> map = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
+        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
+            deviceName = map.get("name");
+            String cmd = "{ch_" + map.get("cchannel") + ":" + onOff + "}";
+            if (map.get("ctype").equals("0")) {
+                SocketService.cmdSend(map.get("cip"), cmd);
             }
             else {
-                char[] c = CmdAnalyze.doAnalyze(result.getClientType(), cmd);
+                char[] c = CmdAnalyze.doAnalyze(map.get("ctype"), cmd);
                 logger.debug("{}-{}", cmd, c);
-                SocketService.cmdSend(result.getClientType(), result.getClientIp(), c);
+                SocketService.cmdSend(map.get("cip"), c);
             }
         }
 
@@ -62,7 +62,7 @@ public class MachineController {
         IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDevice(result.getId());
+        igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
@@ -112,16 +112,16 @@ public class MachineController {
         igrsDevice.setType("machine");
         igrsDevice.setIndex(index);
         igrsDevice.setRoom(room);
-        IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
-        if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
-            deviceName = result.getName();
-            String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + sigSource + "}";
-            if (result.getClientType().equals("0")) {
-                SocketService.cmdSend(result.getClientType(), result.getClientIp(), cmd);
+        HashMap<String, String> map = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
+        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
+            deviceName = map.get("name");
+            String cmd = "{ch_" + map.get("cchannel") + ":" + sigSource + "}";
+            if (map.get("ctype").equals("0")) {
+                SocketService.cmdSend(map.get("cip"), cmd);
             }
             else {
-                char[] c = CmdAnalyze.doAnalyze(result.getClientType(), cmd);
-                SocketService.cmdSend(result.getClientType(), result.getClientIp(), c);
+                char[] c = CmdAnalyze.doAnalyze(map.get("ctype"), cmd);
+                SocketService.cmdSend(map.get("cip"), c);
             }
         }
 
@@ -134,7 +134,7 @@ public class MachineController {
         IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDevice(result.getId());
+        igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
         igrsDeviceStatus.setAttribute("sig_source");
         igrsDeviceStatus.setValue(sigSource);
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
@@ -186,23 +186,22 @@ public class MachineController {
         igrsDevice.setType("machine");
         igrsDevice.setIndex(index);
         igrsDevice.setRoom(room);
-        IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
-        if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
-            deviceName = result.getName();
-            String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + volume + "}";
-            if (result.getClientType().equals("0")) {
-                SocketService.cmdSend(result.getClientType(), result.getClientIp(), cmd);
+        HashMap<String, String> map = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
+        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
+            deviceName = map.get("name");
+            String cmd = "{ch_" + map.get("cchannel") + ":" + volume + "}";
+            if (map.get("ctype").equals("0")) {
+                SocketService.cmdSend(map.get("cip"), cmd);
             }
             else {
-                char[] c = CmdAnalyze.doAnalyze(result.getClientType(), cmd);
-                SocketService.cmdSend(result.getClientType(), result.getClientIp(), c);
+                char[] c = CmdAnalyze.doAnalyze(map.get("ctype"), cmd);
+                SocketService.cmdSend(map.get("cip"), c);
             }
-            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
         }
 
         int vol = 0;
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDevice(result.getId());
+        igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
         igrsDeviceStatus.setAttribute("volume");
         igrsDeviceStatus.setValue(volume);
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);

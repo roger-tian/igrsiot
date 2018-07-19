@@ -1,7 +1,6 @@
 package com.igrs.igrsiot.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.service.*;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -29,26 +29,26 @@ public class AllController {
     public String allSwitch(String room, String onOff) {
         String cmd;
         String instruction;
+        HashMap<String, String> map;
 
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
             return "FAIL";
         }
 
-        List<IgrsDevice> list = igrsDeviceService.getDevicesByRoom(room);
+        List<HashMap<String, String>> list = igrsDeviceService.getDetailByRoom(room);
         if (list.size() == 0) {
             return "FAIL";
         }
 
-        IgrsDevice igrsDevice;
         for (int i=0; i<list.size(); i++) {
-            igrsDevice = list.get(i);
-            if (igrsDevice.getClientType().equals("0")) {
-                if ((igrsDevice.getClientIp() != null) && (igrsDevice.getClientChannel() != null)) {
-                    cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + onOff + "}";
-                    SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
+            map = list.get(i);
+            if (map.get("ctype").equals("0")) {
+                if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
+                    cmd = "{ch_" + map.get("cchannel") + ":" + onOff + "}";
+                    SocketService.cmdSend(map.get("cip"), cmd);
                 }
             }
-            else if (igrsDevice.getClientType().equals("1")) {
+            else if (map.get("ctype").equals("1")) {
                 // todo
             }
         }
@@ -67,9 +67,9 @@ public class AllController {
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
         for (int i=0; i<list.size(); i++) {
-            igrsDevice = list.get(i);
-            if ((igrsDevice.getClientIp() != null) && (igrsDevice.getClientChannel() != null)) {
-                igrsDeviceStatus.setDevice(igrsDevice.getId());
+            map = list.get(i);
+            if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
+                igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
                 status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                 if (status != null) {
                     igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);

@@ -28,7 +28,7 @@ public class SocketController {
     private IIgrsSensorService igrsSensorService;
 
     @RequestMapping("/socketdata/handle")
-    public String socketDataHandler(String room, String buf) throws InterruptedException {
+    public String socketDataHandler(String room, String cip, String buf) throws InterruptedException {
         String buff;
         String cmd;
 
@@ -70,37 +70,38 @@ public class SocketController {
                 igrsDevice.setClientType("0");
                 igrsDevice.setRoom(room);
                 deviceList = igrsDeviceService.getByRoomAndCType(igrsDevice);
-                String ctype = "", cip = "";
+                String ctype = "";
                 for (int i=0; i<deviceList.size(); i++) {
                     if (deviceList.get(i).getClientType().equals("0") && deviceList.get(i).getClientIp() != null) {
                         ctype = deviceList.get(i).getClientType();
-                        cip = deviceList.get(i).getClientIp();
+//                        cip = deviceList.get(i).getClientIp();
                         break;
                     }
                 }
                 if (temp < 26.0) {
                     buff = "{ch_30:1}";
-                    SocketService.cmdSend(ctype, cip, buff);
+                    SocketService.cmdSend(cip, buff);
                 }
                 else {
                     buff = "{ch_30:2}";
-                    SocketService.cmdSend(ctype, cip, buff);
+                    SocketService.cmdSend(cip, buff);
                 }
                 Thread.sleep(12000);
 
-                List<IgrsDevice> list = igrsDeviceService.getDevicesByRoom(room);
+                List<HashMap<String, String>> list = igrsDeviceService.getDetailByRoom(room);
                 if (list.size() == 0) {
                     return "FAIL";
                 }
 
+                HashMap<String, String> map;
                 for (int i=0; i<list.size(); i++) {
-                    igrsDevice = list.get(i);
-                    if (igrsDevice.getClientType().equals("0")) {
-                        if ((igrsDevice.getClientIp() != null) && (igrsDevice.getClientChannel() != null)) {
-                            cmd = "{ch_" + igrsDevice.getClientChannel() + ":1}";
-                            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
+                    map = list.get(i);
+                    if (map.get("ctype").equals("0")) {
+                        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
+                            cmd = "{ch_" + map.get("cchannel") + ":1}";
+                            SocketService.cmdSend(map.get("cip"), cmd);
 
-                            igrsDeviceStatus.setDevice(igrsDevice.getId());
+                            igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
                             igrsDeviceStatus.setAttribute("switch");
                             igrsDeviceStatus.setValue("1");
                             igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
@@ -124,13 +125,12 @@ public class SocketController {
 
         }
         else if (buf.contains("ch_")) {
-            buf = buf.substring(1, buf.length()-2);
+            buf = buf.substring(1, buf.length()-1);
             String[] str = buf.split(",");
             String[] str1;
             String channel;
             String value;
             String msg;
-            IgrsDevice igrsDevice = new IgrsDevice();
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
             if (str.length == 0) {
                 str1 = buf.split(":");
@@ -143,26 +143,28 @@ public class SocketController {
                 map.put("value", value);
                 map.put("channel", channel);
                 map.put("attribute", "switch");
-                igrsDeviceStatus = igrsDeviceStatusService.getByRoomChAndAttr(map);
-                if (igrsDeviceStatus != null) {
-                    igrsDeviceStatusService.updateByRoomChAndAttr(map);
+                List<HashMap<String, String>> list = igrsDeviceStatusService.getByRoomChAttr(map);
+                if (list != null) {
+                    igrsDeviceStatusService.updateByRoomChAttr(map);
                 }
                 else {
-                    igrsDeviceStatusService.insertByRoomChAndAttr(map);
+                    igrsDeviceStatusService.insertByRoomChAttr(map);
                 }
 
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("type", igrsDevice.getType());
-                jsonObject.put("index", igrsDevice.getIndex());
-                jsonObject.put("attribute", "switch");
-                jsonObject.put("value", value);
-                jsonObject.put("room", room);
-                IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+                for (int i=0; i<list.size(); i++) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("type", list.get(i).get("type"));
+                    jsonObject.put("index", list.get(i).get("dindex"));
+                    jsonObject.put("attribute", "switch");
+                    jsonObject.put("value", value);
+                    jsonObject.put("room", room);
+                    IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+                }
             }
             else {
                 for (int i=0; i<str.length; i++) {
                     str1 = str[i].split(":");
-                    channel = str1[0].substring(3, str1[0].length()-3);
+                    channel = str1[0].substring(3, str1[0].length());
                     value = str1[1];
                     logger.debug("channel: {}, value: {}", channel, value);
 
@@ -170,22 +172,24 @@ public class SocketController {
                     map.put("room", room);
                     map.put("value", value);
                     map.put("channel", channel);
-                    map.put("attribute", "switch");
-                    igrsDeviceStatus = igrsDeviceStatusService.getByRoomChAndAttr(map);
+                    List<HashMap<String, String>> list = igrsDeviceStatusService.getByRoomCh(map);
                     if (igrsDeviceStatus != null) {
-                        igrsDeviceStatusService.updateByRoomChAndAttr(map);
+                        igrsDeviceStatusService.updateByRoomCh(map);
                     }
                     else {
-                        igrsDeviceStatusService.insertByRoomChAndAttr(map);
+                        igrsDeviceStatusService.insertByRoomChAttr(map);
                     }
 
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("type", igrsDevice.getType());
-                    jsonObject.put("index", igrsDevice.getIndex());
-                    jsonObject.put("attribute", "switch");
-                    jsonObject.put("value", value);
-                    jsonObject.put("room", room);
-                    IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+                    for (int j=0; j<list.size(); j++) {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("type", list.get(j).get("type"));
+                        jsonObject.put("index", list.get(j).get("dindex"));
+                        jsonObject.put("attribute", "switch");
+                        jsonObject.put("value", value);
+                        jsonObject.put("room", room);
+                        logger.debug("jsonObject: {}", jsonObject);
+                        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+                    }
                 }
             }
         }
@@ -246,8 +250,8 @@ public class SocketController {
                     igrsSensorService.insert(igrsSensor);
                 }
                 else if (cells[0].contains("hcho")) {
-                    formaldehyde = cells[1].substring(0, cells[1].length()-2);
-                    logger.debug("cells[1]: {}, formaldehyde: {}", cells[1], formaldehyde);
+                    String hcho = cells[1].trim();
+                    formaldehyde = hcho.substring(0, hcho.length()-1);
                     igrsSensor.setType("formaldehyde");
                     igrsSensor.setValue(formaldehyde);
                     logger.debug("formaldehyde: {}", igrsSensor.getValue());
@@ -264,6 +268,7 @@ public class SocketController {
             jsonObject.put("hum", humidity);
             jsonObject.put("hcho", formaldehyde);
             jsonObject.put("room", room);
+            logger.debug("jsonObject: {}", jsonObject);
             IgrsWebSocketService.sendAllMessage(jsonObject.toString());
         }
         else {

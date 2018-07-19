@@ -49,14 +49,6 @@ public class IgrsDevice {
         this.clientIp = clientIp;
     }
 
-    public String getClientChannel() {
-        return clientChannel;
-    }
-
-    public void setClientChannel(String clientChannel) {
-        this.clientChannel = clientChannel;
-    }
-
     public String getRoom() {
         return room;
     }
@@ -71,6 +63,5 @@ public class IgrsDevice {
     private String name;
     private String clientType;
     private String clientIp;
-    private String clientChannel;
     private String room;
 }

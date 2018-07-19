@@ -52,7 +52,6 @@ CREATE TABLE `igrs_device` (
   `name` varchar(22) DEFAULT NULL,
   `ctype` varchar(10) DEFAULT NULL,
   `cip` varchar(16) DEFAULT NULL,
-  `cchannel` varchar(10) DEFAULT NULL,
   `room` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -65,6 +64,7 @@ CREATE TABLE `igrs_device_status` (
   `device` bigint(20) NOT NULL,
   `attribute` varchar(10) DEFAULT NULL,
   `value` varchar(22) DEFAULT NULL,
+  `cchannel` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 

@@ -33,8 +33,17 @@ public class IgrsDeviceStatus {
         this.value = value;
     }
 
+    public String getClientChannel() {
+        return clientChannel;
+    }
+
+    public void setClientChannel(String clientChannel) {
+        this.clientChannel = clientChannel;
+    }
+
     private Long id;
     public Long device;
     private String attribute;
     private String value;
+    private String clientChannel;
 }

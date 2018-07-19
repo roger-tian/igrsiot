@@ -6,6 +6,7 @@ import com.igrs.igrsiot.service.IIgrsDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -24,6 +25,16 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     }
 
     @Override
+    public List<HashMap<String, String>> getDeviceDetail() {
+        return igrsDeviceDao.getDeviceDetail();
+    }
+
+    @Override
+    public List<HashMap<String, String>> getDetailByRoom(String room) {
+        return igrsDeviceDao.getDetailByRoom(room);
+    }
+
+    @Override
     public List<IgrsDevice> getByRoomAndType(IgrsDevice igrsDevice) {
         return igrsDeviceDao.getByRoomAndType(igrsDevice);
     }
@@ -39,7 +50,7 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     }
 
     @Override
-    public IgrsDevice getByRoomTypeIndex(IgrsDevice igrsDevice) {
+    public HashMap<String, String> getByRoomTypeIndex(IgrsDevice igrsDevice) {
         return igrsDeviceDao.getByRoomTypeIndex(igrsDevice);
     }
 }

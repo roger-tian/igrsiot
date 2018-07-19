@@ -6,6 +6,7 @@ import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +26,13 @@ public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
     }
 
     @Override
-    public IgrsDeviceStatus getByRoomChAndAttr(Map<String, String> map) {
-        return igrsDeviceStatusDao.getByRoomChAndAttr(map);
+    public List<HashMap<String, String>> getByRoomCh(Map<String, String> map) {
+        return igrsDeviceStatusDao.getByRoomCh(map);
+    }
+
+    @Override
+    public List<HashMap<String, String>> getByRoomChAttr(Map<String, String> map) {
+        return igrsDeviceStatusDao.getByRoomChAttr(map);
     }
 
     @Override
@@ -35,8 +41,13 @@ public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
     }
 
     @Override
-    public int updateByRoomChAndAttr(Map<String, String> map) {
-        return igrsDeviceStatusDao.updateByRoomChAndAttr(map);
+    public int updateByRoomCh(Map<String, String> map) {
+        return igrsDeviceStatusDao.updateByRoomChAttr(map);
+    }
+
+    @Override
+    public int updateByRoomChAttr(Map<String, String> map) {
+        return igrsDeviceStatusDao.updateByRoomChAttr(map);
     }
 
     @Override
@@ -45,7 +56,7 @@ public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
     }
 
     @Override
-    public int insertByRoomChAndAttr(Map<String, String> map) {
-        return igrsDeviceStatusDao.insertByRoomChAndAttr(map);
+    public int insertByRoomChAttr(Map<String, String> map) {
+        return igrsDeviceStatusDao.insertByRoomChAttr(map);
     }
 }

@@ -2,6 +2,7 @@ package com.igrs.igrsiot.dao;
 
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,13 +11,17 @@ public interface IIgrsDeviceStatusDao {
 
     IgrsDeviceStatus getByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus);
 
-    IgrsDeviceStatus getByRoomChAndAttr(Map<String, String> map);
+    List<HashMap<String, String>> getByRoomCh(Map<String, String> map);
+
+    List<HashMap<String, String>> getByRoomChAttr(Map<String, String> map);
 
     int updateByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus);
 
-    int updateByRoomChAndAttr(Map<String, String> map);
+    int updateByRoomCh(Map<String, String> map);
+
+    int updateByRoomChAttr(Map<String, String> map);
 
     int insert(IgrsDeviceStatus igrsDeviceStatus);
 
-    int insertByRoomChAndAttr(Map<String, String> map);
+    int insertByRoomChAttr(Map<String, String> map);
 }

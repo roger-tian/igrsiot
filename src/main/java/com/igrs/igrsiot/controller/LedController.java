@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/control")
@@ -37,11 +38,11 @@ public class LedController {
         igrsDevice.setType("led");
         igrsDevice.setIndex(index);
         igrsDevice.setRoom(room);
-        IgrsDevice result = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
-        if ((result.getClientIp() != null) && (result.getClientChannel() != null)) {
-            deviceName = result.getName();
-            String cmd = "{ch_" + igrsDevice.getClientChannel() + ":" + onOff + "}";
-            SocketService.cmdSend(igrsDevice.getClientType(), igrsDevice.getClientIp(), cmd);
+        HashMap<String, String> map = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
+        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
+            deviceName = map.get("name");
+            String cmd = "{ch_" + map.get("cchannel") + ":" + onOff + "}";
+            SocketService.cmdSend(igrsDevice.getClientIp(), cmd);
         }
 
         JSONObject jsonObject = new JSONObject();
@@ -53,7 +54,7 @@ public class LedController {
         IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDevice(result.getId());
+        igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);

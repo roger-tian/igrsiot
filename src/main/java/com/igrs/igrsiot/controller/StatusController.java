@@ -113,7 +113,7 @@ public class StatusController {
                     itemObj.put("id", id);
                 }
             } else {
-                if (obj.get("attribute").equals("switch") && obj.get("value").equals("1")) {
+                if (!type.equals("welcome") && obj.get("attribute").equals("switch") && obj.get("value").equals("1")) {
                     allSwitch = "1";
                 }
                 JSONArray itemArray = (JSONArray) jsonResult.get(type);

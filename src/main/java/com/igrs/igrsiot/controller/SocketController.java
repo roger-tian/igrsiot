@@ -256,6 +256,7 @@ public class SocketController {
             }
 
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "sensor");
             jsonObject.put("pm25", pm25);
             jsonObject.put("co2", co2);
             jsonObject.put("tvoc", tvoc);

@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
@@ -36,6 +37,7 @@ public class PurifierController {
         String instruction;
 
         String room = request.getParameter("room");
+        String index = request.getParameter("index");
         String deviceId = request.getParameter("deviceId");
         param = "deviceId=" + deviceId;
         String lock = request.getParameter("lock");
@@ -49,16 +51,16 @@ public class PurifierController {
 
         String result = HttpRequest.sendPost(url, param);
         if (!result.equals("")) {
-            String str = result.substring(result.indexOf("pw::"));
-            purifierDataHandler(room, str);
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("type", "purifier");
+//            jsonObject.put("index", "0");
+//            jsonObject.put("attribute", "switch");
+//            jsonObject.put("value", "1");
+//            jsonObject.put("room", room);
+//            IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", "purifier");
-            jsonObject.put("index", "0");
-            jsonObject.put("attribute", "switch");
-            jsonObject.put("value", "1");
-            jsonObject.put("room", room);
-            IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+            String str = result.substring(result.indexOf("pw::"));
+            purifierDataHandler(room, index, str);
 
             IgrsOperate igrsOperate = new IgrsOperate();
             igrsOperate.setRoom(room);
@@ -91,7 +93,7 @@ public class PurifierController {
         String result = HttpRequest.sendPost(url, param);
         if (!result.equals("")) {
             String str = result.substring(result.indexOf("pw::"));
-            purifierDataHandler(room, str);
+            purifierDataHandler(room, "0", str);
 
             String msg = "room:" + room;
             msg += "," + str;
@@ -101,16 +103,20 @@ public class PurifierController {
         return result;
     }
 
-    private String purifierDataHandler(String room, String data) {
+    private String purifierDataHandler(String room, String index, String data) {
         String deviceName = "";
+        String pw = "", lc, sl, mo, io, uv, ti, fa = "";
+        JSONArray arrayList = new JSONArray();
 
         IgrsDevice igrsDevice = new IgrsDevice();
         igrsDevice.setType("purifier");
         igrsDevice.setRoom(room);
         List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
-        if (list != null) {
-            deviceName = list.get(0).getName();
+        if (list == null) {
+            return null;
         }
+
+        deviceName = list.get(0).getName();
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setDevice(list.get(0).getId());
@@ -124,12 +130,8 @@ public class PurifierController {
             switch (strSet2[0]) {
                 case "pw":      //power
                     igrsDeviceStatus.setAttribute("switch");
-                    if (strSet2[1].equals("10")) {
-                        igrsDeviceStatus.setValue("1");
-                    }
-                    else {
-                        igrsDeviceStatus.setValue("0");
-                    }
+                    pw = strSet2[1].equals("10") ? "1" : "0";
+                    igrsDeviceStatus.setValue(pw);
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
@@ -140,12 +142,11 @@ public class PurifierController {
                     break;
                 case "lc":      //lock
                     igrsDeviceStatus.setAttribute("lock");
-                    if (strSet2[1].equals("10")) {
-                        igrsDeviceStatus.setValue("1");
+                    lc = strSet2[1].equals("10") ? "1" : "0";
+                    if (lc.equals("1")) {
+                        arrayList.add(0);
                     }
-                    else {
-                        igrsDeviceStatus.setValue("0");
-                    }
+                    igrsDeviceStatus.setValue(lc);
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
@@ -156,12 +157,11 @@ public class PurifierController {
                     break;
                 case "sl":      //sleep
                     igrsDeviceStatus.setAttribute("sleep");
-                    if (strSet2[1].equals("10")) {
-                        igrsDeviceStatus.setValue("1");
+                    sl = strSet2[1].equals("10") ? "1" : "0";
+                    if (sl.equals("1")) {
+                        arrayList.add(1);
                     }
-                    else {
-                        igrsDeviceStatus.setValue("0");
-                    }
+                    igrsDeviceStatus.setValue(sl);
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
@@ -172,12 +172,11 @@ public class PurifierController {
                     break;
                 case "mo":      //mode
                     igrsDeviceStatus.setAttribute("mode");
-                    if (strSet2[1].equals("10")) {
-                        igrsDeviceStatus.setValue("1");
+                    mo = strSet2[1].equals("10") ? "1" : "0";
+                    if (mo.equals("1")) {
+                        arrayList.add(2);
                     }
-                    else {
-                        igrsDeviceStatus.setValue("0");
-                    }
+                    igrsDeviceStatus.setValue(mo);
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
@@ -188,12 +187,11 @@ public class PurifierController {
                     break;
                 case "io":      //Anion
                     igrsDeviceStatus.setAttribute("anion");
-                    if (strSet2[1].equals("10")) {
-                        igrsDeviceStatus.setValue("1");
+                    io = strSet2[1].equals("10") ? "1" : "0";
+                    if (io.equals("1")) {
+                        arrayList.add(3);
                     }
-                    else {
-                        igrsDeviceStatus.setValue("0");
-                    }
+                    igrsDeviceStatus.setValue(io);
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
@@ -204,12 +202,11 @@ public class PurifierController {
                     break;
                 case "uv":      //Uv
                     igrsDeviceStatus.setAttribute("uv");
-                    if (strSet2[1].equals("10")) {
-                        igrsDeviceStatus.setValue("1");
+                    uv = strSet2[1].equals("10") ? "1" : "0";
+                    if (uv.equals("1")) {
+                        arrayList.add(4);
                     }
-                    else {
-                        igrsDeviceStatus.setValue("0");
-                    }
+                    igrsDeviceStatus.setValue(uv);
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
@@ -220,12 +217,11 @@ public class PurifierController {
                     break;
                 case "ti":      //timer
                     igrsDeviceStatus.setAttribute("timer");
-                    if (!strSet2[1].equals("000")) {
-                        igrsDeviceStatus.setValue("1");
+                    ti = !strSet2[1].equals("000") ? "1" : "0";
+                    if (ti.equals("1")) {
+                        arrayList.add(5);
                     }
-                    else {
-                        igrsDeviceStatus.setValue("0");
-                    }
+                    igrsDeviceStatus.setValue(ti);
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
@@ -236,19 +232,8 @@ public class PurifierController {
                     break;
                 case "fa":      //wind speed
                     igrsDeviceStatus.setAttribute("windspeed");
-                    igrsDeviceStatus.setValue(strSet2[1]);
-                    if (strSet2[1].equals("10")) {
-                        igrsDeviceStatus.setValue("1");
-                    }
-                    else if (strSet2[1].equals("20")) {
-                        igrsDeviceStatus.setValue("2");
-                    }
-                    else if (strSet2[1].equals("30")) {
-                        igrsDeviceStatus.setValue("3");
-                    }
-                    else {
-                        igrsDeviceStatus.setValue("1");
-                    }
+                    fa = strSet2[1].substring(0, strSet2[1].length()-1);
+                    igrsDeviceStatus.setValue(fa);
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
@@ -261,6 +246,17 @@ public class PurifierController {
                     break;
             }
         }
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", "purifier");
+        jsonObject.put("attribute", "switch");
+        jsonObject.put("value", pw);
+        jsonObject.put("mod", arrayList.toArray());
+        jsonObject.put("windSpeed", Integer.parseInt(fa));
+        jsonObject.put("room", room);
+        jsonObject.put("index", index);
+        logger.debug("jsonObject: {}, mod: {}", jsonObject, arrayList.toString());
+        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 
         return "SUCCESS";
     }

@@ -30,6 +30,10 @@ public class MachineController {
         String instruction;
         String deviceName = "";
 
+        if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
+            return "FAIL";
+        }
+
         IgrsDevice igrsDevice = new IgrsDevice();
         igrsDevice.setType("machine");
         igrsDevice.setIndex(index);
@@ -100,6 +104,10 @@ public class MachineController {
         String instruction;
         String deviceName = "";
 
+        if (sigSource == null) {
+            return "FAIL";
+        }
+
         IgrsDevice igrsDevice = new IgrsDevice();
         igrsDevice.setType("machine");
         igrsDevice.setIndex(index);
@@ -120,7 +128,7 @@ public class MachineController {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "machine");
         jsonObject.put("index", index);
-        jsonObject.put("attribute", "sigSource");
+        jsonObject.put("attribute", "sig_source");
         jsonObject.put("value", sigSource);
         jsonObject.put("room", room);
         IgrsWebSocketService.sendAllMessage(jsonObject.toString());
@@ -169,6 +177,10 @@ public class MachineController {
     public String machineVolume(String room, String index, String volume) {
         String instruction;
         String deviceName = "";
+
+        if (volume == null) {
+            return "FAIL";
+        }
 
         IgrsDevice igrsDevice = new IgrsDevice();
         igrsDevice.setType("machine");
@@ -220,7 +232,7 @@ public class MachineController {
         jsonObject.put("type", "machine");
         jsonObject.put("index", index);
         jsonObject.put("attribute", "volume");
-        jsonObject.put("value", volume);
+        jsonObject.put("value", vol);
         jsonObject.put("room", room);
         IgrsWebSocketService.sendAllMessage(jsonObject.toString());
 

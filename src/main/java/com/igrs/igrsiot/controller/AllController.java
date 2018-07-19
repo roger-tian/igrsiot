@@ -29,6 +29,11 @@ public class AllController {
     public String allSwitch(String room, String onOff) {
         String cmd;
         String instruction;
+
+        if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
+            return "FAIL";
+        }
+
         List<IgrsDevice> list = igrsDeviceService.getDevicesByRoom(room);
         if (list.size() == 0) {
             return "FAIL";
@@ -50,7 +55,6 @@ public class AllController {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "allSwitch");
-        jsonObject.put("index", "0");
         jsonObject.put("attribute", "switch");
         jsonObject.put("value", onOff);
         jsonObject.put("room", room);

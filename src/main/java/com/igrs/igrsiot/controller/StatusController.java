@@ -35,31 +35,107 @@ public class StatusController {
         JSONObject jsonResult = new JSONObject();
         List<Map<String, String>> list = igrsDeviceStatusService.getStatusByRoom(room);
         int itemIndex = 0;
+        String allSwitch = "0";
+        JSONArray arrayList = new JSONArray();
+        int count = 0;
+
         for (Map<String, String> obj : list) {
             String type = obj.get("type");
-            JSONArray itemArray = (JSONArray) jsonResult.get(type);
-            if (null == itemArray) {
-                itemArray = new JSONArray();
-                jsonResult.put(type, itemArray);
-            }
-            int index = Integer.parseInt(obj.get("dindex"));
-            JSONObject itemObj;
-            if (itemArray.size() == 0 || itemIndex != index) {
-                itemObj = new JSONObject();
-                itemArray.add(itemObj);
-            } else {
-                itemObj = (JSONObject) itemArray.get(index);
-            }
-            itemIndex = index;
-            itemObj.put("index", obj.get("dindex"));
-            itemObj.put(obj.get("attribute"), obj.get("value"));
-            itemObj.put("name", obj.get("name"));
-            String id = obj.get("id");
-            if (null != id && !"".equals(id)) {
-                itemObj.put("id",id);
-            }
+            if (type.equals("purifier")) {
+                JSONArray itemArray = (JSONArray) jsonResult.get(type);
+                if (null == itemArray) {
+                    itemArray = new JSONArray();
+                    jsonResult.put(type, itemArray);
+                }
+                int index = Integer.parseInt(obj.get("dindex"));
+                JSONObject itemObj;
+                if (itemArray.size() == 0 || itemIndex != index) {
+                    itemObj = new JSONObject();
+                    itemArray.add(itemObj);
+                } else {
+                    itemObj = (JSONObject) itemArray.get(index);
+                }
+                itemIndex = index;
+                itemObj.put("index", obj.get("dindex"));
+                itemObj.put("name", obj.get("name"));
 
+                switch (obj.get("attribute")) {
+                    case "switch":
+                        itemObj.put("switch", obj.get("value"));
+                        break;
+                    case "lock":
+                        if (obj.get("value").equals("1")) {
+                            arrayList.add(0);
+                        }
+                        count ++;
+                        break;
+                    case "sleep":
+                        if (obj.get("value").equals("1")) {
+                            arrayList.add(1);
+                        }
+                        count ++;
+                        break;
+                    case "mode":
+                        if (obj.get("value").equals("1")) {
+                            arrayList.add(2);
+                        }
+                        count ++;
+                        break;
+                    case "anion":
+                        if (obj.get("value").equals("1")) {
+                            arrayList.add(3);
+                        }
+                        count ++;
+                        break;
+                    case "uv":
+                        if (obj.get("value").equals("1")) {
+                            arrayList.add(4);
+                        }
+                        count ++;
+                        break;
+                    case "timer":
+                        if (obj.get("value").equals("1")) {
+                            arrayList.add(5);
+                        }
+                        count ++;
+                        break;
+                    case "windspeed":
+                        itemObj.put("windSpeed", Integer.parseInt(obj.get("value")));
+                        break;
+                }
+                if (count == 6) {
+//                    jsonResult.put("mod", arrayList.toArray());
+                    itemObj.put("mod", arrayList.toArray());
+                }
+
+                String id = obj.get("id");
+                if (null != id && !"".equals(id)) {
+                    itemObj.put("id", id);
+                }
+            } else {
+                if (obj.get("attribute").equals("switch") && obj.get("value").equals("1")) {
+                    allSwitch = "1";
+                }
+                JSONArray itemArray = (JSONArray) jsonResult.get(type);
+                if (null == itemArray) {
+                    itemArray = new JSONArray();
+                    jsonResult.put(type, itemArray);
+                }
+                int index = Integer.parseInt(obj.get("dindex"));
+                JSONObject itemObj;
+                if (itemArray.size() == 0 || itemIndex != index) {
+                    itemObj = new JSONObject();
+                    itemArray.add(itemObj);
+                } else {
+                    itemObj = (JSONObject) itemArray.get(index);
+                }
+                itemIndex = index;
+                itemObj.put("index", obj.get("dindex"));
+                itemObj.put(obj.get("attribute"), obj.get("value"));
+                itemObj.put("name", obj.get("name"));
+            }
         }
+        jsonResult.put("allSwitch", allSwitch);
         logger.debug("jsonResult: {}", jsonResult);
 
         return jsonResult;

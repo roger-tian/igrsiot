@@ -29,6 +29,10 @@ public class LedController {
         String instruction;
         String deviceName = "";
 
+        if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
+            return "FAIL";
+        }
+
         IgrsDevice igrsDevice = new IgrsDevice();
         igrsDevice.setType("led");
         igrsDevice.setIndex(index);

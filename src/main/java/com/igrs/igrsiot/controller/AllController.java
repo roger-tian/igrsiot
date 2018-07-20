@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
@@ -29,36 +30,39 @@ public class AllController {
     public String allSwitch(String room, String onOff) {
         String cmd;
         String instruction;
-        HashMap<String, String> map;
+//        HashMap<String, String> map;
 
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
             return "FAIL";
         }
 
         List<HashMap<String, String>> list = igrsDeviceService.getDetailByRoom(room);
-        if (list.size() == 0) {
+        JSONArray jsonArray = JSONArray.parseArray(list.toString());
+        JSONObject jsonObject;
+        if (jsonArray.size() == 0) {
             return "FAIL";
         }
 
-        for (int i=0; i<list.size(); i++) {
-            map = list.get(i);
-            if (map.get("ctype").equals("0")) {
-                if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
-                    cmd = "{ch_" + map.get("cchannel") + ":" + onOff + "}";
-                    SocketService.cmdSend(map.get("cip"), cmd);
+        for (int i=0; i<jsonArray.size(); i++) {
+            jsonObject = (JSONObject) jsonArray.get(i);
+            if (jsonObject.getString("ctype").equals("0")) {
+                if ((jsonObject.getString("cip") != null) && (jsonObject.getString("attribute").equals("switch")) &&
+                        (jsonObject.getString("cchannel") != null) && (jsonObject.getString("cchannel").length() != 0)) {
+                    cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
+                    SocketService.cmdSend(jsonObject.getString("cip"), cmd);
                 }
             }
-            else if (map.get("ctype").equals("1")) {
+            else if (jsonObject.getString("ctype").equals("1")) {
                 // todo
             }
         }
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "allSwitch");
-        jsonObject.put("attribute", "switch");
-        jsonObject.put("value", onOff);
-        jsonObject.put("room", room);
-        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+        JSONObject obj = new JSONObject();
+        obj.put("type", "allSwitch");
+        obj.put("attribute", "switch");
+        obj.put("value", onOff);
+        obj.put("room", room);
+        IgrsWebSocketService.sendAllMessage(obj.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         IgrsDeviceStatus status;
@@ -66,10 +70,10 @@ public class AllController {
         //update db
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
-        for (int i=0; i<list.size(); i++) {
-            map = list.get(i);
-            if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
-                igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
+        for (int i=0; i<jsonArray.size(); i++) {
+            jsonObject = (JSONObject) jsonArray.get(i);
+            if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+                igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
                 status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                 if (status != null) {
                     igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);

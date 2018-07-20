@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
@@ -46,13 +47,13 @@ public class SocketController {
                 igrsDeviceStatus.setValue("0");
                 igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
 
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("type", "welcome");
-                jsonObject.put("index", "0");
-                jsonObject.put("attribute", "switch");
-                jsonObject.put("value", "0");
-                jsonObject.put("room", room);
-                IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+                JSONObject obj = new JSONObject();
+                obj.put("type", "welcome");
+                obj.put("index", "0");
+                obj.put("attribute", "switch");
+                obj.put("value", "0");
+                obj.put("room", room);
+                IgrsWebSocketService.sendAllMessage(obj.toString());
 
                 float temp;
                 IgrsSensor igrsSensor = new IgrsSensor();
@@ -89,19 +90,20 @@ public class SocketController {
                 Thread.sleep(12000);
 
                 List<HashMap<String, String>> list = igrsDeviceService.getDetailByRoom(room);
-                if (list.size() == 0) {
+                JSONArray jsonArray = JSONArray.parseArray(list.toString());
+                if (jsonArray.size() == 0) {
                     return "FAIL";
                 }
 
-                HashMap<String, String> map;
+                JSONObject jsonObject;
                 for (int i=0; i<list.size(); i++) {
-                    map = list.get(i);
-                    if (map.get("ctype").equals("0")) {
-                        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
-                            cmd = "{ch_" + map.get("cchannel") + ":1}";
-                            SocketService.cmdSend(map.get("cip"), cmd);
+                    jsonObject = (JSONObject) jsonArray.get(i);
+                    if (jsonObject.getString("ctype").equals("0")) {
+                        if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+                            cmd = "{ch_" + jsonObject.getString("cchannel") + ":1}";
+                            SocketService.cmdSend(jsonObject.getString("cip"), cmd);
 
-                            igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
+                            igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
                             igrsDeviceStatus.setAttribute("switch");
                             igrsDeviceStatus.setValue("1");
                             igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
@@ -112,13 +114,13 @@ public class SocketController {
                     }
                 }
 
-                jsonObject.clear();
-                jsonObject.put("type", "allSwitch");
-                jsonObject.put("index", "0");
-                jsonObject.put("attribute", "switch");
-                jsonObject.put("value", "1");
-                jsonObject.put("room", room);
-                IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+                obj.clear();
+                obj.put("type", "allSwitch");
+                obj.put("index", "0");
+                obj.put("attribute", "switch");
+                obj.put("value", "1");
+                obj.put("room", room);
+                IgrsWebSocketService.sendAllMessage(obj.toString());
             }
         }
         else if (buf.contains("ch_2:")) {        //device return "ok"
@@ -151,14 +153,17 @@ public class SocketController {
                     igrsDeviceStatusService.insertByRoomChAttr(map);
                 }
 
-                for (int i=0; i<list.size(); i++) {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("type", list.get(i).get("type"));
-                    jsonObject.put("index", list.get(i).get("dindex"));
-                    jsonObject.put("attribute", "switch");
-                    jsonObject.put("value", value);
-                    jsonObject.put("room", room);
-                    IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+                JSONArray jsonArray = JSONArray.parseArray(list.toString());
+                JSONObject jsonObject;
+                for (int i=0; i<jsonArray.size(); i++) {
+                    JSONObject obj = new JSONObject();
+                    jsonObject = (JSONObject) jsonArray.get(i);
+                    obj.put("type", jsonObject.getString("type"));
+                    obj.put("index", jsonObject.getString("dindex"));
+                    obj.put("attribute", "switch");
+                    obj.put("value", value);
+                    obj.put("room", room);
+                    IgrsWebSocketService.sendAllMessage(obj.toString());
                 }
             }
             else {
@@ -180,15 +185,18 @@ public class SocketController {
                         igrsDeviceStatusService.insertByRoomChAttr(map);
                     }
 
+                    JSONArray jsonArray = JSONArray.parseArray(list.toString());
+                    JSONObject jsonObject;
                     for (int j=0; j<list.size(); j++) {
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("type", list.get(j).get("type"));
-                        jsonObject.put("index", list.get(j).get("dindex"));
-                        jsonObject.put("attribute", "switch");
-                        jsonObject.put("value", value);
-                        jsonObject.put("room", room);
-                        logger.debug("jsonObject: {}", jsonObject);
-                        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+                        JSONObject obj = new JSONObject();
+                        jsonObject = (JSONObject) jsonArray.get(i);
+                        obj.put("type", jsonObject.getString("type"));
+                        obj.put("index", jsonObject.getString("dindex"));
+                        obj.put("attribute", "switch");
+                        obj.put("value", value);
+                        obj.put("room", room);
+                        logger.debug("jsonObject: {}", obj);
+                        IgrsWebSocketService.sendAllMessage(obj.toString());
                     }
                 }
             }
@@ -259,17 +267,17 @@ public class SocketController {
                 }
             }
 
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", "sensor");
-            jsonObject.put("pm25", pm25);
-            jsonObject.put("co2", co2);
-            jsonObject.put("tvoc", tvoc);
-            jsonObject.put("temp", temperature);
-            jsonObject.put("hum", humidity);
-            jsonObject.put("hcho", formaldehyde);
-            jsonObject.put("room", room);
-            logger.debug("jsonObject: {}", jsonObject);
-            IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+            JSONObject obj = new JSONObject();
+            obj.put("type", "sensor");
+            obj.put("pm25", pm25);
+            obj.put("co2", co2);
+            obj.put("tvoc", tvoc);
+            obj.put("temp", temperature);
+            obj.put("hum", humidity);
+            obj.put("hcho", formaldehyde);
+            obj.put("room", room);
+            logger.debug("jsonObject: {}", obj);
+            IgrsWebSocketService.sendAllMessage(obj.toString());
         }
         else {
 

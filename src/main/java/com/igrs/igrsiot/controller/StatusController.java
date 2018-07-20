@@ -104,7 +104,6 @@ public class StatusController {
                         break;
                 }
                 if (count == 6) {
-//                    jsonResult.put("mod", arrayList.toArray());
                     itemObj.put("mod", arrayList.toArray());
                 }
 

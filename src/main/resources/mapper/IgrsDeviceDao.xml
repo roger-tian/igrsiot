@@ -29,7 +29,7 @@
   </select>
 
   <select id="getDetailByRoom" resultType="java.util.HashMap" parameterType="String" >
-    select d.type,d.dindex,d.ctype,d.cip,d.room,s.attribute,s.value,s.cchannel from igrs_device_status s,igrs_device d
+    select d.id,d.type,d.dindex,d.ctype,d.cip,d.room,s.attribute,s.value,s.cchannel from igrs_device_status s,igrs_device d
     where s.device in (select id from igrs_device where room=#{room}) and d.id=s.device
   </select>
 

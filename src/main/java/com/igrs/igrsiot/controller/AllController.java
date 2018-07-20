@@ -1,6 +1,5 @@
 package com.igrs.igrsiot.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
@@ -37,14 +36,15 @@ public class AllController {
         }
 
         List<HashMap<String, String>> list = igrsDeviceService.getDetailByRoom(room);
-        JSONArray jsonArray = JSONArray.parseArray(list.toString());
+        logger.debug("list: {}", list);
+//        JSONArray jsonArray = JSONArray.parseArray(list.toString());
         JSONObject jsonObject;
-        if (jsonArray.size() == 0) {
+        if (list.size() == 0) {
             return "FAIL";
         }
 
-        for (int i=0; i<jsonArray.size(); i++) {
-            jsonObject = (JSONObject) jsonArray.get(i);
+        for (int i=0; i<list.size(); i++) {
+            jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
             if (jsonObject.getString("ctype").equals("0")) {
                 if ((jsonObject.getString("cip") != null) && (jsonObject.getString("attribute").equals("switch")) &&
                         (jsonObject.getString("cchannel") != null) && (jsonObject.getString("cchannel").length() != 0)) {
@@ -70,8 +70,8 @@ public class AllController {
         //update db
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
-        for (int i=0; i<jsonArray.size(); i++) {
-            jsonObject = (JSONObject) jsonArray.get(i);
+        for (int i=0; i<list.size(); i++) {
+            jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
             if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
                 igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
                 status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);

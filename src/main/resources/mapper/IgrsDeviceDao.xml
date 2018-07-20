@@ -42,7 +42,7 @@
   </select>
 
   <select id="getByRoomTypeIndex" resultType="java.util.HashMap" parameterType="com.igrs.igrsiot.model.IgrsDevice" >
-    select d.*, s.cchannel from igrs_device d, igrs_device_status s
+    select d.*,s.attribute,s.cchannel from igrs_device d, igrs_device_status s
     where d.room=#{room} and d.type=#{type} and d.dindex=#{index} and d.id=s.device
   </select>
 </mapper>

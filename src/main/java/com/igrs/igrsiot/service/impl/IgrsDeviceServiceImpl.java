@@ -50,7 +50,7 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     }
 
     @Override
-    public HashMap<String, String> getByRoomTypeIndex(IgrsDevice igrsDevice) {
+    public List<HashMap<String, String>> getByRoomTypeIndex(IgrsDevice igrsDevice) {
         return igrsDeviceDao.getByRoomTypeIndex(igrsDevice);
     }
 }

@@ -36,6 +36,11 @@ public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
     }
 
     @Override
+    public HashMap<String, String> getByRoomTypeIndexAttr(Map<String, String> map) {
+        return igrsDeviceStatusDao.getByRoomTypeIndexAttr(map);
+    }
+
+    @Override
     public int updateByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus) {
         return igrsDeviceStatusDao.updateByDeviceAndAttr(igrsDeviceStatus);
     }

@@ -20,8 +20,6 @@ import java.util.HashMap;
 @RequestMapping("/control")
 public class MachineController {
     @Autowired
-    private IIgrsDeviceService igrsDeviceService;
-    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
@@ -39,30 +37,37 @@ public class MachineController {
         igrsDevice.setType("machine");
         igrsDevice.setIndex(index);
         igrsDevice.setRoom(room);
-        HashMap<String, String> map = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
-        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
-            deviceName = map.get("name");
-            String cmd = "{ch_" + map.get("cchannel") + ":" + onOff + "}";
-            if (map.get("ctype").equals("0")) {
-                SocketService.cmdSend(map.get("cip"), cmd);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("type", "machine");
+        map.put("index", index);
+        map.put("attribute", "switch");
+        map.put("room", room);
+        HashMap<String, String> result = igrsDeviceStatusService.getByRoomTypeIndexAttr(map);
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
+        logger.debug("jsonObject: {}", jsonObject);
+        if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+            deviceName = jsonObject.getString("name");
+            String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
+            if (jsonObject.getString("ctype").equals("0")) {
+                SocketService.cmdSend(jsonObject.getString("cip"), cmd);
             }
             else {
-                char[] c = CmdAnalyze.doAnalyze(map.get("ctype"), cmd);
+                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("ctype"), cmd);
                 logger.debug("{}-{}", cmd, c);
-                SocketService.cmdSend(map.get("cip"), c);
+                SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
         }
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "machine");
-        jsonObject.put("index", index);
-        jsonObject.put("attribute", "switch");
-        jsonObject.put("value", onOff);
-        jsonObject.put("room", room);
-        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+        JSONObject obj = new JSONObject();
+        obj.put("type", "machine");
+        obj.put("index", index);
+        obj.put("attribute", "switch");
+        obj.put("value", onOff);
+        obj.put("room", room);
+        IgrsWebSocketService.sendAllMessage(obj.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
+        igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
@@ -108,33 +113,35 @@ public class MachineController {
             return "FAIL";
         }
 
-        IgrsDevice igrsDevice = new IgrsDevice();
-        igrsDevice.setType("machine");
-        igrsDevice.setIndex(index);
-        igrsDevice.setRoom(room);
-        HashMap<String, String> map = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
-        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
-            deviceName = map.get("name");
-            String cmd = "{ch_" + map.get("cchannel") + ":" + sigSource + "}";
-            if (map.get("ctype").equals("0")) {
-                SocketService.cmdSend(map.get("cip"), cmd);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("type", "machine");
+        map.put("index", index);
+        map.put("attribute", "sig_source");
+        map.put("room", room);
+        HashMap<String, String> result = igrsDeviceStatusService.getByRoomTypeIndexAttr(map);
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
+        if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+            deviceName = jsonObject.getString("name");
+            String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + sigSource + "}";
+            if (jsonObject.getString("ctype").equals("0")) {
+                SocketService.cmdSend(jsonObject.getString("cip"), cmd);
             }
             else {
-                char[] c = CmdAnalyze.doAnalyze(map.get("ctype"), cmd);
-                SocketService.cmdSend(map.get("cip"), c);
+                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("ctype"), cmd);
+                SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
         }
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "machine");
-        jsonObject.put("index", index);
-        jsonObject.put("attribute", "sig_source");
-        jsonObject.put("value", sigSource);
-        jsonObject.put("room", room);
-        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+        JSONObject obj = new JSONObject();
+        obj.put("type", "machine");
+        obj.put("index", index);
+        obj.put("attribute", "sig_source");
+        obj.put("value", sigSource);
+        obj.put("room", room);
+        IgrsWebSocketService.sendAllMessage(obj.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
+        igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
         igrsDeviceStatus.setAttribute("sig_source");
         igrsDeviceStatus.setValue(sigSource);
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
@@ -182,26 +189,28 @@ public class MachineController {
             return "FAIL";
         }
 
-        IgrsDevice igrsDevice = new IgrsDevice();
-        igrsDevice.setType("machine");
-        igrsDevice.setIndex(index);
-        igrsDevice.setRoom(room);
-        HashMap<String, String> map = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
-        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
-            deviceName = map.get("name");
-            String cmd = "{ch_" + map.get("cchannel") + ":" + volume + "}";
-            if (map.get("ctype").equals("0")) {
-                SocketService.cmdSend(map.get("cip"), cmd);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("type", "machine");
+        map.put("index", index);
+        map.put("attribute", "volume");
+        map.put("room", room);
+        HashMap<String, String> result = igrsDeviceStatusService.getByRoomTypeIndexAttr(map);
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
+        if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+            deviceName = jsonObject.getString("name");
+            String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + volume + "}";
+            if (jsonObject.getString("ctype").equals("0")) {
+                SocketService.cmdSend(jsonObject.getString("cip"), cmd);
             }
             else {
-                char[] c = CmdAnalyze.doAnalyze(map.get("ctype"), cmd);
-                SocketService.cmdSend(map.get("cip"), c);
+                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("ctype"), cmd);
+                SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
         }
 
         int vol = 0;
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
+        igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
         igrsDeviceStatus.setAttribute("volume");
         igrsDeviceStatus.setValue(volume);
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
@@ -227,13 +236,13 @@ public class MachineController {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "machine");
-        jsonObject.put("index", index);
-        jsonObject.put("attribute", "volume");
-        jsonObject.put("value", vol);
-        jsonObject.put("room", room);
-        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+        JSONObject obj = new JSONObject();
+        obj.put("type", "machine");
+        obj.put("index", index);
+        obj.put("attribute", "volume");
+        obj.put("value", vol);
+        obj.put("room", room);
+        IgrsWebSocketService.sendAllMessage(obj.toString());
 
         IgrsOperate igrsOperate = new IgrsOperate();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

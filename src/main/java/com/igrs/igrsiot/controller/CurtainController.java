@@ -1,7 +1,6 @@
 package com.igrs.igrsiot.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.service.*;
@@ -19,8 +18,6 @@ import java.util.HashMap;
 @RequestMapping("/control")
 public class CurtainController {
     @Autowired
-    private IIgrsDeviceService igrsDeviceService;
-    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
@@ -34,27 +31,29 @@ public class CurtainController {
             return "FAIL";
         }
 
-        IgrsDevice igrsDevice = new IgrsDevice();
-        igrsDevice.setType("curtain");
-        igrsDevice.setIndex(index);
-        igrsDevice.setRoom(room);
-        HashMap<String, String> map = igrsDeviceService.getByRoomTypeIndex(igrsDevice);
-        if ((map.get("cip") != null) && (map.get("cchannel") != null)) {
-            deviceName = map.get("name");
-            String cmd = "{ch_" + map.get("cchannel") + ":" + onOff + "}";
-            SocketService.cmdSend(igrsDevice.getClientIp(), cmd);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("type", "curtain");
+        map.put("index", index);
+        map.put("attribute", "switch");
+        map.put("room", room);
+        HashMap<String, String> result = igrsDeviceStatusService.getByRoomTypeIndexAttr(map);
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
+        if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+            deviceName = jsonObject.getString("name");
+            String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
+            SocketService.cmdSend(jsonObject.getString("cip"), cmd);
         }
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "curtain");
-        jsonObject.put("index", index);
-        jsonObject.put("attribute", "switch");
-        jsonObject.put("value", onOff);
-        jsonObject.put("room", room);
-        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+        JSONObject obj = new JSONObject();
+        obj.put("type", "curtain");
+        obj.put("index", index);
+        obj.put("attribute", "switch");
+        obj.put("value", onOff);
+        obj.put("room", room);
+        IgrsWebSocketService.sendAllMessage(obj.toString());
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDevice(Long.parseLong(map.get("id")));
+        igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);

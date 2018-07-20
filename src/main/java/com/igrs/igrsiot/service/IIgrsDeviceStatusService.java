@@ -15,6 +15,8 @@ public interface IIgrsDeviceStatusService {
 
     List<HashMap<String, String>> getByRoomChAttr(Map<String, String> map);
 
+    HashMap<String, String> getByRoomTypeIndexAttr(Map<String, String> map);
+
     int updateByDeviceAndAttr(IgrsDeviceStatus igrsDeviceStatus);
 
     int updateByRoomCh(Map<String, String> map);

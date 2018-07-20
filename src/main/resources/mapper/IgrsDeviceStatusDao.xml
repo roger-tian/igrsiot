@@ -32,6 +32,11 @@
     where d.id=s.device and d.room=#{room} and s.cchannel=#{channel} and s.attribute=#{attribute}
   </select>
 
+  <select id="getByRoomTypeIndexAttr" resultType="java.util.Map" parameterType="java.util.Map" >
+    select d.*,s.cchannel from igrs_device d, igrs_device_status s
+    where d.room=#{room} and d.type=#{type} and d.dindex=#{index} and s.attribute=#{attribute} and d.id=s.device
+  </select>
+
   <update id="updateByDeviceAndAttr" parameterType="com.igrs.igrsiot.model.IgrsDeviceStatus" >
     update igrs_device_status set value=#{value} where device=#{device} and attribute=#{attribute}
   </update>

@@ -20,5 +20,5 @@ public interface IIgrsDeviceService {
 
     IgrsDevice getByRoomAndCchannel(IgrsDevice igrsDevice);
 
-    HashMap<String, String> getByRoomTypeIndex(IgrsDevice igrsDevice);
+    List<HashMap<String, String>> getByRoomTypeIndex(IgrsDevice igrsDevice);
 }

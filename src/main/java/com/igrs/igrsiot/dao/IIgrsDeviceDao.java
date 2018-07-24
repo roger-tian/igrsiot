@@ -10,6 +10,8 @@ public interface IIgrsDeviceDao {
 
     List<IgrsDevice> getDevicesByRoom(String room);
 
+    List<String> getTypesByRoom(String room);
+
     List<HashMap<String, String>> getDeviceDetail();
 
     List<HashMap<String, String>> getDetailByRoom(String room);

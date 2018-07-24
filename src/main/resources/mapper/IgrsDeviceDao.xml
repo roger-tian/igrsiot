@@ -19,6 +19,10 @@
     select * from igrs_device
   </select>
 
+  <select id="getTypesByRoom" resultType="String" parameterType="String" >
+    select type from igrs_device where room=#{room} group by type
+  </select>
+
   <select id="getDevicesByRoom" resultMap="BaseResultMap" parameterType="String" >
     select * from igrs_device where room=#{room}
   </select>

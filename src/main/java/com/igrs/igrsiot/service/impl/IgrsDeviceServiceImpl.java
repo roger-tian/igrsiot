@@ -25,6 +25,11 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     }
 
     @Override
+    public List<String> getTypesByRoom(String room) {
+        return igrsDeviceDao.getTypesByRoom(room);
+    }
+
+    @Override
     public List<HashMap<String, String>> getDeviceDetail() {
         return igrsDeviceDao.getDeviceDetail();
     }

@@ -10,6 +10,7 @@ import com.igrs.igrsiot.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -141,9 +142,11 @@ public class StatusController {
     }
 
     @RequestMapping("/welcomemode")
-    public String welcomeMode(String room, String onOff) {
+    public String welcomeMode(@RequestHeader(value="X-Token", defaultValue = "") String token, String room, String onOff) {
         String instruction;
         String deviceName = "";
+
+        logger.debug("token: {}", token);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "welcome");

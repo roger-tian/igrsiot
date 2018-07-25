@@ -5,18 +5,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
-import com.igrs.igrsiot.service.IIgrsDeviceService;
-import com.igrs.igrsiot.service.IIgrsDeviceStatusService;
-import com.igrs.igrsiot.service.IIgrsOperateService;
-import com.igrs.igrsiot.service.IgrsWebSocketService;
+import com.igrs.igrsiot.model.IgrsToken;
+import com.igrs.igrsiot.service.*;
+import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import com.igrs.igrsiot.utils.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.List;
 @RequestMapping("/control")
 public class PurifierController {
     @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
     private IIgrsDeviceService igrsDeviceService;
     @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
@@ -32,9 +35,13 @@ public class PurifierController {
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/purifier/control")
-    public String sendPurifierControl(HttpServletRequest request) {
+    public String sendPurifierControl(@RequestHeader(value="igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
         String param;
         String instruction;
+
+        if (IgrsTokenServiceImpl.isTokenExpired(token)) {
+            return "TOKEN_EXPIRED";
+        }
 
         String room = request.getParameter("room");
         String index = request.getParameter("index");
@@ -62,6 +69,10 @@ public class PurifierController {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(room, index, str);
 
+            IgrsToken igrsToken = new IgrsToken();
+            igrsToken.setToken(token);
+            igrsTokenService.updateExpired(igrsToken);
+
             IgrsOperate igrsOperate = new IgrsOperate();
             igrsOperate.setRoom(room);
             igrsOperate.setUser("admin");
@@ -83,7 +94,11 @@ public class PurifierController {
     }
 
     @RequestMapping("/purifier/query")
-    public String sendPurifierQuery(HttpServletRequest request) {
+    public String sendPurifierQuery(@RequestHeader(value="igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
+        if (IgrsTokenServiceImpl.isTokenExpired(token)) {
+            return "TOKEN_EXPIRED";
+        }
+
         String room = request.getParameter("room");
         String deviceId = request.getParameter("deviceId");
         String param = "deviceId=" + deviceId;
@@ -94,6 +109,10 @@ public class PurifierController {
         if (!result.equals("")) {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(room, "0", str);
+
+            IgrsToken igrsToken = new IgrsToken();
+            igrsToken.setToken(token);
+            igrsTokenService.updateExpired(igrsToken);
 
             String msg = "room:" + room;
             msg += "," + str;

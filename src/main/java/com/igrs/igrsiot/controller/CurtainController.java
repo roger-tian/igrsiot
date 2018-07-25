@@ -3,13 +3,17 @@ package com.igrs.igrsiot.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
+import com.igrs.igrsiot.model.IgrsToken;
 import com.igrs.igrsiot.service.*;
+import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,17 +22,23 @@ import java.util.HashMap;
 @RequestMapping("/control")
 public class CurtainController {
     @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/curtain")
-    public String curtainSwitch(String room, String index, String onOff) {
+    public String curtainSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String onOff) throws ParseException {
         String instruction;
         String deviceName = "";
 
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
             return "FAIL";
+        }
+
+        if (IgrsTokenServiceImpl.isTokenExpired(token)) {
+            return "TOKEN_EXPIRED";
         }
 
         HashMap<String, String> map = new HashMap<>();
@@ -43,6 +53,10 @@ public class CurtainController {
             String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
             SocketService.cmdSend(jsonObject.getString("cip"), cmd);
         }
+
+        IgrsToken igrsToken = new IgrsToken();
+        igrsToken.setToken(token);
+        igrsTokenService.updateExpired(igrsToken);
 
         JSONObject obj = new JSONObject();
         obj.put("type", "curtain");

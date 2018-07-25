@@ -19,7 +19,7 @@ public class IgrsOperateServiceImpl implements IIgrsOperateService {
     }
 
     @Override
-    public int insert(IgrsOperate record) {
-        return igrsOperateDao.insert(record);
+    public int insert(IgrsOperate igrsOperate) {
+        return igrsOperateDao.insert(igrsOperate);
     }
 }

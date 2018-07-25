@@ -32,6 +32,17 @@ CREATE TABLE `igrs_user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `igrs_token`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `igrs_token` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) DEFAULT NULL,
+  `token` varchar(32) DEFAULT NULL,
+  `expired` varchar(22) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `igrs_room`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

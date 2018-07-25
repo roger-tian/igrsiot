@@ -4,14 +4,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDevice;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
+import com.igrs.igrsiot.model.IgrsToken;
 import com.igrs.igrsiot.service.*;
+import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import com.igrs.igrsiot.utils.CmdAnalyze;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,17 +24,23 @@ import java.util.HashMap;
 @RequestMapping("/control")
 public class MachineController {
     @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
 
     @RequestMapping("/machine")
-    public String machineSwitch(String room, String index, String onOff) {
+    public String machineSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String onOff) throws ParseException {
         String instruction;
         String deviceName = "";
 
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
             return "FAIL";
+        }
+
+        if (IgrsTokenServiceImpl.isTokenExpired(token)) {
+            return "TOKEN_EXPIRED";
         }
 
         IgrsDevice igrsDevice = new IgrsDevice();
@@ -57,6 +67,10 @@ public class MachineController {
                 SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
         }
+
+        IgrsToken igrsToken = new IgrsToken();
+        igrsToken.setToken(token);
+        igrsTokenService.updateExpired(igrsToken);
 
         JSONObject obj = new JSONObject();
         obj.put("type", "machine");
@@ -105,12 +119,16 @@ public class MachineController {
     }
 
     @RequestMapping("/machineSig")
-    public String machineSigSource(String room, String index, String sigSource) {
+    public String machineSigSource(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String sigSource) throws ParseException {
         String instruction;
         String deviceName = "";
 
         if (sigSource == null) {
             return "FAIL";
+        }
+
+        if (IgrsTokenServiceImpl.isTokenExpired(token)) {
+            return "TOKEN_EXPIRED";
         }
 
         HashMap<String, String> map = new HashMap<>();
@@ -131,6 +149,10 @@ public class MachineController {
                 SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
         }
+
+        IgrsToken igrsToken = new IgrsToken();
+        igrsToken.setToken(token);
+        igrsTokenService.updateExpired(igrsToken);
 
         JSONObject obj = new JSONObject();
         obj.put("type", "machine");
@@ -181,12 +203,16 @@ public class MachineController {
     }
 
     @RequestMapping("/machineVol")
-    public String machineVolume(String room, String index, String volume) {
+    public String machineVolume(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String volume) throws ParseException {
         String instruction;
         String deviceName = "";
 
         if (volume == null) {
             return "FAIL";
+        }
+
+        if (IgrsTokenServiceImpl.isTokenExpired(token)) {
+            return "TOKEN_EXPIRED";
         }
 
         HashMap<String, String> map = new HashMap<>();
@@ -207,6 +233,10 @@ public class MachineController {
                 SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
         }
+
+        IgrsToken igrsToken = new IgrsToken();
+        igrsToken.setToken(token);
+        igrsTokenService.updateExpired(igrsToken);
 
         int vol = 0;
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.igrs.igrsiot.dao.IIgrsTokenDao" >
+  <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsToken" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user" property="user" jdbcType="BIGINT" />
+    <result column="token" property="token" jdbcType="VARCHAR" />
+    <result column="expired" property="expired" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, user, token, expired
+  </sql>
+
+  <select id="getTokenByUser" resultMap="BaseResultMap" parameterType="String">
+    SELECT * FROM igrs_token WHERE user = (select id from igrs_user where user = #{user})
+  </select>
+
+  <select id="getByToken" resultMap="BaseResultMap" parameterType="String">
+    SELECT * FROM igrs_token WHERE token = #{token}
+  </select>
+
+  <select id="updateToken" parameterType="com.igrs.igrsiot.model.IgrsToken">
+    update igrs_token set token = #{token}, expired = #{expired} where user = #{user}
+  </select>
+
+  <select id="updateExpired" parameterType="com.igrs.igrsiot.model.IgrsToken">
+    update igrs_token set expired = #{expired} where token = #{token}
+  </select>
+
+  <select id="insert" parameterType="com.igrs.igrsiot.model.IgrsToken">
+    insert into igrs_token(user, token, expired) values(#{user}, #{token}, #{expired})
+  </select>
+</mapper>

@@ -12,6 +12,10 @@
     id, user, password, role
   </sql>
 
+  <select id="getUserById" resultType="IgrsUser" parameterType="long">
+    SELECT * FROM igrs_user WHERE id = #{id}
+  </select>
+
   <select id="getUserByName" resultType="IgrsUser" parameterType="String">
     SELECT * FROM igrs_user WHERE user = #{user}
   </select>

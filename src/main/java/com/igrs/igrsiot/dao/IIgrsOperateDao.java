@@ -7,5 +7,5 @@ import java.util.List;
 public interface IIgrsOperateDao {
     List<IgrsOperate> getOperatesByRoom(String room);
 
-    int insert(IgrsOperate record);
+    int insert(IgrsOperate igrsOperate);
 }

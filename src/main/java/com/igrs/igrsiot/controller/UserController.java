@@ -75,9 +75,11 @@ public class UserController {
         if (igrsToken == null) {
             jsonResult.put("result", "FAIL");
             jsonResult.put("errCode", "401");
+            return jsonResult;
         } else if (IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
             jsonResult.put("result", "FAIL");
             jsonResult.put("errCode", "402");
+            return jsonResult;
         }
 
         IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());

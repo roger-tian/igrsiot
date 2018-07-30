@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -67,12 +68,24 @@ public class UserController {
     }
 
     @RequestMapping("/user/rooms")
-    JSONObject getRoomList(@RequestHeader(value = "igrs-token", defaultValue = "")String token) {
+    JSONObject getRoomList(@RequestHeader(value = "igrs-token", defaultValue = "")String token) throws ParseException {
         JSONObject jsonResult = new JSONObject();
 
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        if (igrsToken == null) {
+            jsonResult.put("result", "FAIL");
+            jsonResult.put("errCode", "401");
+        }
+
+        IgrsTokenServiceImpl igrsTokenServiceImpl = new IgrsTokenServiceImpl();
+        if (igrsTokenServiceImpl.isTokenExpired(igrsToken.getToken())) {
+            jsonResult.put("result", "FAIL");
+            jsonResult.put("errCode", "402");
+        }
+
         IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
 
+        jsonResult.put("result", "SUCCESS");
         jsonResult.put("name", igrsUser.getUser());
         jsonResult.put("roles", igrsUser.getRole());
 

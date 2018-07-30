@@ -13,7 +13,7 @@
   </sql>
 
   <select id="getTokenByUser" resultMap="BaseResultMap" parameterType="String">
-    SELECT * FROM igrs_token WHERE user = (select id from igrs_user where user = #{user})
+    SELECT * FROM igrs_token WHERE user = (select id from igrs_user where user = "admin")
   </select>
 
   <select id="getByToken" resultMap="BaseResultMap" parameterType="String">

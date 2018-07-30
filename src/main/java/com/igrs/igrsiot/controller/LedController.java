@@ -37,7 +37,8 @@ public class LedController {
             return "FAIL";
         }
 
-        if (IgrsTokenServiceImpl.isTokenExpired(token)) {
+        IgrsTokenServiceImpl igrsTokenServiceImpl = new IgrsTokenServiceImpl();
+        if (igrsTokenServiceImpl.isTokenExpired(token)) {
             return "TOKEN_EXPIRED";
         }
 

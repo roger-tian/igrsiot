@@ -16,7 +16,7 @@ import java.util.Date;
 @Service
 public class IgrsTokenServiceImpl implements IIgrsTokenService {
     @Autowired
-    private static IIgrsTokenDao igrsTokenDao;
+    private IIgrsTokenDao igrsTokenDao;
 
     @Override
     public IgrsToken getTokenByUser(String user) {
@@ -67,7 +67,7 @@ public class IgrsTokenServiceImpl implements IIgrsTokenService {
         return MD5.md5(token);
     }
 
-    public static Boolean isTokenExpired(String token) throws ParseException {
+    public Boolean isTokenExpired(String token) throws ParseException {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = df.parse(df.format(new Date().getTime()));
 

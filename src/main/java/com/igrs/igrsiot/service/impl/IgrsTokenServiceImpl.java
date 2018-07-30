@@ -67,11 +67,9 @@ public class IgrsTokenServiceImpl implements IIgrsTokenService {
         return MD5.md5(token);
     }
 
-    public Boolean isTokenExpired(String token) throws ParseException {
+    public static boolean isTokenExpired(IgrsToken igrsToken) throws ParseException {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = df.parse(df.format(new Date().getTime()));
-
-        IgrsToken igrsToken = igrsTokenDao.getByToken(token);
         Date dateToken = df.parse(igrsToken.getExpired());
         if ((igrsToken != null) && (date.after(dateToken))) {
             return true;

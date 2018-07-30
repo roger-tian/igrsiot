@@ -39,8 +39,8 @@ public class PurifierController {
         String param;
         String instruction;
 
-        IgrsTokenServiceImpl igrsTokenServiceImpl = new IgrsTokenServiceImpl();
-        if (igrsTokenServiceImpl.isTokenExpired(token)) {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
             return "TOKEN_EXPIRED";
         }
 
@@ -70,8 +70,6 @@ public class PurifierController {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(room, index, str);
 
-            IgrsToken igrsToken = new IgrsToken();
-            igrsToken.setToken(token);
             igrsTokenService.updateExpired(igrsToken);
 
             IgrsOperate igrsOperate = new IgrsOperate();
@@ -96,8 +94,8 @@ public class PurifierController {
 
     @RequestMapping("/purifier/query")
     public String sendPurifierQuery(@RequestHeader(value="igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
-        IgrsTokenServiceImpl igrsTokenServiceImpl = new IgrsTokenServiceImpl();
-        if (igrsTokenServiceImpl.isTokenExpired(token)) {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
             return "TOKEN_EXPIRED";
         }
 
@@ -112,8 +110,6 @@ public class PurifierController {
             String str = result.substring(result.indexOf("pw::"));
             purifierDataHandler(room, "0", str);
 
-            IgrsToken igrsToken = new IgrsToken();
-            igrsToken.setToken(token);
             igrsTokenService.updateExpired(igrsToken);
 
             String msg = "room:" + room;

@@ -41,8 +41,8 @@ public class AllController {
             return "FAIL";
         }
 
-        IgrsTokenServiceImpl igrsTokenServiceImpl = new IgrsTokenServiceImpl();
-        if (igrsTokenServiceImpl.isTokenExpired(token)) {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
             return "TOKEN_EXPIRED";
         }
 
@@ -68,8 +68,6 @@ public class AllController {
             }
         }
 
-        IgrsToken igrsToken = new IgrsToken();
-        igrsToken.setToken(token);
         igrsTokenService.updateExpired(igrsToken);
 
         JSONObject obj = new JSONObject();

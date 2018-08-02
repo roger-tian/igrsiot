@@ -40,14 +40,14 @@ public class IgrsTokenServiceImpl implements IIgrsTokenService {
     }
 
     @Override
-    public int updateExpired(IgrsToken igrsToken) {
+    public void updateExpired(IgrsToken igrsToken) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long timeStamp = new Date().getTime() + 1000 * 60 * 30;     // 30 seconds
         String expiredTime = df.format(timeStamp);
 
         igrsToken.setExpired(expiredTime);
 
-        return igrsTokenDao.updateExpired(igrsToken);
+        igrsTokenDao.updateExpired(igrsToken);
     }
 
     @Override

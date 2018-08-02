@@ -2,8 +2,6 @@ package com.igrs.igrsiot.service;
 
 import com.igrs.igrsiot.model.IgrsToken;
 
-import java.text.ParseException;
-
 public interface IIgrsTokenService {
     IgrsToken getTokenByUser(String user);
 

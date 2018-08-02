@@ -61,8 +61,7 @@ public class MachineController {
             String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
             if (jsonObject.getString("ctype").equals("0")) {
                 SocketService.cmdSend(jsonObject.getString("cip"), cmd);
-            }
-            else {
+            } else {
                 char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("ctype"), cmd);
                 logger.debug("{}-{}", cmd, c);
                 SocketService.cmdSend(jsonObject.getString("cip"), c);
@@ -86,8 +85,7 @@ public class MachineController {
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
             igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-        }
-        else {
+        } else {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
@@ -97,8 +95,7 @@ public class MachineController {
             status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
             if (status != null) {
                 igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-            }
-            else {
+            } else {
                 igrsDeviceStatusService.insert(igrsDeviceStatus);
             }
         }
@@ -143,8 +140,7 @@ public class MachineController {
             String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + sigSource + "}";
             if (jsonObject.getString("ctype").equals("0")) {
                 SocketService.cmdSend(jsonObject.getString("cip"), cmd);
-            }
-            else {
+            } else {
                 char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("ctype"), cmd);
                 SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
@@ -167,8 +163,7 @@ public class MachineController {
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
             igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-        }
-        else {
+        } else {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
@@ -178,17 +173,13 @@ public class MachineController {
         igrsOperate.setTime(time);
         if (sigSource.equals("1")) {
             instruction = "信号源切换到主页";
-        }
-        else if (sigSource.equals("2")) {
+        } else if (sigSource.equals("2")) {
             instruction = "信号源切换到HDMI1";
-        }
-        else if (sigSource.equals("3")) {
+        } else if (sigSource.equals("3")) {
             instruction = "信号源切换到HDMI2";
-        }
-        else if (sigSource.equals("4")) {
+        } else if (sigSource.equals("4")) {
             instruction = "信号源切换到内置电脑";
-        }
-        else {
+        } else {
             instruction = "";
         }
         igrsOperate.setInstruction(instruction);
@@ -226,8 +217,7 @@ public class MachineController {
             String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + volume + "}";
             if (jsonObject.getString("ctype").equals("0")) {
                 SocketService.cmdSend(jsonObject.getString("cip"), cmd);
-            }
-            else {
+            } else {
                 char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("ctype"), cmd);
                 SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
@@ -248,8 +238,7 @@ public class MachineController {
                 if (vol > 100) {
                     vol = 100;
                 }
-            }
-            else {      //volume decrease
+            } else {      //volume decrease
                 vol --;
                 if (vol < 0) {
                     vol = 0;
@@ -257,8 +246,7 @@ public class MachineController {
             }
             igrsDeviceStatus.setValue(String.valueOf(vol));
             igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-        }
-        else {
+        } else {
             igrsDeviceStatus.setValue("0");
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }

@@ -73,8 +73,7 @@ public class LedController {
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
             igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-        }
-        else {
+        } else {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 

@@ -81,8 +81,7 @@ public class PurifierController {
             igrsOperate.setTime(time);
             if (power.equals("1")) {
                 instruction = "开关打开";
-            }
-            else {
+            } else {
                 instruction = "开关关闭";
             }
             igrsOperate.setInstruction(instruction);
@@ -152,8 +151,7 @@ public class PurifierController {
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                    }
-                    else {
+                    } else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
                     }
                     break;
@@ -167,8 +165,7 @@ public class PurifierController {
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                    }
-                    else {
+                    } else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
                     }
                     break;
@@ -182,8 +179,7 @@ public class PurifierController {
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                    }
-                    else {
+                    } else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
                     }
                     break;
@@ -197,8 +193,7 @@ public class PurifierController {
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                    }
-                    else {
+                    } else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
                     }
                     break;
@@ -212,8 +207,7 @@ public class PurifierController {
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                    }
-                    else {
+                    } else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
                     }
                     break;
@@ -227,8 +221,7 @@ public class PurifierController {
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                    }
-                    else {
+                    } else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
                     }
                     break;
@@ -242,8 +235,7 @@ public class PurifierController {
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                    }
-                    else {
+                    } else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
                     }
                     break;
@@ -254,8 +246,7 @@ public class PurifierController {
                     status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                     if (status != null) {
                         igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                    }
-                    else {
+                    } else {
                         igrsDeviceStatusService.insert(igrsDeviceStatus);
                     }
                     break;

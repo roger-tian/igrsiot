@@ -55,12 +55,10 @@ public class UserController {
                     igrsToken.setToken(token);
                     igrsTokenService.updateToken(igrsToken);
                 }
-            }
-            else {
+            } else {
                 jsonResult.put("result", "FAIL");
             }
-        }
-        else {
+        } else {
             jsonResult.put("result", "FAIL");
         }
 
@@ -81,6 +79,7 @@ public class UserController {
             jsonResult.put("errCode", "402");
             return jsonResult;
         }
+        igrsTokenService.updateExpired(igrsToken);
 
         IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
 

@@ -2,11 +2,15 @@ package com.igrs.igrsiot.controller;
 
 import com.igrs.igrsiot.model.IgrsSensor;
 import com.igrs.igrsiot.model.IgrsSensorHistory;
+import com.igrs.igrsiot.model.IgrsToken;
 import com.igrs.igrsiot.service.IIgrsSensorHistoryService;
 import com.igrs.igrsiot.service.IIgrsSensorService;
+import com.igrs.igrsiot.service.IIgrsTokenService;
+import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,12 +25,20 @@ import java.util.List;
 @RequestMapping("/control")
 public class SensorController {
     @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
     private IIgrsSensorService igrsSensorService;
     @Autowired
     private IIgrsSensorHistoryService igrsSensorHistoryService;
 
     @RequestMapping("/sensor")
-    public String getSensorData(String room) {
+    public String getSensorData(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room) throws ParseException {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
+            return "TOKEN_EXPIRED";
+        }
+        igrsTokenService.updateExpired(igrsToken);
+
         String result = "";
         List<IgrsSensor> list;
         String[] type = {"pm25", "co2", "tvoc", "temperature", "humidity", "formaldehyde"};
@@ -40,16 +52,13 @@ public class SensorController {
             if (list.size() != 0) {
                 if (i == 0) {
                     result = list.get(0).getValue();
-                }
-                else {
+                } else {
                     result += "," + list.get(0).getValue();
                 }
-            }
-            else {
+            } else {
                 if (i == 0) {
                     result = "0.000";
-                }
-                else {
+                } else {
                     result += "," + "0.000";
                 }
             }
@@ -60,7 +69,13 @@ public class SensorController {
     }
 
     @RequestMapping("/sensor/history")
-    public List<IgrsSensorHistory> getSensorHistoryData(String room, String date, String type) throws ParseException {
+    public List<IgrsSensorHistory> getSensorHistoryData(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String date, String type) throws ParseException {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
+            return null;
+        }
+        igrsTokenService.updateExpired(igrsToken);
+
         if (date.contains("T")) {
             date = date.replace("Z", " UTC");
             SimpleDateFormat uf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");

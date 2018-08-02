@@ -62,8 +62,7 @@ public class SocketController {
                 List<IgrsSensor> sensorList = igrsSensorService.getDataByType(igrsSensor);
                 if (sensorList.size() != 0) {
                     temp = Float.parseFloat(sensorList.get(0).getValue());
-                }
-                else {
+                } else {
                     temp = (float) 0.0;
                 }
                 logger.debug("temp: {}", temp);
@@ -82,8 +81,7 @@ public class SocketController {
                 if (temp < 26.0) {
                     buff = "{ch_30:1}";
                     SocketService.cmdSend(cip, buff);
-                }
-                else {
+                } else {
                     buff = "{ch_30:2}";
                     SocketService.cmdSend(cip, buff);
                 }
@@ -108,8 +106,7 @@ public class SocketController {
                             igrsDeviceStatus.setValue("1");
                             igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                         }
-                    }
-                    else if (igrsDevice.getClientType().equals("1")) {
+                    } else if (igrsDevice.getClientType().equals("1")) {
                         // todo
                     }
                 }
@@ -148,8 +145,7 @@ public class SocketController {
                 List<HashMap<String, String>> list = igrsDeviceStatusService.getByRoomChAttr(map);
                 if (list != null) {
                     igrsDeviceStatusService.updateByRoomChAttr(map);
-                }
-                else {
+                } else {
                     igrsDeviceStatusService.insertByRoomChAttr(map);
                 }
 
@@ -165,8 +161,7 @@ public class SocketController {
                     obj.put("room", room);
                     IgrsWebSocketService.sendAllMessage(obj.toString());
                 }
-            }
-            else {
+            } else {
                 for (int i=0; i<str.length; i++) {
                     str1 = str[i].split(":");
                     channel = str1[0].substring(3, str1[0].length());
@@ -180,8 +175,7 @@ public class SocketController {
                     List<HashMap<String, String>> list = igrsDeviceStatusService.getByRoomCh(map);
                     if (igrsDeviceStatus != null) {
                         igrsDeviceStatusService.updateByRoomCh(map);
-                    }
-                    else {
+                    } else {
                         igrsDeviceStatusService.insertByRoomChAttr(map);
                     }
 
@@ -228,36 +222,31 @@ public class SocketController {
                     igrsSensor.setValue(pm25);
                     logger.debug("pm25: {}", igrsSensor.getValue());
                     igrsSensorService.insert(igrsSensor);
-                }
-                else if (cells[0].contains("co2")) {
+                } else if (cells[0].contains("co2")) {
                     co2 = cells[1];
                     igrsSensor.setType("co2");
                     igrsSensor.setValue(co2);
                     logger.debug("co2: {}", igrsSensor.getValue());
                     igrsSensorService.insert(igrsSensor);
-                }
-                else if (cells[0].contains("voc")) {
+                } else if (cells[0].contains("voc")) {
                     tvoc = cells[1];
                     igrsSensor.setType("tvoc");
                     igrsSensor.setValue(tvoc);
                     logger.debug("tvoc: {}", igrsSensor.getValue());
                     igrsSensorService.insert(igrsSensor);
-                }
-                else if (cells[0].contains("temp")) {
+                } else if (cells[0].contains("temp")) {
                     temperature = cells[1];
                     igrsSensor.setType("temperature");
                     igrsSensor.setValue(temperature);
                     logger.debug("temperature: {}", igrsSensor.getValue());
                     igrsSensorService.insert(igrsSensor);
-                }
-                else if (cells[0].contains("hum")) {
+                } else if (cells[0].contains("hum")) {
                     humidity = cells[1];
                     igrsSensor.setType("humidity");
                     igrsSensor.setValue(humidity);
                     logger.debug("humidity: {}", igrsSensor.getValue());
                     igrsSensorService.insert(igrsSensor);
-                }
-                else if (cells[0].contains("hcho")) {
+                } else if (cells[0].contains("hcho")) {
                     String hcho = cells[1].trim();
                     formaldehyde = hcho.substring(0, hcho.length()-1);
                     igrsSensor.setType("formaldehyde");

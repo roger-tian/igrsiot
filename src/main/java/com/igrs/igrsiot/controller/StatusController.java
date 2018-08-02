@@ -2,11 +2,9 @@ package com.igrs.igrsiot.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.igrs.igrsiot.model.IgrsDevice;
-import com.igrs.igrsiot.model.IgrsDeviceStatus;
-import com.igrs.igrsiot.model.IgrsOperate;
-import com.igrs.igrsiot.model.IgrsRoom;
+import com.igrs.igrsiot.model.*;
 import com.igrs.igrsiot.service.*;
+import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +24,8 @@ public class StatusController {
     @Autowired
     private IIgrsDeviceService igrsDeviceService;
     @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
     private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Autowired
     private IIgrsOperateService igrsOperateService;
@@ -32,8 +33,21 @@ public class StatusController {
     private IIgrsRoomService igrsRoomService;
 
     @RequestMapping("/status")
-    public JSONObject getDeviceStatus(String room) {
+    public JSONObject getDeviceStatus(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room) throws ParseException {
         JSONObject jsonResult = new JSONObject();
+
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        if (igrsToken == null) {
+            jsonResult.put("result", "FAIL");
+            jsonResult.put("errCode", "401");
+            return jsonResult;
+        } else if (IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
+            jsonResult.put("result", "FAIL");
+            jsonResult.put("errCode", "402");
+            return jsonResult;
+        }
+        igrsTokenService.updateExpired(igrsToken);
+
         List<Map<String, String>> list = igrsDeviceStatusService.getStatusByRoom(room);
         int itemIndex = 0;
         String allSwitch = "0";
@@ -142,11 +156,14 @@ public class StatusController {
     }
 
     @RequestMapping("/welcomemode")
-    public String welcomeMode(@RequestHeader(value="X-Token", defaultValue = "") String token, String room, String onOff) {
+    public String welcomeMode(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String onOff) throws ParseException {
         String instruction;
         String deviceName = "";
 
-        logger.debug("token: {}", token);
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
+            return "TOKEN_EXPIRED";
+        }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "welcome");
@@ -156,6 +173,8 @@ public class StatusController {
         jsonObject.put("room", room);
         logger.debug("jsonObject: {}", jsonObject.toString());
         IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+
+        igrsTokenService.updateExpired(igrsToken);
 
         IgrsDevice igrsDevice = new IgrsDevice();
         igrsDevice.setType("welcome");
@@ -172,8 +191,7 @@ public class StatusController {
         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
         if (status != null) {
             igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-        }
-        else {
+        } else {
             igrsDeviceStatusService.insert(igrsDeviceStatus);
         }
 
@@ -216,8 +234,7 @@ public class StatusController {
                 IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                 if (status != null) {
                     igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                }
-                else {
+                } else {
                     igrsDeviceStatusService.insert(igrsDeviceStatus);
                 }
             }

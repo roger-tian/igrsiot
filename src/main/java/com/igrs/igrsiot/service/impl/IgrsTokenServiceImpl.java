@@ -1,5 +1,6 @@
 package com.igrs.igrsiot.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.dao.IIgrsTokenDao;
 import com.igrs.igrsiot.model.IgrsToken;
 import com.igrs.igrsiot.service.IIgrsTokenService;
@@ -68,14 +69,34 @@ public class IgrsTokenServiceImpl implements IIgrsTokenService {
     }
 
     public static boolean isTokenExpired(IgrsToken igrsToken) throws ParseException {
+        if (igrsToken == null) {
+            return false;
+        }
+
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = df.parse(df.format(new Date().getTime()));
         Date dateToken = df.parse(igrsToken.getExpired());
-        if ((igrsToken != null) && (date.after(dateToken))) {
+        if (date.after(dateToken)) {
             return true;
         }
 
         return false;
+    }
+
+    public static JSONObject genTokenErrorMsg(IgrsToken igrsToken) throws ParseException {
+        JSONObject jsonResult = null;
+
+        if (igrsToken == null) {
+            jsonResult = new JSONObject();
+            jsonResult.put("result", "FAIL");
+            jsonResult.put("errCode", "401");
+        } else if (isTokenExpired(igrsToken)) {
+            jsonResult = new JSONObject();
+            jsonResult.put("result", "FAIL");
+            jsonResult.put("errCode", "402");
+        }
+
+        return jsonResult;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsTokenServiceImpl.class);

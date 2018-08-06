@@ -66,19 +66,15 @@ public class UserController {
     }
 
     @RequestMapping("/user/rooms")
-    JSONObject getRoomList(@RequestHeader(value = "igrs-token", defaultValue = "")String token) throws ParseException {
-        JSONObject jsonResult = new JSONObject();
+    JSONObject getRoomList(@RequestHeader(value = "igrs-token", defaultValue = "") String token) throws ParseException {
+        JSONObject jsonResult;
 
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if (igrsToken == null) {
-            jsonResult.put("result", "FAIL");
-            jsonResult.put("errCode", "401");
-            return jsonResult;
-        } else if (IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            jsonResult.put("result", "FAIL");
-            jsonResult.put("errCode", "402");
+        jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
             return jsonResult;
         }
+
         igrsTokenService.updateExpired(igrsToken);
 
         IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
@@ -87,7 +83,14 @@ public class UserController {
         jsonResult.put("name", igrsUser.getUser());
         jsonResult.put("roles", igrsUser.getRole());
 
-        List<IgrsRoom> roomList = igrsRoomService.getAllRooms();
+        List<IgrsRoom> roomList;
+
+        if (igrsUser.getRole().equals("admin")) {
+            roomList = igrsRoomService.getAllRooms();
+        } else {
+            roomList = igrsUserService.getUserRooms(igrsUser);
+        }
+
         JSONArray roomArray = new JSONArray();
 
         for (int i=0; i<roomList.size(); i++) {

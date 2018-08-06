@@ -35,3 +35,4 @@ insert into igrs_device_status(id, device, attribute, value, cchannel) values(18
 insert into igrs_device_status(id, device, attribute, value, cchannel) values(19, 11, 'switch', '0', '20');
 insert into igrs_device_status(id, device, attribute, value, cchannel) values(20, 12, 'switch', '0', '21');
 insert into igrs_device_status(id, device, attribute, value, cchannel) values(21, 13, 'switch', '0', '60');
+

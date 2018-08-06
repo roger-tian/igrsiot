@@ -13,10 +13,15 @@
   </sql>
 
   <select id="getUserById" resultType="IgrsUser" parameterType="long">
-    SELECT * FROM igrs_user WHERE id = #{id}
+    select * from igrs_user where id = #{id}
   </select>
 
   <select id="getUserByName" resultType="IgrsUser" parameterType="String">
-    SELECT * FROM igrs_user WHERE user = #{user}
+    select * from igrs_user where user = #{user}
+  </select>
+
+  <select id="getUserRooms" resultType="IgrsRoom" parameterType="com.igrs.igrsiot.model.IgrsUser">
+    select r.* from igrs_user u, igrs_room r, igrs_user_room ur
+      where ur.user = u.id and ur.room = r.room and u.user = #{user}
   </select>
 </mapper>

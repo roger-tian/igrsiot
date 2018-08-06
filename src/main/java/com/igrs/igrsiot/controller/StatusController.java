@@ -37,15 +37,11 @@ public class StatusController {
         JSONObject jsonResult = new JSONObject();
 
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if (igrsToken == null) {
-            jsonResult.put("result", "FAIL");
-            jsonResult.put("errCode", "401");
-            return jsonResult;
-        } else if (IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            jsonResult.put("result", "FAIL");
-            jsonResult.put("errCode", "402");
+        jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
             return jsonResult;
         }
+
         igrsTokenService.updateExpired(igrsToken);
 
         List<Map<String, String>> list = igrsDeviceStatusService.getStatusByRoom(room);

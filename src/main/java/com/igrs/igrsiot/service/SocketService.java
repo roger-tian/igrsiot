@@ -30,8 +30,7 @@ public class SocketService implements ServletContextListener {
                             deviceList = JSONArray.parseArray(result);
                             logger.debug("deviceList: {}", deviceList);
                         }
-                    }
-                    else {
+                    } else {
                         break;
                     }
 
@@ -90,8 +89,7 @@ public class SocketService implements ServletContextListener {
                                 else if (len == -1) {
                                     logger.info("client closed socket");
                                     sc.close();
-                                }
-                                else {
+                                } else {
 
                                 }
                             }
@@ -105,9 +103,7 @@ public class SocketService implements ServletContextListener {
                     }
                 }
             }
-            catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }

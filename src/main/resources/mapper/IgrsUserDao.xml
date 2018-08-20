@@ -4,12 +4,16 @@
   <resultMap id="BaseResultMap" type="com.igrs.igrsiot.model.IgrsUser" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="user" property="user" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="role" property="role" jdbcType="VARCHAR" />
+    <result column="ctime" property="ctime" jdbcType="VARCHAR" />
+    <result column="ltime" property="ltime" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, user, password, role
+    id, user, name, phone, password, role, ctime, ltime
   </sql>
 
   <select id="getUserById" resultType="IgrsUser" parameterType="long">
@@ -20,8 +24,25 @@
     select * from igrs_user where user = #{user}
   </select>
 
+  <select id="getNormalUsers" resultType="IgrsUser">
+    select * from igrs_user where role != 'admin'
+  </select>
+
   <select id="getUserRooms" resultType="IgrsRoom" parameterType="com.igrs.igrsiot.model.IgrsUser">
     select r.* from igrs_user u, igrs_room r, igrs_user_room ur
-      where ur.user = u.id and ur.room = r.room and u.user = #{user}
+    where ur.user = u.id and ur.room = r.room and u.user = #{user}
+  </select>
+
+  <select id="userRegiste" parameterType="com.igrs.igrsiot.model.IgrsUser">
+    insert into igrs_user(user, name, phone, password, role, ctime, ltime)
+    values(#{user}, #{name}, #{phone}, #{password}, #{role}, #{ctime}, #{ltime})
+  </select>
+
+  <select id="userUpdate" parameterType="com.igrs.igrsiot.model.IgrsUser">
+    update igrs_user set name=#{name}, phone=#{phone}, password=#{passowrd} where user=#{user}
+  </select>
+
+  <select id="userDelete" parameterType="String">
+    delete from igrs_user where user=#{user}
   </select>
 </mapper>

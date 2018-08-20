@@ -29,7 +29,7 @@ public class OperateController {
         int curRecord = (Integer.parseInt(pageNo) - 1) * 10;
 
         List<IgrsOperate> list = igrsOperateService.getOperatesByRoom(room);
-        totalPage = String.format("%d", (list.size()-1)/10+1);
+        totalPage = String.format("%d", (list.size() - 1) / 10 + 1);
 
         for (int i=curRecord; i<curRecord+10; i++) {
             if (i >= list.size()) {

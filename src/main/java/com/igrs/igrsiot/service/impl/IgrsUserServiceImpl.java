@@ -27,8 +27,28 @@ public class IgrsUserServiceImpl implements IIgrsUserService {
     }
 
     @Override
+    public List<IgrsUser> getNormalUsers() {
+        return igrsUserDao.getNormalUsers();
+    }
+
+    @Override
     public List<IgrsRoom> getUserRooms(IgrsUser igrsUser) {
         return igrsUserDao.getUserRooms(igrsUser);
+    }
+
+    @Override
+    public void userRegiste(IgrsUser igrsUser) {
+        igrsUserDao.userRegiste(igrsUser);
+    }
+
+    @Override
+    public void userUpdate(IgrsUser igrsUser) {
+        igrsUserDao.userUpdate(igrsUser);
+    }
+
+    @Override
+    public void userDelete(String user) {
+        igrsUserDao.userDelete(user);
     }
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsUserServiceImpl.class);

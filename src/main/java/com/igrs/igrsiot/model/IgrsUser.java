@@ -17,6 +17,22 @@ public class IgrsUser {
         this.user = user == null ? null : user.trim();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -33,8 +49,28 @@ public class IgrsUser {
         this.role = role;
     }
 
+    public String getCtime() {
+        return ctime;
+    }
+
+    public void setCtime(String ctime) {
+        this.ctime = ctime;
+    }
+
+    public String getLtime() {
+        return ltime;
+    }
+
+    public void setLtime(String ltime) {
+        this.ltime = ltime;
+    }
+
     private Long id;
     private String user;
+    private String name;
+    private String phone;
     private String password;
     private String role;
+    private String ctime;
+    private String ltime;
 }

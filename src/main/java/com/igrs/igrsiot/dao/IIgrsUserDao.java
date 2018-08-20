@@ -10,5 +10,13 @@ public interface IIgrsUserDao {
 
     IgrsUser getUserByName(String user);
 
+    List<IgrsUser> getNormalUsers();
+
     List<IgrsRoom> getUserRooms(IgrsUser igrsUser);
+
+    void userRegiste(IgrsUser igrsUser);
+
+    void userUpdate(IgrsUser igrsUser);
+
+    void userDelete(String user);
 }

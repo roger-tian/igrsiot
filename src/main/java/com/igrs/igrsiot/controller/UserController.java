@@ -17,7 +17,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -32,8 +37,145 @@ public class UserController {
     @Autowired
     private IIgrsDeviceService igrsDeviceService;
 
+    @RequestMapping("/user/registe")
+    JSONObject userRegiste(HttpServletRequest request) {
+        String userName = request.getParameter("userName");
+        String realName = request.getParameter("realName");
+        String phone = request.getParameter("phone");
+        String password = request.getParameter("password");
+        String role = request.getParameter("role");
+
+        if ((userName == null) || (userName.length() == 0)) {
+            return null;
+        }
+
+        if ((role == null) || !role.equals("admin")) {
+            role = "normal";
+        }
+
+        IgrsUser igrsUser = new IgrsUser();
+        igrsUser.setUser(userName);
+        igrsUser.setName(realName);
+        igrsUser.setPhone(phone);
+        igrsUser.setPassword(password);
+        igrsUser.setRole(role);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = df.format(new Date());
+        igrsUser.setCtime(time);
+        igrsUser.setLtime(time);
+        igrsUserService.userRegiste(igrsUser);
+
+        JSONObject jsonResult = new JSONObject();
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
+    }
+
+    @RequestMapping("/user/update")
+    JSONObject userUpdate(HttpServletRequest request) {
+        String userName = request.getParameter("userName");
+        String realName = request.getParameter("realName");
+        String phone = request.getParameter("phone");
+        String password = request.getParameter("password");
+        String role = request.getParameter("role");
+
+        if ((userName == null) || (userName.length() == 0)) {
+            return null;
+        }
+
+        IgrsUser igrsUser = new IgrsUser();
+        igrsUser.setUser(userName);
+        igrsUser.setName(realName);
+        igrsUser.setPhone(phone);
+        igrsUser.setPassword(password);
+        igrsUser.setRole(role);
+        igrsUserService.userUpdate(igrsUser);
+
+        JSONObject jsonResult = new JSONObject();
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
+    }
+
+    @RequestMapping("/user/delete")
+    JSONObject userDelete(String userName) {
+        igrsUserService.userDelete(userName);
+
+        JSONObject jsonResult = new JSONObject();
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
+    }
+
+    @RequestMapping("/user/list")
+    JSONObject getUserList(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String pageNo) throws ParseException {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
+        igrsTokenService.updateExpired(igrsToken);
+
+        IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
+        if (!igrsUser.getRole().equals("admin")) {
+            jsonResult.put("result", "FAIL");
+            jsonResult.put("errCode", "403");
+            return jsonResult;
+        }
+
+        List<HashMap<String, String>> listResult = new ArrayList<>();
+
+        List<IgrsUser> list = igrsUserService.getNormalUsers();
+        String totalPage = String.format("%d", (list.size() - 1) / 10 + 1);
+        int curRecord = (Integer.parseInt(pageNo) - 1) * 10;
+
+        for (int i=curRecord; i<curRecord+10; i++) {
+            if (i >= list.size()) {
+                break;
+            }
+            HashMap<String, String> map = new HashMap<>();
+            map.put("user", list.get(i).getUser());
+            map.put("name", list.get(i).getName());
+            map.put("phone", list.get(i).getPhone());
+            map.put("ctime", list.get(i).getCtime());
+            map.put("ltime", list.get(i).getLtime());
+
+            listResult.add(map);
+        }
+
+        jsonResult.put("result", "SUCCESS");
+        jsonResult.put("totalPage", totalPage);
+        jsonResult = (JSONObject) JSONObject.toJSON(listResult);
+
+        return jsonResult;
+    }
+
+    @RequestMapping("/user/auth")
+    JSONObject userAuth(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String[] rooms) throws ParseException {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
+        igrsTokenService.updateExpired(igrsToken);
+
+        IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
+
+        for (int i=0; i<rooms.length; i++) {
+            // todo
+        }
+
+        return jsonResult;
+    }
+
     @RequestMapping("/user/login")
-    JSONObject UserLogin(String userName, String password) {
+    JSONObject userLogin(String userName, String password) {
         JSONObject jsonResult = new JSONObject();
 
         IgrsUser igrsUser = igrsUserService.getUserByName(userName);
@@ -73,12 +215,15 @@ public class UserController {
         jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
             return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
         }
 
         igrsTokenService.updateExpired(igrsToken);
 
         IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
 
+        logger.debug("jsonResult: {}", jsonResult);
         jsonResult.put("result", "SUCCESS");
         jsonResult.put("name", igrsUser.getUser());
         jsonResult.put("roles", igrsUser.getRole());

@@ -40,6 +40,8 @@ public class StatusController {
         jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
             return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
         }
 
         igrsTokenService.updateExpired(igrsToken);

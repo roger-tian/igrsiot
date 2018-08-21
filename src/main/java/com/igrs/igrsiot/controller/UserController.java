@@ -5,10 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsRoom;
 import com.igrs.igrsiot.model.IgrsToken;
 import com.igrs.igrsiot.model.IgrsUser;
-import com.igrs.igrsiot.service.IIgrsDeviceService;
-import com.igrs.igrsiot.service.IIgrsRoomService;
-import com.igrs.igrsiot.service.IIgrsTokenService;
-import com.igrs.igrsiot.service.IIgrsUserService;
+import com.igrs.igrsiot.model.IgrsUserRoom;
+import com.igrs.igrsiot.service.*;
 import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +29,8 @@ public class UserController {
     @Autowired
     private IIgrsUserService igrsUserService;
     @Autowired
+    private IIgrsUserRoomService igrsUserRoomService;
+    @Autowired
     private IIgrsTokenService igrsTokenService;
     @Autowired
     private IIgrsRoomService igrsRoomService;
@@ -38,7 +38,17 @@ public class UserController {
     private IIgrsDeviceService igrsDeviceService;
 
     @RequestMapping("/user/registe")
-    JSONObject userRegiste(HttpServletRequest request) {
+    JSONObject userRegiste(@RequestHeader(value = "igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
+        igrsTokenService.updateExpired(igrsToken);
+
         String userName = request.getParameter("userName");
         String realName = request.getParameter("realName");
         String phone = request.getParameter("phone");
@@ -65,14 +75,23 @@ public class UserController {
         igrsUser.setLtime(time);
         igrsUserService.userRegiste(igrsUser);
 
-        JSONObject jsonResult = new JSONObject();
         jsonResult.put("result", "SUCCESS");
 
         return jsonResult;
     }
 
     @RequestMapping("/user/update")
-    JSONObject userUpdate(HttpServletRequest request) {
+    JSONObject userUpdate(@RequestHeader(value = "igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
+        igrsTokenService.updateExpired(igrsToken);
+
         String userName = request.getParameter("userName");
         String realName = request.getParameter("realName");
         String phone = request.getParameter("phone");
@@ -91,17 +110,25 @@ public class UserController {
         igrsUser.setRole(role);
         igrsUserService.userUpdate(igrsUser);
 
-        JSONObject jsonResult = new JSONObject();
         jsonResult.put("result", "SUCCESS");
 
         return jsonResult;
     }
 
     @RequestMapping("/user/delete")
-    JSONObject userDelete(String userName) {
+    JSONObject userDelete(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String userName) throws ParseException {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
+        igrsTokenService.updateExpired(igrsToken);
+
         igrsUserService.userDelete(userName);
 
-        JSONObject jsonResult = new JSONObject();
         jsonResult.put("result", "SUCCESS");
 
         return jsonResult;
@@ -167,8 +194,14 @@ public class UserController {
 
         IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
 
+        IgrsUserRoom igrsUserRoom = new IgrsUserRoom();
+        igrsUserRoom.setUser(igrsUser.getUser());
         for (int i=0; i<rooms.length; i++) {
-            // todo
+            igrsUserRoom.setRoom(rooms[i]);
+            IgrsUserRoom result = igrsUserRoomService.getByUserRoom(igrsUserRoom);
+            if (result == null) {
+                igrsUserRoomService.insert(igrsUserRoom);
+            }
         }
 
         return jsonResult;

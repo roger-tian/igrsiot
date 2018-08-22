@@ -17,9 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/control")
 public class OperateController {
-    @Autowired
-    IIgrsOperateService igrsOperateService;
-
     @RequestMapping("/operate")
     public List<IgrsOperate> getOperate(HttpServletRequest request) throws ParseException {
         List<IgrsOperate> listResult = new ArrayList<>();
@@ -49,6 +46,9 @@ public class OperateController {
 
         return listResult;
     }
+
+    @Autowired
+    IIgrsOperateService igrsOperateService;
 
     private static final Logger logger = LoggerFactory.getLogger(OperateController.class);
 }

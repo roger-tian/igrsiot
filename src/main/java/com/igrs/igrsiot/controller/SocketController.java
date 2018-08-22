@@ -21,13 +21,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/control")
 public class SocketController {
-    @Autowired
-    private IIgrsDeviceService igrsDeviceService;
-    @Autowired
-    private IIgrsDeviceStatusService igrsDeviceStatusService;
-    @Autowired
-    private IIgrsSensorService igrsSensorService;
-
     @RequestMapping("/socketdata/handle")
     public String socketDataHandler(String room, String cip, String buf) throws InterruptedException {
         String buff;
@@ -274,6 +267,13 @@ public class SocketController {
 
         return "SUCCESS";
     }
+
+    @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
+    @Autowired
+    private IIgrsSensorService igrsSensorService;
 
     private static final Logger logger = LoggerFactory.getLogger(SocketController.class);
 }

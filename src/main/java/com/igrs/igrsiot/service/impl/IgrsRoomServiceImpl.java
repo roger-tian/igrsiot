@@ -12,13 +12,13 @@ import java.util.List;
 
 @Service
 public class IgrsRoomServiceImpl implements IIgrsRoomService {
-    @Autowired
-    private IIgrsRoomDao igrsRoomDao;
-
     @Override
     public List<IgrsRoom> getAllRooms() {
         return igrsRoomDao.getAllRooms();
     }
+
+    @Autowired
+    private IIgrsRoomDao igrsRoomDao;
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsRoomServiceImpl.class);
 }

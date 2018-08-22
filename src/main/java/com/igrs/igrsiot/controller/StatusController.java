@@ -21,17 +21,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/control")
 public class StatusController {
-    @Autowired
-    private IIgrsDeviceService igrsDeviceService;
-    @Autowired
-    private IIgrsTokenService igrsTokenService;
-    @Autowired
-    private IIgrsDeviceStatusService igrsDeviceStatusService;
-    @Autowired
-    private IIgrsOperateService igrsOperateService;
-    @Autowired
-    private IIgrsRoomService igrsRoomService;
-
     @RequestMapping("/status")
     public JSONObject getDeviceStatus(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room) throws ParseException {
         JSONObject jsonResult = new JSONObject();
@@ -240,6 +229,17 @@ public class StatusController {
 
         return "SUCCESS";
     }
+
+    @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
+    @Autowired
+    private IIgrsOperateService igrsOperateService;
+    @Autowired
+    private IIgrsRoomService igrsRoomService;
 
     private static final Logger logger = LoggerFactory.getLogger(StatusController.class);
 }

@@ -13,13 +13,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/control")
 public class RoomController {
-    @Autowired
-    private IIgrsRoomService igrsRoomService;
-
     @RequestMapping("/room")
     public List<IgrsRoom> getAllRooms() {
         return igrsRoomService.getAllRooms();
     }
+
+    @Autowired
+    private IIgrsRoomService igrsRoomService;
 
     private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
 }

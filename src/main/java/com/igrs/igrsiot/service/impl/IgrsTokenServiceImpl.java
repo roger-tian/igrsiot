@@ -16,9 +16,6 @@ import java.util.Date;
 
 @Service
 public class IgrsTokenServiceImpl implements IIgrsTokenService {
-    @Autowired
-    private IIgrsTokenDao igrsTokenDao;
-
     @Override
     public IgrsToken getTokenByUser(String user) {
         return igrsTokenDao.getTokenByUser(user);
@@ -98,6 +95,9 @@ public class IgrsTokenServiceImpl implements IIgrsTokenService {
 
         return jsonResult;
     }
+
+    @Autowired
+    private IIgrsTokenDao igrsTokenDao;
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsTokenServiceImpl.class);
 }

@@ -14,9 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/control")
 public class DeviceController {
-    @Autowired
-    private IIgrsDeviceService igrsDeviceService;
-
     @RequestMapping("/devices")
     public List<IgrsDevice> getDevices() {
         return igrsDeviceService.getAllDevices();
@@ -26,6 +23,9 @@ public class DeviceController {
     public List<HashMap<String, String>> getDeviceDetail() {
         return igrsDeviceService.getDeviceDetail();
     }
+
+    @Autowired
+    private IIgrsDeviceService igrsDeviceService;
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceController.class);
 }

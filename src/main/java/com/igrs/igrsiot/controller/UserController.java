@@ -26,17 +26,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/control")
 public class UserController {
-    @Autowired
-    private IIgrsUserService igrsUserService;
-    @Autowired
-    private IIgrsUserRoomService igrsUserRoomService;
-    @Autowired
-    private IIgrsTokenService igrsTokenService;
-    @Autowired
-    private IIgrsRoomService igrsRoomService;
-    @Autowired
-    private IIgrsDeviceService igrsDeviceService;
-
     @RequestMapping("/user/registe")
     JSONObject userRegiste(@RequestHeader(value = "igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
@@ -289,6 +278,17 @@ public class UserController {
 
         return jsonResult;
     }
+
+    @Autowired
+    private IIgrsUserService igrsUserService;
+    @Autowired
+    private IIgrsUserRoomService igrsUserRoomService;
+    @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
+    private IIgrsRoomService igrsRoomService;
+    @Autowired
+    private IIgrsDeviceService igrsDeviceService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 }

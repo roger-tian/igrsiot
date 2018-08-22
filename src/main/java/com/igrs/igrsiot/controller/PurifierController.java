@@ -25,15 +25,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/control")
 public class PurifierController {
-    @Autowired
-    private IIgrsTokenService igrsTokenService;
-    @Autowired
-    private IIgrsDeviceService igrsDeviceService;
-    @Autowired
-    private IIgrsDeviceStatusService igrsDeviceStatusService;
-    @Autowired
-    private IIgrsOperateService igrsOperateService;
-
     @RequestMapping("/purifier/control")
     public String sendPurifierControl(@RequestHeader(value="igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
         String param;
@@ -268,6 +259,15 @@ public class PurifierController {
 
         return "SUCCESS";
     }
+
+    @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
+    @Autowired
+    private IIgrsOperateService igrsOperateService;
 
     private static final String RsaPrivateKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKpzM2km9rDbURym4a2ZRB8HlXuAUkWHY5Wsn+jKLOTB509K1mZxwAucBlcmAYd1YAECdpgEQeI+/6bTakZofRW5YU5D6HEk3tIMpICthU3+dgMYwv0Lj+7Jtlfvd5IBk6o9RjOqwu3UfTKB6vfqeVooR0l8UVbrs6rEpUoO14C7AgMBAAECgYBJKpJS/OrAGCTFS81sG3Jmb3b3QKoQNoHE6gjqgH6s459LJjDKYOGzGhKOrj3Ry8yeIlSOBKXTXH+ZOP9RoeCvEzTPJuUy5TUfBLYs65Hs/LrHMO+/KBdmMEDAtnoxQYhCe3+MBrocxO60oVnIjOfiuF6oyTGIs4HwMtGhQtSMgQJBANYCeaa0g+cEok+IlnQ2bRKNniohopvxBkrAHJyjftw1ucG4pYj/ycLYwdJv7+ye+dz7wFXQvHmPEvDgX0vygNECQQDL5MKr8Qs/4/nZrAsdCTRKE4deddF3BeYiFEC3vRviafOBils5ZxceiFyXneKMUWgwyI8DGcGs55byXWUrdGvLAkEAwk5HA4vcQrEbaVjbObJ8v56jHx+g0zM4AkCA+dscAHYrLO8oJMYQ+v7wo88MKGuC8xgEXiYCKeA0U010WLFaMQJAIQ/YLU9p1pNeGVjXeH7clsJx6fRK4fT360DDecfVdLJfhPrtbfJ0gkP0V7WHXd95eKec4RDVIfdvt59DX3eCXwJBAKDSLtVmVoQaK9xQGJAX2h+ZkiEkIc3C8zla24J4f1kCf2aXtRw3HgCjExRIJyqeFhsBG5oqrMrfGkkAGgUtA3o=";
 

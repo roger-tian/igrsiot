@@ -12,9 +12,6 @@ import java.util.Map;
 
 @Service
 public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
-    @Autowired
-    IIgrsDeviceStatusDao igrsDeviceStatusDao;
-
     @Override
     public List<Map<String, String>> getStatusByRoom(String room) {
         return igrsDeviceStatusDao.getStatusByRoom(room);
@@ -64,4 +61,7 @@ public class IgrsDeviceStatusServiceImpl implements IIgrsDeviceStatusService {
     public int insertByRoomChAttr(Map<String, String> map) {
         return igrsDeviceStatusDao.insertByRoomChAttr(map);
     }
+
+    @Autowired
+    IIgrsDeviceStatusDao igrsDeviceStatusDao;
 }

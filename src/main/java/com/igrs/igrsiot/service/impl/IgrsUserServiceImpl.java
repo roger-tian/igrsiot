@@ -13,9 +13,6 @@ import java.util.List;
 
 @Service
 public class IgrsUserServiceImpl implements IIgrsUserService {
-    @Autowired
-    private IIgrsUserDao igrsUserDao;
-
     @Override
     public IgrsUser getUserById(Long id) {
         return igrsUserDao.getUserById(id);
@@ -50,6 +47,9 @@ public class IgrsUserServiceImpl implements IIgrsUserService {
     public void userDelete(String user) {
         igrsUserDao.userDelete(user);
     }
+
+    @Autowired
+    private IIgrsUserDao igrsUserDao;
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsUserServiceImpl.class);
 }

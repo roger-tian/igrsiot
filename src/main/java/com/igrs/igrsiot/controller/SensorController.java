@@ -24,13 +24,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/control")
 public class SensorController {
-    @Autowired
-    private IIgrsTokenService igrsTokenService;
-    @Autowired
-    private IIgrsSensorService igrsSensorService;
-    @Autowired
-    private IIgrsSensorHistoryService igrsSensorHistoryService;
-
     @RequestMapping("/sensor")
     public String getSensorData(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
@@ -168,6 +161,13 @@ public class SensorController {
             e.printStackTrace();
         }
     }
+
+    @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
+    private IIgrsSensorService igrsSensorService;
+    @Autowired
+    private IIgrsSensorHistoryService igrsSensorHistoryService;
 
     private static final Logger logger = LoggerFactory.getLogger(SensorController.class);
 }

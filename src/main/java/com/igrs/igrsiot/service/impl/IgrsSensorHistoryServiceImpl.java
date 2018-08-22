@@ -10,9 +10,6 @@ import java.util.List;
 
 @Service
 public class IgrsSensorHistoryServiceImpl implements IIgrsSensorHistoryService {
-    @Autowired
-    private IIgrsSensorHistoryDao igrsSensorHistoryDao;
-
     @Override
     public List<IgrsSensorHistory> getDataByDateAndType(IgrsSensorHistory igrsSensorhistory) {
         return igrsSensorHistoryDao.getDataByDateAndType(igrsSensorhistory);
@@ -22,4 +19,7 @@ public class IgrsSensorHistoryServiceImpl implements IIgrsSensorHistoryService {
     public int insert(IgrsSensorHistory igrsSensorhistory) {
         return igrsSensorHistoryDao.insert(igrsSensorhistory);
     }
+
+    @Autowired
+    private IIgrsSensorHistoryDao igrsSensorHistoryDao;
 }

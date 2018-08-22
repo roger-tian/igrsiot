@@ -12,9 +12,6 @@ import java.util.List;
 
 @Service
 public class IgrsUserRoomServiceImpl implements IIgrsUserRoomService {
-    @Autowired
-    private IIgrsUserRoomDao igrsuserRoomDao;
-
     @Override
     public List<IgrsUserRoom> getRoomsByUser(String user) {
         return igrsuserRoomDao.getRoomsByUser(user);
@@ -29,6 +26,9 @@ public class IgrsUserRoomServiceImpl implements IIgrsUserRoomService {
     public void insert(IgrsUserRoom igrsUserRoom) {
         igrsuserRoomDao.insert(igrsUserRoom);
     }
+
+    @Autowired
+    private IIgrsUserRoomDao igrsuserRoomDao;
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsUserRoomServiceImpl.class);
 }

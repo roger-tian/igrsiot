@@ -21,13 +21,6 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/control")
 public class LedController {
-    @Autowired
-    private IIgrsTokenService igrsTokenService;
-    @Autowired
-    private IIgrsDeviceStatusService igrsDeviceStatusService;
-    @Autowired
-    private IIgrsOperateService igrsOperateService;
-
     @RequestMapping("/led")
     public String ledSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String onOff) throws ParseException {
         String instruction;
@@ -90,6 +83,13 @@ public class LedController {
 
         return "SUCCESS";
     }
+
+    @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
+    @Autowired
+    private IIgrsOperateService igrsOperateService;
 
     private static final Logger logger = LoggerFactory.getLogger(LedController.class);
 }

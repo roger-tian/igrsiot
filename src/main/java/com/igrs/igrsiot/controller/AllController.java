@@ -22,15 +22,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/control")
 public class AllController {
-    @Autowired
-    private IIgrsTokenService igrsTokenService;
-    @Autowired
-    private IIgrsDeviceStatusService igrsDeviceStatusService;
-    @Autowired
-    private IIgrsDeviceService igrsDeviceService;
-    @Autowired
-    private IIgrsOperateService igrsOperateService;
-
     @RequestMapping("/all")
     public String allSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String onOff) throws ParseException {
         String cmd;
@@ -109,6 +100,15 @@ public class AllController {
 
         return "SUCCESS";
     }
+
+    @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
+    @Autowired
+    private IIgrsDeviceService igrsDeviceService;
+    @Autowired
+    private IIgrsOperateService igrsOperateService;
 
     private static final Logger logger = LoggerFactory.getLogger(AllController.class);
 }

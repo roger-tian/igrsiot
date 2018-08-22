@@ -23,13 +23,6 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/control")
 public class MachineController {
-    @Autowired
-    private IIgrsTokenService igrsTokenService;
-    @Autowired
-    private IIgrsDeviceStatusService igrsDeviceStatusService;
-    @Autowired
-    private IIgrsOperateService igrsOperateService;
-
     @RequestMapping("/machine")
     public String machineSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String onOff) throws ParseException {
         String instruction;
@@ -272,6 +265,13 @@ public class MachineController {
 
         return "SUCCESS";
     }
+
+    @Autowired
+    private IIgrsTokenService igrsTokenService;
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
+    @Autowired
+    private IIgrsOperateService igrsOperateService;
 
     private static final Logger logger = LoggerFactory.getLogger(MachineController.class);
 }

@@ -10,9 +10,6 @@ import java.util.List;
 
 @Service
 public class IgrsSensorServiceImpl implements IIgrsSensorService {
-    @Autowired
-    private IIgrsSensorDao igrsSensorDao;
-
     @Override
     public List<IgrsSensor> getDataByType(IgrsSensor igrsSensor) {
         return igrsSensorDao.getDataByType(igrsSensor);
@@ -32,4 +29,7 @@ public class IgrsSensorServiceImpl implements IIgrsSensorService {
     public void deleteDataByDate(IgrsSensor igrsSensor) {
         igrsSensorDao.deleteDataByDate(igrsSensor);
     }
+
+    @Autowired
+    private IIgrsSensorDao igrsSensorDao;
 }

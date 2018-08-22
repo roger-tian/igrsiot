@@ -10,9 +10,6 @@ import java.util.List;
 
 @Service
 public class IgrsOperateServiceImpl implements IIgrsOperateService {
-    @Autowired
-    IIgrsOperateDao igrsOperateDao;
-
     @Override
     public List<IgrsOperate> getOperatesByRoom(String room) {
         return igrsOperateDao.getOperatesByRoom(room);
@@ -22,4 +19,7 @@ public class IgrsOperateServiceImpl implements IIgrsOperateService {
     public int insert(IgrsOperate igrsOperate) {
         return igrsOperateDao.insert(igrsOperate);
     }
+
+    @Autowired
+    IIgrsOperateDao igrsOperateDao;
 }

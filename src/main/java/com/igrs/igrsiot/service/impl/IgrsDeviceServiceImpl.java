@@ -11,9 +11,6 @@ import java.util.List;
 
 @Service
 public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
-    @Autowired
-    IIgrsDeviceDao igrsDeviceDao;
-
     @Override
     public List<IgrsDevice> getAllDevices() {
         return igrsDeviceDao.getAllDevices();
@@ -58,4 +55,7 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     public List<HashMap<String, String>> getByRoomTypeIndex(IgrsDevice igrsDevice) {
         return igrsDeviceDao.getByRoomTypeIndex(igrsDevice);
     }
+
+    @Autowired
+    IIgrsDeviceDao igrsDeviceDao;
 }

@@ -88,10 +88,21 @@ public class UserController {
         String role = request.getParameter("role");
 
         if ((userName == null) || (userName.length() == 0)) {
-            return null;
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
         }
 
-        IgrsUser igrsUser = new IgrsUser();
+        IgrsUser igrsUser = igrsUserService.getUserByName(userName);
+        if (igrsUser == null) {
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
+        } else if (!password.equals(igrsUser.getPassword())) {
+            JSONObject obj = new JSONObject();
+            obj.put("user", userName);
+            obj.put("token", token);
+            IgrsWebSocketService.sendAllMessage(obj.toString());
+        }
+
         igrsUser.setUser(userName);
         igrsUser.setName(realName);
         igrsUser.setPhone(phone);
@@ -117,6 +128,11 @@ public class UserController {
         igrsTokenService.updateExpired(igrsToken);
 
         igrsUserService.userDelete(userName);
+
+        JSONObject obj = new JSONObject();
+        obj.put("user", userName);
+        obj.put("token", token);
+        IgrsWebSocketService.sendAllMessage(obj.toString());
 
         jsonResult.put("result", "SUCCESS");
 
@@ -164,7 +180,8 @@ public class UserController {
 
         jsonResult.put("result", "SUCCESS");
         jsonResult.put("totalPage", totalPage);
-        jsonResult = (JSONObject) JSONObject.toJSON(listResult);
+        jsonResult.put("list", listResult);
+        logger.debug("listResult: {}, jsonResult: {}", listResult, jsonResult);
 
         return jsonResult;
     }
@@ -219,6 +236,11 @@ public class UserController {
                     igrsToken.setToken(token);
                     igrsTokenService.updateToken(igrsToken);
                 }
+
+                JSONObject obj = new JSONObject();
+                obj.put("user", userName);
+                obj.put("token", token);
+                IgrsWebSocketService.sendAllMessage(obj.toString());
             } else {
                 jsonResult.put("result", "FAIL");
             }

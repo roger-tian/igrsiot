@@ -9,5 +9,5 @@ public interface IIgrsUserRoomDao {
 
     IgrsUserRoom getByUserRoom(IgrsUserRoom igrsUserRoom);
 
-    int insert(IgrsUserRoom igrsUserRoom);
+    void insert(IgrsUserRoom igrsUserRoom);
 }

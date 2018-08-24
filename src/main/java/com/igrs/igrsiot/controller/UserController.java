@@ -194,7 +194,7 @@ public class UserController {
     }
 
     @RequestMapping("/user/auth")
-    JSONObject userAuth(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String[] rooms) throws ParseException {
+    JSONObject userAuth(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String userName, String rooms) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -205,12 +205,13 @@ public class UserController {
 
         igrsTokenService.updateExpired(igrsToken);
 
-        IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
+        IgrsUser igrsUser = igrsUserService.getUserByName(userName);
 
+        JSONArray roomsArray = JSONArray.parseArray(rooms);
         IgrsUserRoom igrsUserRoom = new IgrsUserRoom();
-        igrsUserRoom.setUser(igrsUser.getUser());
-        for (int i=0; i<rooms.length; i++) {
-            igrsUserRoom.setRoom(rooms[i]);
+        igrsUserRoom.setUser(igrsUser.getId());
+        for (int i=0; i<roomsArray.size(); i++) {
+            igrsUserRoom.setRoom(roomsArray.get(i).toString());
             IgrsUserRoom result = igrsUserRoomService.getByUserRoom(igrsUserRoom);
             if (result == null) {
                 igrsUserRoomService.insert(igrsUserRoom);

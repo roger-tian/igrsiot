@@ -9,11 +9,11 @@ public class IgrsUserRoom {
         this.id = id;
     }
 
-    public String getUser() {
+    public Long getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(Long user) {
         this.user = user;
     }
 
@@ -26,6 +26,6 @@ public class IgrsUserRoom {
     }
 
     private Long id;
-    private String user;
+    private Long user;
     private String room;
 }

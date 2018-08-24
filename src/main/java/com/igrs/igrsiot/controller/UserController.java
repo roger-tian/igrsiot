@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/control")
@@ -174,6 +171,16 @@ public class UserController {
             map.put("phone", list.get(i).getPhone());
             map.put("ctime", list.get(i).getCtime());
             map.put("ltime", list.get(i).getLtime());
+
+            String[] rooms = null;
+            List<IgrsUserRoom> listUserRoom = igrsUserRoomService.getRoomsByUser(list.get(i).getUser());
+            if ((listUserRoom != null) && (listUserRoom.size() != 0)) {
+                rooms = new String[listUserRoom.size()];
+                for (int j=0; j<listUserRoom.size(); j++) {
+                    rooms[j] = listUserRoom.get(j).getRoom();
+                }
+            }
+            map.put("rooms", Arrays.toString(rooms));
 
             listResult.add(map);
         }

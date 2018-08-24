@@ -1,6 +1,8 @@
 ﻿insert into igrs_user(id, user, name, phone, password, role) values(1, 'admin', 'admin', '', 'password', 'admin');
 insert into igrs_room(id, room, name) values(1, '100', '100');
 insert into igrs_room(id, room, name) values(2, '101', '101');
+insert into igrs_user_room(user, room) values(2, '100');
+insert into igrs_user_room(user, room) values(2, '101');
 insert into igrs_device(id, type, dindex, name, ctype, cip, room) values(1, 'welcome', '0', '迎宾模式', '0', '', '100');
 insert into igrs_device(id, type, dindex, name, ctype, cip, room) values(2, 'machine', '0', '前交互大屏', '0', '192.168.1.200', '100');
 insert into igrs_device(id, type, dindex, name, ctype, cip, room) values(3, 'machine', '1', '后交互大屏', '0', '192.168.1.200', '100');

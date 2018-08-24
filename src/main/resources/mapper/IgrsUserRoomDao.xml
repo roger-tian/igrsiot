@@ -12,11 +12,11 @@
   </sql>
 
   <select id="getRoomsByUser" resultType="IgrsUserRoom" parameterType="String">
-    select * from igrs_user_room where user = #{user}
+    select ur.* from igrs_user_room ur, igrs_user u where ur.user = u.id and u.user = #{user}
   </select>
 
   <select id="getByUserRoom" resultType="IgrsUserRoom" parameterType="IgrsUserRoom">
-    select * from igrs_user_room where user = #{user} and room = #{room}
+    select ur.* from igrs_user_room ur, igrs_user u where ur.user = u.id and u.user = #{user} and room = #{room}
   </select>
 
   <select id="insert" parameterType="IgrsUserRoom">

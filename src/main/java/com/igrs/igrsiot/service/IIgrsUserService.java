@@ -12,6 +12,8 @@ public interface IIgrsUserService {
 
     List<IgrsUser> getNormalUsers();
 
+    List<IgrsUser> getNormalUsersByUser(String userName);
+
     List<IgrsRoom> getUserRooms(IgrsUser igrsUser);
 
     void userRegiste(IgrsUser igrsUser);

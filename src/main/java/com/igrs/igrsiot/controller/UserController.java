@@ -143,7 +143,7 @@ public class UserController {
     }
 
     @RequestMapping("/user/list")
-    JSONObject getUserList(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String pageNo) throws ParseException {
+    JSONObject getUserList(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String userName, String pageNo) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -163,7 +163,12 @@ public class UserController {
 
         List<HashMap<String, String>> listResult = new ArrayList<>();
 
-        List<IgrsUser> list = igrsUserService.getNormalUsers();
+        List<IgrsUser> list = null;
+        if ((userName == null) || (userName.length() == 0)) {
+            list = igrsUserService.getNormalUsers();
+        } else {
+            list = igrsUserService.getNormalUsersByUser(userName);
+        }
         String totalPage = String.format("%d", (list.size() - 1) / 10 + 1);
         int curRecord = (Integer.parseInt(pageNo) - 1) * 10;
 
@@ -225,6 +230,8 @@ public class UserController {
             }
         }
 
+        jsonResult.put("result", "SUCCESS");
+
         return jsonResult;
     }
 
@@ -271,6 +278,7 @@ public class UserController {
         JSONObject jsonResult;
 
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        logger.debug("token: {}", token);
         jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
             return jsonResult;
@@ -285,6 +293,8 @@ public class UserController {
         logger.debug("jsonResult: {}", jsonResult);
         jsonResult.put("result", "SUCCESS");
         jsonResult.put("name", igrsUser.getUser());
+        jsonResult.put("realName", igrsUser.getName());
+        jsonResult.put("phone", igrsUser.getPhone());
         jsonResult.put("roles", igrsUser.getRole());
 
         List<IgrsRoom> roomList;

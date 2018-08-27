@@ -29,6 +29,11 @@ public class IgrsUserServiceImpl implements IIgrsUserService {
     }
 
     @Override
+    public List<IgrsUser> getNormalUsersByUser(String userName) {
+        return igrsUserDao.getNormalUsersByUser(userName);
+    }
+
+    @Override
     public List<IgrsRoom> getUserRooms(IgrsUser igrsUser) {
         return igrsUserDao.getUserRooms(igrsUser);
     }

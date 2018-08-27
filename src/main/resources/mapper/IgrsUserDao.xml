@@ -28,6 +28,10 @@
     select * from igrs_user where role != 'admin'
   </select>
 
+  <select id="getNormalUsersByUser" resultType="IgrsUser" parameterType="String">
+    select * from igrs_user where role != 'admin' and user = #{user}
+  </select>
+
   <select id="getUserRooms" resultType="IgrsRoom" parameterType="com.igrs.igrsiot.model.IgrsUser">
     select r.* from igrs_user u, igrs_room r, igrs_user_room ur
     where ur.user = u.id and ur.room = r.room and u.user = #{user}
@@ -39,7 +43,7 @@
   </select>
 
   <select id="userUpdate" parameterType="com.igrs.igrsiot.model.IgrsUser">
-    update igrs_user set name=#{name}, phone=#{phone}, password=#{passowrd} where user=#{user}
+    update igrs_user set name=#{name}, phone=#{phone}, password=#{password} where user=#{user}
   </select>
 
   <select id="userDelete" parameterType="String">

@@ -16,10 +16,18 @@
   </select>
 
   <select id="getByUserRoom" resultType="IgrsUserRoom" parameterType="IgrsUserRoom">
-    select ur.* from igrs_user_room ur, igrs_user u where ur.user = u.id and u.user = #{user} and room = #{room}
+    select * from igrs_user_room where user = #{user} and room = #{room}
   </select>
 
   <select id="insert" parameterType="com.igrs.igrsiot.model.IgrsUserRoom">
     insert into igrs_user_room(user, room) values(#{user}, #{room})
+  </select>
+
+  <select id="delete" parameterType="com.igrs.igrsiot.model.IgrsUserRoom">
+    delete from igrs_user_room where user = (select id from igrs_user where user = #{user}) and room = #{room}
+  </select>
+
+  <select id="deleteAllByUser" parameterType="com.igrs.igrsiot.model.IgrsUserRoom">
+    delete from igrs_user_room where user = #{user}
   </select>
 </mapper>

@@ -42,7 +42,13 @@ public class UserController {
         String role = request.getParameter("role");
 
         if ((userName == null) || (userName.length() == 0)) {
-            return null;
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
+        }
+
+        if ((password == null) || (password.length() < 6)) {
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
         }
 
         if ((role == null) || !role.equals("admin")) {
@@ -172,15 +178,14 @@ public class UserController {
             map.put("ctime", list.get(i).getCtime());
             map.put("ltime", list.get(i).getLtime());
 
-            String[] rooms = null;
+            JSONArray roomsArray = new JSONArray();
             List<IgrsUserRoom> listUserRoom = igrsUserRoomService.getRoomsByUser(list.get(i).getUser());
             if ((listUserRoom != null) && (listUserRoom.size() != 0)) {
-                rooms = new String[listUserRoom.size()];
                 for (int j=0; j<listUserRoom.size(); j++) {
-                    rooms[j] = listUserRoom.get(j).getRoom();
+                    roomsArray.add(listUserRoom.get(j).getRoom());
                 }
             }
-            map.put("rooms", Arrays.toString(rooms));
+            map.put("rooms", roomsArray.toString());
 
             listResult.add(map);
         }
@@ -208,8 +213,10 @@ public class UserController {
         IgrsUser igrsUser = igrsUserService.getUserByName(userName);
 
         JSONArray roomsArray = JSONArray.parseArray(rooms);
+        logger.debug("roomsArray: {}", roomsArray);
         IgrsUserRoom igrsUserRoom = new IgrsUserRoom();
         igrsUserRoom.setUser(igrsUser.getId());
+        igrsUserRoomService.deleteAllByUser(igrsUserRoom);
         for (int i=0; i<roomsArray.size(); i++) {
             igrsUserRoom.setRoom(roomsArray.get(i).toString());
             IgrsUserRoom result = igrsUserRoomService.getByUserRoom(igrsUserRoom);

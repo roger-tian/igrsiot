@@ -14,21 +14,31 @@ import java.util.List;
 public class IgrsUserRoomServiceImpl implements IIgrsUserRoomService {
     @Override
     public List<IgrsUserRoom> getRoomsByUser(String user) {
-        return igrsuserRoomDao.getRoomsByUser(user);
+        return igrsUserRoomDao.getRoomsByUser(user);
     }
 
     @Override
     public IgrsUserRoom getByUserRoom(IgrsUserRoom igrsUserRoom) {
-        return igrsuserRoomDao.getByUserRoom(igrsUserRoom);
+        return igrsUserRoomDao.getByUserRoom(igrsUserRoom);
     }
 
     @Override
     public void insert(IgrsUserRoom igrsUserRoom) {
-        igrsuserRoomDao.insert(igrsUserRoom);
+        igrsUserRoomDao.insert(igrsUserRoom);
+    }
+
+    @Override
+    public void delete(IgrsUserRoom igrsUserRoom) {
+        igrsUserRoomDao.delete(igrsUserRoom);
+    }
+
+    @Override
+    public void deleteAllByUser(IgrsUserRoom igrsUserRoom) {
+        igrsUserRoomDao.deleteAllByUser(igrsUserRoom);
     }
 
     @Autowired
-    private IIgrsUserRoomDao igrsuserRoomDao;
+    private IIgrsUserRoomDao igrsUserRoomDao;
 
     private static final Logger logger = LoggerFactory.getLogger(IgrsUserRoomServiceImpl.class);
 }

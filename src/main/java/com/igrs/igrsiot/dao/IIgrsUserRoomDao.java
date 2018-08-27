@@ -10,4 +10,8 @@ public interface IIgrsUserRoomDao {
     IgrsUserRoom getByUserRoom(IgrsUserRoom igrsUserRoom);
 
     void insert(IgrsUserRoom igrsUserRoom);
+
+    void delete(IgrsUserRoom igrsUserRoom);
+
+    void deleteAllByUser(IgrsUserRoom igrsUserRoom);
 }

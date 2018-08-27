@@ -43,7 +43,11 @@
   </select>
 
   <select id="userUpdate" parameterType="com.igrs.igrsiot.model.IgrsUser">
-    update igrs_user set name=#{name}, phone=#{phone}, password=#{password} where user=#{user}
+    update igrs_user set name=#{name}, phone=#{phone} where user=#{user}
+  </select>
+
+  <select id="userPassword" parameterType="com.igrs.igrsiot.model.IgrsUser">
+    update igrs_user set password=#{password} where user=#{user}
   </select>
 
   <select id="userDelete" parameterType="String">

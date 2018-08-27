@@ -20,5 +20,7 @@ public interface IIgrsUserService {
 
     void userUpdate(IgrsUser igrsUser);
 
+    void userPassword(IgrsUser igrsUser);
+
     void userDelete(String user);
 }

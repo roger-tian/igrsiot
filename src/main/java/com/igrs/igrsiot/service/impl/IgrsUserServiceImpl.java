@@ -49,6 +49,11 @@ public class IgrsUserServiceImpl implements IIgrsUserService {
     }
 
     @Override
+    public void userPassword(IgrsUser igrsUser) {
+        igrsUserDao.userPassword(igrsUser);
+    }
+
+    @Override
     public void userDelete(String user) {
         igrsUserDao.userDelete(user);
     }

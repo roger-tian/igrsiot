@@ -25,7 +25,8 @@ import java.util.List;
 @RequestMapping("/control")
 public class SensorController {
     @RequestMapping("/sensor")
-    public String getSensorData(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room) throws ParseException {
+    public String getSensorData(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
             return "TOKEN_EXPIRED";
@@ -62,7 +63,8 @@ public class SensorController {
     }
 
     @RequestMapping("/sensor/history")
-    public List<IgrsSensorHistory> getSensorHistoryData(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String date, String type) throws ParseException {
+    public List<IgrsSensorHistory> getSensorHistoryData(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room, String date, String type) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
             return null;

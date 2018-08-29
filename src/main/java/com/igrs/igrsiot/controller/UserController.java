@@ -24,7 +24,8 @@ import java.util.*;
 @RequestMapping("/control")
 public class UserController {
     @RequestMapping("/user/registe")
-    JSONObject userRegiste(@RequestHeader(value = "igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
+    JSONObject userRegiste(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
+            HttpServletRequest request) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -73,7 +74,8 @@ public class UserController {
     }
 
     @RequestMapping("/user/update")
-    JSONObject userUpdate(@RequestHeader(value = "igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
+    JSONObject userUpdate(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
+            HttpServletRequest request) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -87,7 +89,6 @@ public class UserController {
         String userName = request.getParameter("userName");
         String realName = request.getParameter("realName");
         String phone = request.getParameter("phone");
-//        String password = request.getParameter("password");
         String role = request.getParameter("role");
 
         if ((userName == null) || (userName.length() == 0)) {
@@ -100,17 +101,10 @@ public class UserController {
             jsonResult.put("result", "FAIL");
             return jsonResult;
         }
-//        else if (!password.equals(igrsUser.getPassword())) {
-//            JSONObject obj = new JSONObject();
-//            obj.put("user", userName);
-//            obj.put("token", token);
-//            IgrsWebSocketService.sendAllMessage(obj.toString());
-//        }
 
         igrsUser.setUser(userName);
         igrsUser.setName(realName);
         igrsUser.setPhone(phone);
-//        igrsUser.setPassword(password);
         igrsUser.setRole(role);
         igrsUserService.userUpdate(igrsUser);
 
@@ -120,7 +114,8 @@ public class UserController {
     }
 
     @RequestMapping("/user/password/modify")
-    JSONObject userPassModify(@RequestHeader(value = "igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
+    JSONObject userPassModify(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
+            HttpServletRequest request) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -155,7 +150,8 @@ public class UserController {
     }
 
     @RequestMapping("/user/password/reset")
-    JSONObject userPassReset(@RequestHeader(value = "igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
+    JSONObject userPassReset(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
+            HttpServletRequest request) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -175,12 +171,18 @@ public class UserController {
             return jsonResult;
         }
 
+        igrsToken = igrsTokenService.getTokenByUser(userName);
+        if (igrsToken == null) {
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
+        }
+
         igrsUser.setPassword(password);
         igrsUserService.userPassword(igrsUser);
 
         JSONObject obj = new JSONObject();
         obj.put("user", userName);
-        obj.put("token", token);
+        obj.put("token", igrsToken.getToken());
         IgrsWebSocketService.sendAllMessage(obj.toString());
 
         jsonResult.put("result", "SUCCESS");
@@ -189,7 +191,8 @@ public class UserController {
     }
 
     @RequestMapping("/user/delete")
-    JSONObject userDelete(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String userName) throws ParseException {
+    JSONObject userDelete(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
+            String userName) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -200,11 +203,17 @@ public class UserController {
 
         igrsTokenService.updateExpired(igrsToken);
 
+        igrsToken = igrsTokenService.getTokenByUser(userName);
+        if (igrsToken == null) {
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
+        }
+
         igrsUserService.userDelete(userName);
 
         JSONObject obj = new JSONObject();
         obj.put("user", userName);
-        obj.put("token", token);
+        obj.put("token", igrsToken.getToken());
         IgrsWebSocketService.sendAllMessage(obj.toString());
 
         jsonResult.put("result", "SUCCESS");
@@ -213,7 +222,8 @@ public class UserController {
     }
 
     @RequestMapping("/user/list")
-    JSONObject getUserList(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String userName, String pageNo) throws ParseException {
+    JSONObject getUserList(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
+            String userName, String pageNo) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -274,7 +284,8 @@ public class UserController {
     }
 
     @RequestMapping("/user/auth")
-    JSONObject userAuth(@RequestHeader(value = "igrs-token", defaultValue = "") String token, String userName, String rooms) throws ParseException {
+    JSONObject userAuth(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
+            String userName, String rooms) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -284,6 +295,12 @@ public class UserController {
         }
 
         igrsTokenService.updateExpired(igrsToken);
+
+        igrsToken = igrsTokenService.getTokenByUser(userName);
+        if (igrsToken == null) {
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
+        }
 
         IgrsUser igrsUser = igrsUserService.getUserByName(userName);
 
@@ -299,6 +316,11 @@ public class UserController {
                 igrsUserRoomService.insert(igrsUserRoom);
             }
         }
+
+        JSONObject obj = new JSONObject();
+        obj.put("user", userName);
+        obj.put("token", igrsToken.getToken());
+        IgrsWebSocketService.sendAllMessage(obj.toString());
 
         jsonResult.put("result", "SUCCESS");
 
@@ -344,7 +366,8 @@ public class UserController {
     }
 
     @RequestMapping("/user/rooms")
-    JSONObject getRoomList(@RequestHeader(value = "igrs-token", defaultValue = "") String token) throws ParseException {
+    JSONObject getRoomList(@RequestHeader(value = "igrs-token", defaultValue = "") String token)
+            throws ParseException {
         JSONObject jsonResult;
 
         IgrsToken igrsToken = igrsTokenService.getByToken(token);

@@ -22,7 +22,8 @@ import java.util.Map;
 @RequestMapping("/control")
 public class StatusController {
     @RequestMapping("/status")
-    public JSONObject getDeviceStatus(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room) throws ParseException {
+    public JSONObject getDeviceStatus(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room) throws ParseException {
         JSONObject jsonResult = new JSONObject();
 
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
@@ -143,7 +144,8 @@ public class StatusController {
     }
 
     @RequestMapping("/welcomemode")
-    public String welcomeMode(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String onOff) throws ParseException {
+    public String welcomeMode(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room, String onOff) throws ParseException {
         String instruction;
         String deviceName = "";
 

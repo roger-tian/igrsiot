@@ -24,7 +24,8 @@ import java.util.HashMap;
 @RequestMapping("/control")
 public class MachineController {
     @RequestMapping("/machine")
-    public String machineSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String onOff) throws ParseException {
+    public String machineSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room, String index, String onOff) throws ParseException {
         String instruction;
         String deviceName = "";
 
@@ -108,7 +109,8 @@ public class MachineController {
     }
 
     @RequestMapping("/machineSig")
-    public String machineSigSource(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String sigSource) throws ParseException {
+    public String machineSigSource(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room, String index, String sigSource) throws ParseException {
         String instruction;
         String deviceName = "";
 
@@ -185,7 +187,8 @@ public class MachineController {
     }
 
     @RequestMapping("/machineVol")
-    public String machineVolume(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String volume) throws ParseException {
+    public String machineVolume(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room, String index, String volume) throws ParseException {
         String instruction;
         String deviceName = "";
 

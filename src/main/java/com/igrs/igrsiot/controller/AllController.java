@@ -23,10 +23,10 @@ import java.util.List;
 @RequestMapping("/control")
 public class AllController {
     @RequestMapping("/all")
-    public String allSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String onOff) throws ParseException {
+    public String allSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room, String onOff) throws ParseException {
         String cmd;
         String instruction;
-//        HashMap<String, String> map;
 
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
             return "FAIL";
@@ -39,7 +39,6 @@ public class AllController {
 
         List<HashMap<String, String>> list = igrsDeviceService.getDetailByRoom(room);
         logger.debug("list: {}", list);
-//        JSONArray jsonArray = JSONArray.parseArray(list.toString());
         JSONObject jsonObject;
         if (list.size() == 0) {
             return "FAIL";

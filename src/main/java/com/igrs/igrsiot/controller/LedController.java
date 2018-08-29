@@ -22,7 +22,8 @@ import java.util.HashMap;
 @RequestMapping("/control")
 public class LedController {
     @RequestMapping("/led")
-    public String ledSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String onOff) throws ParseException {
+    public String ledSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room, String index, String onOff) throws ParseException {
         String instruction;
         String deviceName = "";
 

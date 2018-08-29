@@ -22,7 +22,8 @@ import java.util.HashMap;
 @RequestMapping("/control")
 public class CurtainController {
     @RequestMapping("/curtain")
-    public String curtainSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token, String room, String index, String onOff) throws ParseException {
+    public String curtainSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            String room, String index, String onOff) throws ParseException {
         String instruction;
         String deviceName = "";
 

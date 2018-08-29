@@ -26,7 +26,8 @@ import java.util.List;
 @RequestMapping("/control")
 public class PurifierController {
     @RequestMapping("/purifier/control")
-    public String sendPurifierControl(@RequestHeader(value="igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
+    public String sendPurifierControl(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            HttpServletRequest request) throws ParseException {
         String param;
         String instruction;
 
@@ -83,7 +84,8 @@ public class PurifierController {
     }
 
     @RequestMapping("/purifier/query")
-    public String sendPurifierQuery(@RequestHeader(value="igrs-token", defaultValue = "") String token, HttpServletRequest request) throws ParseException {
+    public String sendPurifierQuery(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+            HttpServletRequest request) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
             return "TOKEN_EXPIRED";

@@ -7,6 +7,7 @@ import com.igrs.igrsiot.model.IgrsToken;
 import com.igrs.igrsiot.model.IgrsUser;
 import com.igrs.igrsiot.service.IIgrsOperateService;
 import com.igrs.igrsiot.service.IIgrsTokenService;
+import com.igrs.igrsiot.service.IIgrsUserService;
 import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,13 @@ public class OperateController {
         if (igrsUser != null) {
             igrsOperate.setUser(igrsUser.getId());
         }
-        List<IgrsOperate> list = igrsOperateService.getOperatesByRoomUser(igrsOperate);
+
+        List<IgrsOperate> list;
+        if (igrsUser.getRole().equals("admin")) {
+            list = igrsOperateService.getOperatesByRoom(room);
+        } else {
+            list = igrsOperateService.getOperatesByRoomUser(igrsOperate);
+        }
         totalPage = String.format("%d", (list.size() - 1) / 10 + 1);
 
         JSONArray jsonArray = new JSONArray();
@@ -56,17 +63,12 @@ public class OperateController {
             if (i >= list.size()) {
                 break;
             }
-//            IgrsOperate operate = new IgrsOperate();
-//            operate.setRoom(list.get(i).getRoom());
-//            operate.setUser(list.get(i).getUser());
-//            operate.setDevice(list.get(i).getDevice());
-//            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            operate.setTime(df.format(df.parse(list.get(i).getTime())));
-//            operate.setInstruction(list.get(i).getInstruction());
-//            operate.setTotalPage(totalPage);
             Map<String, String> map = new HashMap<>();
             map.put("room", list.get(i).getRoom());
-            map.put("user", igrsUser.getUser());
+            igrsUser = igrsUserService.getUserById(list.get(i).getUser());
+            if (igrsUser != null) {
+                map.put("user", igrsUser.getUser());
+            }
             map.put("device", list.get(i).getDevice());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             map.put("time", df.format(df.parse(list.get(i).getTime())));
@@ -82,6 +84,8 @@ public class OperateController {
         return jsonResult;
     }
 
+    @Autowired
+    IIgrsUserService igrsUserService;
     @Autowired
     IIgrsOperateService igrsOperateService;
     @Autowired

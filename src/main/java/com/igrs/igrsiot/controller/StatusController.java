@@ -144,15 +144,18 @@ public class StatusController {
     }
 
     @RequestMapping("/welcomemode")
-    public String welcomeMode(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+    public JSONObject welcomeMode(@RequestHeader(value="igrs-token", defaultValue = "") String token,
             String room, String onOff) throws ParseException {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
         String instruction;
         String deviceName = "";
-
-        IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            return "TOKEN_EXPIRED";
-        }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "welcome");
@@ -198,11 +201,13 @@ public class StatusController {
         igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
-        return "SUCCESS";
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
     }
 
     @RequestMapping("/welcomemode/auto")
-    public String welcomeModeAuto() {
+    public JSONObject welcomeModeAuto() {
         IgrsDevice igrsDevice = new IgrsDevice();
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
 
@@ -232,7 +237,10 @@ public class StatusController {
             }
         }
 
-        return "SUCCESS";
+        JSONObject jsonResult = new JSONObject();
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
     }
 
     @Autowired

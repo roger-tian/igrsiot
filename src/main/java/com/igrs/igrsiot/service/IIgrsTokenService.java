@@ -15,4 +15,6 @@ public interface IIgrsTokenService {
     void updateExpired(IgrsToken igrsToken);
 
     void insert(IgrsToken igrsToken);
+
+    void deleteByToken(String token);
 }

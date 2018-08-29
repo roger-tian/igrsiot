@@ -15,4 +15,6 @@ public interface IIgrsTokenDao {
     void updateExpired(IgrsToken igrsToken);
 
     void insert(IgrsToken igrsToken);
+
+    void deleteByToken(String token);
 }

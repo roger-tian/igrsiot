@@ -65,6 +65,11 @@ public class IgrsTokenServiceImpl implements IIgrsTokenService {
         igrsTokenDao.insert(igrsToken);
     }
 
+    @Override
+    public void deleteByToken(String token) {
+        igrsTokenDao.deleteByToken(token);
+    }
+
     public static String genToken(String user) {
         String token = user + "@" + new Date().getTime();
         logger.debug("token: {}", token);

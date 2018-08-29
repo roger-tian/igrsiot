@@ -35,4 +35,8 @@
   <select id="insert" parameterType="com.igrs.igrsiot.model.IgrsToken">
     insert into igrs_token(user, token, expired) values(#{user}, #{token}, #{expired})
   </select>
+
+  <select id="deleteByToken" parameterType="String">
+    delete from igrs_token where token = #{token}
+  </select>
 </mapper>

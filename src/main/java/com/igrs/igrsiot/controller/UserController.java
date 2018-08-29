@@ -139,9 +139,11 @@ public class UserController {
         igrsUser.setPassword(newPass);
         igrsUserService.userPassword(igrsUser);
 
+        igrsTokenService.deleteByToken(igrsToken.getToken());
+
         JSONObject obj = new JSONObject();
         obj.put("user", userName);
-        obj.put("token", token);
+        obj.put("token", "");
         IgrsWebSocketService.sendAllMessage(obj.toString());
 
         jsonResult.put("result", "SUCCESS");
@@ -180,9 +182,11 @@ public class UserController {
         igrsUser.setPassword(password);
         igrsUserService.userPassword(igrsUser);
 
+        igrsTokenService.deleteByToken(igrsToken.getToken());
+
         JSONObject obj = new JSONObject();
         obj.put("user", userName);
-        obj.put("token", igrsToken.getToken());
+        obj.put("token", "");
         IgrsWebSocketService.sendAllMessage(obj.toString());
 
         jsonResult.put("result", "SUCCESS");
@@ -211,9 +215,11 @@ public class UserController {
 
         igrsUserService.userDelete(userName);
 
+        igrsTokenService.deleteByToken(igrsToken.getToken());
+
         JSONObject obj = new JSONObject();
         obj.put("user", userName);
-        obj.put("token", igrsToken.getToken());
+        obj.put("token", "");
         IgrsWebSocketService.sendAllMessage(obj.toString());
 
         jsonResult.put("result", "SUCCESS");
@@ -317,9 +323,11 @@ public class UserController {
             }
         }
 
+        igrsTokenService.deleteByToken(igrsToken.getToken());
+
         JSONObject obj = new JSONObject();
         obj.put("user", userName);
-        obj.put("token", igrsToken.getToken());
+        obj.put("token", "");
         IgrsWebSocketService.sendAllMessage(obj.toString());
 
         jsonResult.put("result", "SUCCESS");

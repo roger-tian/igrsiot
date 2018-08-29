@@ -190,7 +190,10 @@ public class StatusController {
         igrsOperate.setTime(time);
         instruction = onOff.equals("1") ? "开关打开" : "开关关闭";
         igrsOperate.setInstruction(instruction);
-        igrsOperate.setUser("admin");
+        IgrsUser igrsUser = igrsTokenService.getUserByToken(token);
+        if (igrsUser != null) {
+            igrsOperate.setUser(igrsUser.getId());
+        }
         igrsOperate.setRoom(room);
         igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);

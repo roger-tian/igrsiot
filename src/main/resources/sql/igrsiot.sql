@@ -97,7 +97,7 @@ CREATE TABLE `igrs_operate` (
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `instruction` varchar(20) DEFAULT NULL,
   `device` varchar(20) DEFAULT NULL,
-  `user` varchar(20) DEFAULT NULL,
+  `user` bigint(20) DEFAULT NULL,
   `room` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

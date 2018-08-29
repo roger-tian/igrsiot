@@ -1,9 +1,12 @@
 package com.igrs.igrsiot.dao;
 
 import com.igrs.igrsiot.model.IgrsToken;
+import com.igrs.igrsiot.model.IgrsUser;
 
 public interface IIgrsTokenDao {
     IgrsToken getTokenByUser(String user);
+
+    IgrsUser getUserByToken(String token);
 
     IgrsToken getByToken(String token);
 

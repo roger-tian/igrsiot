@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.model.IgrsToken;
+import com.igrs.igrsiot.model.IgrsUser;
 import com.igrs.igrsiot.service.*;
 import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import org.slf4j.Logger;
@@ -22,19 +23,23 @@ import java.util.HashMap;
 @RequestMapping("/control")
 public class CurtainController {
     @RequestMapping("/curtain")
-    public String curtainSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+    public JSONObject curtainSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
             String room, String index, String onOff) throws ParseException {
-        String instruction;
-        String deviceName = "";
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
 
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
-            return "FAIL";
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
         }
 
-        IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            return "TOKEN_EXPIRED";
-        }
+        String instruction;
+        String deviceName = "";
 
         HashMap<String, String> map = new HashMap<>();
         map.put("type", "curtain");
@@ -76,12 +81,17 @@ public class CurtainController {
         igrsOperate.setTime(time);
         instruction = onOff.equals("1") ? "开关打开" : "开关关闭";
         igrsOperate.setInstruction(instruction);
-        igrsOperate.setUser("admin");
+        IgrsUser igrsUser = igrsTokenService.getUserByToken(token);
+        if (igrsUser != null) {
+            igrsOperate.setUser(igrsUser.getId());
+        }
         igrsOperate.setRoom(room);
         igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
-        return "SUCCESS";
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
     }
 
     @Autowired

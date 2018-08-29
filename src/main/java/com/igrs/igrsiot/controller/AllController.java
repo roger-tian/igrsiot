@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.IgrsDeviceStatus;
 import com.igrs.igrsiot.model.IgrsOperate;
 import com.igrs.igrsiot.model.IgrsToken;
+import com.igrs.igrsiot.model.IgrsUser;
 import com.igrs.igrsiot.service.*;
 import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import org.slf4j.Logger;
@@ -23,26 +24,31 @@ import java.util.List;
 @RequestMapping("/control")
 public class AllController {
     @RequestMapping("/all")
-    public String allSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+    public JSONObject allSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
             String room, String onOff) throws ParseException {
-        String cmd;
-        String instruction;
-
-        if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
-            return "FAIL";
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
         }
 
-        IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            return "TOKEN_EXPIRED";
+        if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
         }
 
         List<HashMap<String, String>> list = igrsDeviceService.getDetailByRoom(room);
         logger.debug("list: {}", list);
         JSONObject jsonObject;
         if (list.size() == 0) {
-            return "FAIL";
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
         }
+
+        String cmd;
+        String instruction;
 
         for (int i=0; i<list.size(); i++) {
             jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
@@ -92,12 +98,17 @@ public class AllController {
         igrsOperate.setTime(time);
         instruction = onOff.equals("1") ? "总开关打开" : "总开关关闭";
         igrsOperate.setInstruction(instruction);
-        igrsOperate.setUser("admin");
+        IgrsUser igrsUser = igrsTokenService.getUserByToken(token);
+        if (igrsUser != null) {
+            igrsOperate.setUser(igrsUser.getId());
+        }
         igrsOperate.setRoom(room);
         igrsOperate.setDevice("总开关");
         igrsOperateService.insert(igrsOperate);
 
-        return "SUCCESS";
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
     }
 
     @Autowired

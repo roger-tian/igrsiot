@@ -2,10 +2,7 @@ package com.igrs.igrsiot.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.igrs.igrsiot.model.IgrsDevice;
-import com.igrs.igrsiot.model.IgrsDeviceStatus;
-import com.igrs.igrsiot.model.IgrsOperate;
-import com.igrs.igrsiot.model.IgrsToken;
+import com.igrs.igrsiot.model.*;
 import com.igrs.igrsiot.service.*;
 import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import com.igrs.igrsiot.utils.HttpRequest;
@@ -26,15 +23,18 @@ import java.util.List;
 @RequestMapping("/control")
 public class PurifierController {
     @RequestMapping("/purifier/control")
-    public String sendPurifierControl(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+    public JSONObject sendPurifierControl(@RequestHeader(value="igrs-token", defaultValue = "") String token,
             HttpServletRequest request) throws ParseException {
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
         String param;
         String instruction;
-
-        IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            return "TOKEN_EXPIRED";
-        }
 
         String room = request.getParameter("room");
         String index = request.getParameter("index");
@@ -51,22 +51,17 @@ public class PurifierController {
 
         String result = HttpRequest.sendPost(url, param);
         if (!result.equals("")) {
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("type", "purifier");
-//            jsonObject.put("index", "0");
-//            jsonObject.put("attribute", "switch");
-//            jsonObject.put("value", "1");
-//            jsonObject.put("room", room);
-//            IgrsWebSocketService.sendAllMessage(jsonObject.toString());
-
             String str = result.substring(result.indexOf("pw::"));
-            purifierDataHandler(room, index, str);
+            jsonResult = purifierDataHandler(room, index, str);
 
             igrsTokenService.updateExpired(igrsToken);
 
             IgrsOperate igrsOperate = new IgrsOperate();
             igrsOperate.setRoom(room);
-            igrsOperate.setUser("admin");
+            IgrsUser igrsUser = igrsTokenService.getUserByToken(token);
+            if (igrsUser != null) {
+                igrsOperate.setUser(igrsUser.getId());
+            }
             igrsOperate.setDevice("智能净化器");
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String time = df.format(new Date());
@@ -80,15 +75,20 @@ public class PurifierController {
             igrsOperateService.insert(igrsOperate);
         }
 
-        return result;
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
     }
 
     @RequestMapping("/purifier/query")
-    public String sendPurifierQuery(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+    public JSONObject sendPurifierQuery(@RequestHeader(value="igrs-token", defaultValue = "") String token,
             HttpServletRequest request) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            return "TOKEN_EXPIRED";
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
         }
 
         String room = request.getParameter("room");
@@ -100,7 +100,7 @@ public class PurifierController {
         String result = HttpRequest.sendPost(url, param);
         if (!result.equals("")) {
             String str = result.substring(result.indexOf("pw::"));
-            purifierDataHandler(room, "0", str);
+            jsonResult = purifierDataHandler(room, "0", str);
 
             igrsTokenService.updateExpired(igrsToken);
 
@@ -109,12 +109,13 @@ public class PurifierController {
             IgrsWebSocketService.sendAllMessage(msg);
         }
 
-        return result;
+        return jsonResult;
     }
 
-    private String purifierDataHandler(String room, String index, String data) {
+    private JSONObject purifierDataHandler(String room, String index, String data) {
         String deviceName = "";
         String pw = "", lc, sl, mo, io, uv, ti, fa = "";
+        JSONObject jsonResult = new JSONObject();
         JSONArray arrayList = new JSONArray();
 
         IgrsDevice igrsDevice = new IgrsDevice();
@@ -122,7 +123,7 @@ public class PurifierController {
         igrsDevice.setRoom(room);
         List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
         if (list == null) {
-            return null;
+            return jsonResult;
         }
 
         deviceName = list.get(0).getName();
@@ -248,18 +249,17 @@ public class PurifierController {
             }
         }
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "purifier");
-        jsonObject.put("attribute", "switch");
-        jsonObject.put("value", pw);
-        jsonObject.put("mod", arrayList.toArray());
-        jsonObject.put("windSpeed", Integer.parseInt(fa));
-        jsonObject.put("room", room);
-        jsonObject.put("index", index);
-        logger.debug("jsonObject: {}, mod: {}", jsonObject, arrayList.toString());
-        IgrsWebSocketService.sendAllMessage(jsonObject.toString());
+        jsonResult.put("type", "purifier");
+        jsonResult.put("attribute", "switch");
+        jsonResult.put("value", pw);
+        jsonResult.put("mod", arrayList.toArray());
+        jsonResult.put("windSpeed", Integer.parseInt(fa));
+        jsonResult.put("room", room);
+        jsonResult.put("index", index);
+        logger.debug("jsonObject: {}, mod: {}", jsonResult, arrayList.toString());
+        IgrsWebSocketService.sendAllMessage(jsonResult.toString());
 
-        return "SUCCESS";
+        return jsonResult;
     }
 
     @Autowired

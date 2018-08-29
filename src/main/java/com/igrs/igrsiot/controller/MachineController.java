@@ -1,10 +1,7 @@
 package com.igrs.igrsiot.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.igrs.igrsiot.model.IgrsDevice;
-import com.igrs.igrsiot.model.IgrsDeviceStatus;
-import com.igrs.igrsiot.model.IgrsOperate;
-import com.igrs.igrsiot.model.IgrsToken;
+import com.igrs.igrsiot.model.*;
 import com.igrs.igrsiot.service.*;
 import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import com.igrs.igrsiot.utils.CmdAnalyze;
@@ -24,19 +21,23 @@ import java.util.HashMap;
 @RequestMapping("/control")
 public class MachineController {
     @RequestMapping("/machine")
-    public String machineSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+    public JSONObject machineSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
             String room, String index, String onOff) throws ParseException {
-        String instruction;
-        String deviceName = "";
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
 
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
-            return "FAIL";
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
         }
 
-        IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            return "TOKEN_EXPIRED";
-        }
+        String instruction;
+        String deviceName = "";
 
         IgrsDevice igrsDevice = new IgrsDevice();
         igrsDevice.setType("machine");
@@ -100,28 +101,37 @@ public class MachineController {
         igrsOperate.setTime(time);
         instruction = onOff.equals("1") ? "开关打开" : "开关关闭";
         igrsOperate.setInstruction(instruction);
-        igrsOperate.setUser("admin");
+        IgrsUser igrsUser = igrsTokenService.getUserByToken(token);
+        if (igrsUser != null) {
+            igrsOperate.setUser(igrsUser.getId());
+        }
         igrsOperate.setRoom(room);
         igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
-        return "SUCCESS";
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
     }
 
     @RequestMapping("/machineSig")
-    public String machineSigSource(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+    public JSONObject machineSigSource(@RequestHeader(value="igrs-token", defaultValue = "") String token,
             String room, String index, String sigSource) throws ParseException {
-        String instruction;
-        String deviceName = "";
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
 
         if (sigSource == null) {
-            return "FAIL";
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
         }
 
-        IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            return "TOKEN_EXPIRED";
-        }
+        String instruction;
+        String deviceName = "";
 
         HashMap<String, String> map = new HashMap<>();
         map.put("type", "machine");
@@ -178,28 +188,37 @@ public class MachineController {
             instruction = "";
         }
         igrsOperate.setInstruction(instruction);
-        igrsOperate.setUser("admin");
+        IgrsUser igrsUser = igrsTokenService.getUserByToken(token);
+        if (igrsUser != null) {
+            igrsOperate.setUser(igrsUser.getId());
+        }
         igrsOperate.setRoom(room);
         igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
-        return "SUCCESS";
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
     }
 
     @RequestMapping("/machineVol")
-    public String machineVolume(@RequestHeader(value="igrs-token", defaultValue = "") String token,
+    public JSONObject machineVolume(@RequestHeader(value="igrs-token", defaultValue = "") String token,
             String room, String index, String volume) throws ParseException {
-        String instruction;
-        String deviceName = "";
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
 
         if (volume == null) {
-            return "FAIL";
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
         }
 
-        IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        if ((igrsToken == null) || IgrsTokenServiceImpl.isTokenExpired(igrsToken)) {
-            return "TOKEN_EXPIRED";
-        }
+        String instruction;
+        String deviceName = "";
 
         HashMap<String, String> map = new HashMap<>();
         map.put("type", "machine");
@@ -261,12 +280,17 @@ public class MachineController {
         igrsOperate.setTime(time);
         instruction = volume.equals("1") ? "音量增加" : "音量减少";
         igrsOperate.setInstruction(instruction);
-        igrsOperate.setUser("admin");
+        IgrsUser igrsUser = igrsTokenService.getUserByToken(token);
+        if (igrsUser != null) {
+            igrsOperate.setUser(igrsUser.getId());
+        }
         igrsOperate.setRoom(room);
         igrsOperate.setDevice(deviceName);
         igrsOperateService.insert(igrsOperate);
 
-        return "SUCCESS";
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
     }
 
     @Autowired

@@ -16,6 +16,10 @@
     SELECT * FROM igrs_token WHERE user = (select id from igrs_user where user = #{user})
   </select>
 
+  <select id="getUserByToken" resultType="IgrsUser" parameterType="String">
+    SELECT u.* FROM igrs_user u, igrs_token t WHERE u.id = t.user and t.token = #{token}
+  </select>
+
   <select id="getByToken" resultMap="BaseResultMap" parameterType="String">
     SELECT * FROM igrs_token WHERE token = #{token}
   </select>

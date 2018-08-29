@@ -18,6 +18,10 @@
     select * from igrs_operate where room=#{room} order by time desc
   </select>
 
+  <select id="getOperatesByRoomUser" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsOperate">
+    select * from igrs_operate where room=#{room} and user=#{user} order by time desc
+  </select>
+
   <insert id="insert" parameterType="com.igrs.igrsiot.model.IgrsOperate" >
     insert into igrs_operate(time, instruction, device, user, room) values(#{time}, #{instruction}, #{device}, #{user}, #{room})
   </insert>

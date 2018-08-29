@@ -25,11 +25,11 @@ public class IgrsOperate {
         this.instruction = instruction == null ? null : instruction.trim();
     }
 
-    public String getUser() {
+    public Long getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(Long user) {
         this.user = user;
     }
 
@@ -49,19 +49,19 @@ public class IgrsOperate {
         this.device = device;
     }
 
-    public String getTotalPage() {
-        return totalPage;
-    }
-
-    public void setTotalPage(String totalPage) {
-        this.totalPage = totalPage;
-    }
+//    public String getTotalPage() {
+//        return totalPage;
+//    }
+//
+//    public void setTotalPage(String totalPage) {
+//        this.totalPage = totalPage;
+//    }
 
     private Long id;
     private String time;
     private String instruction;
-    private String user;
+    private Long user;
     private String room;
     private String device;
-    private String totalPage;
+//    private String totalPage;
 }

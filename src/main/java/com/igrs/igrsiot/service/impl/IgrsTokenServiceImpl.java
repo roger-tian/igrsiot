@@ -3,6 +3,7 @@ package com.igrs.igrsiot.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.dao.IIgrsTokenDao;
 import com.igrs.igrsiot.model.IgrsToken;
+import com.igrs.igrsiot.model.IgrsUser;
 import com.igrs.igrsiot.service.IIgrsTokenService;
 import com.igrs.igrsiot.utils.MD5;
 import org.slf4j.Logger;
@@ -19,6 +20,11 @@ public class IgrsTokenServiceImpl implements IIgrsTokenService {
     @Override
     public IgrsToken getTokenByUser(String user) {
         return igrsTokenDao.getTokenByUser(user);
+    }
+
+    @Override
+    public IgrsUser getUserByToken(String token) {
+        return igrsTokenDao.getUserByToken(token);
     }
 
     @Override

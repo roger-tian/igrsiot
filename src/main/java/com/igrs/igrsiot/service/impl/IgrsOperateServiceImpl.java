@@ -16,6 +16,11 @@ public class IgrsOperateServiceImpl implements IIgrsOperateService {
     }
 
     @Override
+    public List<IgrsOperate> getOperatesByRoomUser(IgrsOperate igrsOperate) {
+        return igrsOperateDao.getOperatesByRoomUser(igrsOperate);
+    }
+
+    @Override
     public int insert(IgrsOperate igrsOperate) {
         return igrsOperateDao.insert(igrsOperate);
     }

@@ -29,7 +29,7 @@
   </select>
 
   <select id="getNormalUsersByUser" resultType="IgrsUser" parameterType="String">
-    select * from igrs_user where role != 'admin' and user = #{user}
+    select * from igrs_user where role != 'admin' and user like #{user}
   </select>
 
   <select id="getUserRooms" resultType="IgrsRoom" parameterType="com.igrs.igrsiot.model.IgrsUser">

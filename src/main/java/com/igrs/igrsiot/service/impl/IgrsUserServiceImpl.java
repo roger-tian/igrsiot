@@ -30,7 +30,7 @@ public class IgrsUserServiceImpl implements IIgrsUserService {
 
     @Override
     public List<IgrsUser> getNormalUsersByUser(String userName) {
-        return igrsUserDao.getNormalUsersByUser(userName);
+        return igrsUserDao.getNormalUsersByUser("%" + userName + "%");
     }
 
     @Override

@@ -57,7 +57,7 @@ public class MachineController {
             if (jsonObject.getString("ctype").equals("0")) {
                 SocketService.cmdSend(jsonObject.getString("cip"), cmd);
             } else {
-                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("ctype"), cmd);
+                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("type"), jsonObject.getString("ctype"), cmd);
                 logger.debug("{}-{}", cmd, c);
                 SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
@@ -146,7 +146,7 @@ public class MachineController {
             if (jsonObject.getString("ctype").equals("0")) {
                 SocketService.cmdSend(jsonObject.getString("cip"), cmd);
             } else {
-                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("ctype"), cmd);
+                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("type"), jsonObject.getString("ctype"), cmd);
                 SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
         }
@@ -233,7 +233,7 @@ public class MachineController {
             if (jsonObject.getString("ctype").equals("0")) {
                 SocketService.cmdSend(jsonObject.getString("cip"), cmd);
             } else {
-                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("ctype"), cmd);
+                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("type"), jsonObject.getString("ctype"), cmd);
                 SocketService.cmdSend(jsonObject.getString("cip"), c);
             }
         }

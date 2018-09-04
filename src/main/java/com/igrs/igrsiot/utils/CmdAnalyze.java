@@ -3,13 +3,11 @@ package com.igrs.igrsiot.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-
 public class CmdAnalyze {
-    public static String doAnalyze(String type, char[] data, int len) {
+    public static String doAnalyze(String type, String ctype, char[] data, int len) {
         String result = null;
 
-        switch (type) {
+        switch (ctype) {
             case "0":
                 return result;
             case "1":
@@ -35,33 +33,52 @@ public class CmdAnalyze {
         return result;
     }
 
-    public static char[] doAnalyze(String type, String data) {
-        char[] result = new char[5];
+    public static char[] doAnalyze(String type, String ctype, String data) {
+        char[] result = null;
 
         switch (type) {
-            case "0":
-                return result;
-            case "1":
-                int i;
-                for (i=0; i<cmdSendStr1.length; i++) {
-                    if (cmdSendStr1[i].equals(data)) {
+            case "machine":
+                switch (ctype) {
+                    case "0":   // no need to analyze
+                        return result;
+                    case "1":   // 75 inch machine
                         break;
-                    }
+                    case "2":   // 65 inch capacitance machine
+                        break;
+                    default:
+                        break;
                 }
-                if (i == cmdSendStr1.length) {
-                    break;
-                }
-
-                result = cmdSendChar1[i];
-                if ((result[0] == 0x55) && (result[1] == 0x00) && (result[2] == 0xAA) && (result[3] == 0x3A)) { //set volume level
-                    // todo
-                }
-                break;
-            case "2":
                 break;
             default:
-                return result;
+                break;
         }
+//
+//        char[] result = new char[5];
+//
+//        switch (type) {
+//            case "0":
+//                return result;
+//            case "1":
+//                int i;
+//                for (i=0; i<cmdSendStr1.length; i++) {
+//                    if (cmdSendStr1[i].equals(data)) {
+//                        break;
+//                    }
+//                }
+//                if (i == cmdSendStr1.length) {
+//                    break;
+//                }
+//
+//                result = cmdSendChar1[i];
+//                if ((result[0] == 0x55) && (result[1] == 0x00) && (result[2] == 0xAA) && (result[3] == 0x3A)) { //set volume level
+//                    // todo
+//                }
+//                break;
+//            case "2":
+//                break;
+//            default:
+//                return result;
+//        }
 
         return result;
     }

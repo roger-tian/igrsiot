@@ -2,6 +2,7 @@ package com.igrs.igrsiot.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.igrs.igrsiot.utils.CmdAnalyze;
 import com.igrs.igrsiot.utils.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
@@ -60,7 +62,8 @@ public class SocketService implements ServletContextListener {
 
                                     sk.interestOps(SelectionKey.OP_READ);
 
-                                    final String buf = content;
+                                    final String data = content;
+                                    String buf = data;
                                     new Thread(() -> {
                                         String remoteAddress = null;
                                         try {
@@ -71,11 +74,17 @@ public class SocketService implements ServletContextListener {
 
                                         JSONObject device;
                                         String cip;
+                                        String ctype;
                                         for (int i=0; i<deviceList.size(); i++) {
                                             device = (JSONObject) deviceList.get(i);
                                             cip = device.getString("cip");
-                                            if ((cip.length()!=0) && (remoteAddress.contains(cip))) {
-                                                logger.debug("rip: {}, cip: {}", remoteAddress, device.getString("cip"));
+                                            ctype = device.getString("ctype");
+                                            if ((cip.length()!=0) && remoteAddress.contains(cip)) {
+                                                if ((ctype.length()!=0 && !ctype.equals("0"))) {
+//                                                    buf = CmdAnalyze.doAnalyze(device, data);
+                                                    CmdAnalyze.decode(device, buf, data);
+                                                }
+                                                logger.debug("rip: {}, cip: {}", remoteAddress, cip);
                                                 String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
                                                 String param = "room=" + device.getString("room") + "&" +
                                                         "cip=" + cip + "&" + "buf=" + buf;
@@ -142,7 +151,7 @@ public class SocketService implements ServletContextListener {
         return 0;
     }
 
-    public static int cmdSend(String cip, char[] buf) {
+    public static int cmdSend(String cip, byte[] buf) {
         try {
             for (SelectionKey key : selector.keys()) {
                 Channel targetChannel = key.channel();
@@ -151,7 +160,7 @@ public class SocketService implements ServletContextListener {
                     String remoteAddress = String.valueOf(dest.getRemoteAddress());
                     if (remoteAddress.contains(cip)) {
                         logger.debug("send command {} to {}", buf, cip);
-                        dest.write(charset.encode(buf.toString()));
+                        dest.write(charset.encode(String.valueOf(buf)));
                     }
                 }
             }
@@ -164,7 +173,7 @@ public class SocketService implements ServletContextListener {
     }
 
     @Override
-    public  void contextInitialized(ServletContextEvent sce) {
+    public void contextInitialized(ServletContextEvent sce) {
         // TODO Auto-generated method stub
         try {
             socketThread thread = new socketThread();
@@ -181,6 +190,23 @@ public class SocketService implements ServletContextListener {
                     //url = "http://localhost:8080/igrsiot/control/purifier/query";
                     //param = "deviceId=" + "#lemx500s#78b3b912418f";
                     //HttpRequest.sendPost(url, param);
+
+                    JSONObject device;
+                    String cip;
+                    String type;
+                    for (int i=0; i<deviceList.size(); i++) {
+                        device = (JSONObject) deviceList.get(i);
+                        cip = device.getString("cip");
+                        type = device.getString("type");
+                        if ((cip.length()!=0) && type.equals("machine")) {
+                            try {
+                                String strCmd = CmdAnalyze.encode(device, "query", "");
+                                cmdSend(cip, strCmd);
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
 
                     Calendar cl = Calendar.getInstance();
                     int hour = cl.get(Calendar.HOUR_OF_DAY);
@@ -203,7 +229,7 @@ public class SocketService implements ServletContextListener {
                         HttpRequest.sendPost(url, param);
                     }
                 }
-            }, 10000, 30000);
+            }, 10000, 10000);
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -216,6 +242,7 @@ public class SocketService implements ServletContextListener {
     }
 
     private static Charset charset = Charset.forName("UTF-8");
+//    private static Charset charset = Charset.forName("ISO_8859_1");
     private ServerSocketChannel server;
     private static Selector selector;
     private SocketChannel sc;

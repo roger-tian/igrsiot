@@ -1,49 +1,158 @@
 package com.igrs.igrsiot.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.codec.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+
 public class CmdAnalyze {
-    public static String doAnalyze(String type, String ctype, char[] data, int len) {
-        String result = null;
-
-        switch (ctype) {
-            case "0":
-                return result;
-            case "1":
-                int i;
-                for (i=0; i<cmdRecvChar1.length; i++) {
-                    if (data.equals(cmdRecvChar1[i])) {
-                        break;
-                    }
-                }
-                if (i == cmdSendStr1.length) {
-                    break;
-                }
-
-                result = cmdRecvStr1[i];
-                if ((data[0] == 0x00) && (data[1] == 55) && (data[2] == 0xAA) && (data[3] == 0x3A)) { //set volume level
-                    // todo
-                }
-                break;
-            default:
-                return result;
-        }
-
-        return result;
-    }
-
-    public static char[] doAnalyze(String type, String ctype, String data) {
-        char[] result = null;
+    public static String decode(JSONObject jsonObject, String result, String data) {
+        String type = jsonObject.getString("type");
+        String ctype = jsonObject.getString("ctype");
+        String cchannel = jsonObject.getString("cchannel");
 
         switch (type) {
             case "machine":
                 switch (ctype) {
                     case "0":   // no need to analyze
-                        return result;
+                        break;
+                    case "1":
+                        break;
+                    case "2":
+                        byte[] cmd = {(byte) 0x99, 0x23, 0x01, 0x11, 0x2e, 0x01, 0x40, (byte) 0xaa};    // power off
+                        byte[] cmd1 = {(byte) 0x99, 0x23, 0x02, 0x11, 0x2e, 0x01, 0x40, (byte) 0xaa};   // power on
+                        if (cmd.toString().equals(data)) {
+                            result = "{ch_" + cchannel + ":" + "0" + "}";
+                        } else if (cmd1.toString().equals(data)) {
+                            result = "{ch_" + cchannel + ":" + "1" + "}";
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            default:
+                break;
+        }
+
+        return result;
+    }
+
+    public static String encode(JSONObject jsonObject, String command, String param) throws UnsupportedEncodingException {
+        String result = null;
+        String type = jsonObject.getString("type");
+        String ctype = jsonObject.getString("ctype");
+
+        switch (type) {
+            case "machine":
+                switch (ctype) {
+                    case "0":   //
+                        result = "{ch_" + jsonObject.getString("cchannel") + ":" + param + "}";
+                        break;
                     case "1":   // 75 inch machine
+                        switch (command) {
+                            case "swtich":
+                                if (param.equals("0")) {    // power off
+                                    byte[] cmd = {(byte) 0x99, 0x23, (byte) 0x80, 0x01, (byte) 0x7f, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("1")) { // power on
+                                    byte[] cmd = {(byte) 0x55, 0x00, (byte) 0xff, 0x46, (byte) 0xd3};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            case "sigSource":
+                                if (param.equals("1")) {    // home
+                                    // todo
+                                    byte[] cmd = {0x55, 0x00, (byte) 0xff, 0x15, (byte) 0xea};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("2")) { // hdmi1
+                                    byte[] cmd = {0x55, 0x00, (byte) 0xff, 0x11, (byte) 0xe6};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("3")) { // hdmi2
+                                    byte[] cmd = {0x55, 0x00, (byte) 0xff, 0x09, (byte) 0xde};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("4")) { // computer
+                                    // todo
+                                    byte[] cmd = {0x55, 0x00, (byte) 0xff, 0x00, (byte) 0xad};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            case "volume":
+                                if (param.equals("0")) {    // decrease volume
+                                    byte[] cmd = {0x55, 0x00, (byte) 0xaa, 0x28, (byte) 0xa7};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("1")) { // increase volume
+                                    byte[] cmd = {0x55, 0x00, (byte) 0xaa, 0x00, 0x63};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            case "query":
+                                {
+                                    byte[] cmd = {0x55, 0x00, (byte) 0xff, 0x46, (byte) 0xc7};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                         break;
                     case "2":   // 65 inch capacitance machine
+                        switch (command) {
+                            case "switch":
+                                if (param.equals("0")) {    // power off
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x00, 0x01, (byte) 0xff, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("1")) {    // power on
+                                    byte[] cmd = {(byte) 0x99, 0x23, (byte) 0x80, 0x01, 0x7f, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            case "sigSource":
+                                if (param.equals("1")) {    // home
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x00, 0x01, (byte) 0xff, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("2")) { // hdmi1
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x0e, 0x01, (byte) 0xf1, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("3")) { // hdmi2
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x0f, 0x01, (byte) 0xf0, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("4")) { // computer
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x00, 0x01, (byte) 0xff, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            case "volume":
+                                if (param.equals("0")) {    // decrease volume
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x18, 0x01, (byte) 0xe7, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("1")) { // increase volume
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x17, 0x01, (byte) 0xe8, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            case "mute":
+                                {
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x02, 0x01, (byte) 0xfd, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            case "query":
+                                {
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x28, 0x01, (byte) 0xd7, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            case "menu":
+                                {
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x12, 0x01, (byte) 0xed, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                         break;
                     default:
                         break;
@@ -52,83 +161,9 @@ public class CmdAnalyze {
             default:
                 break;
         }
-//
-//        char[] result = new char[5];
-//
-//        switch (type) {
-//            case "0":
-//                return result;
-//            case "1":
-//                int i;
-//                for (i=0; i<cmdSendStr1.length; i++) {
-//                    if (cmdSendStr1[i].equals(data)) {
-//                        break;
-//                    }
-//                }
-//                if (i == cmdSendStr1.length) {
-//                    break;
-//                }
-//
-//                result = cmdSendChar1[i];
-//                if ((result[0] == 0x55) && (result[1] == 0x00) && (result[2] == 0xAA) && (result[3] == 0x3A)) { //set volume level
-//                    // todo
-//                }
-//                break;
-//            case "2":
-//                break;
-//            default:
-//                return result;
-//        }
 
         return result;
     }
-
-    private static char[][] cmdSendChar1 = {{0x55, 0x00, 0xEE, 0x50, 0xD1}, {0x55, 0x00, 0xEE, 0x00, 0xD5},
-            {0x55, 0x00, 0xEE, 0x01, 0x56}, {0x55, 0x00, 0xEE, 0x02, 0x57}, {0x55, 0x00, 0xEE, 0x03, 0x58},
-            {0x55, 0x00, 0xEE, 0x04, 0x59}, {0x55, 0x00, 0xEE, 0x00, 0x55}, {0x55, 0x00, 0xEE, 0x01, 0x69},
-            {0x55, 0x00, 0xEE, 0x00, 0x6B}, {0x55, 0x00, 0xAA, 0x00, 0x6F}, {0x55, 0x00, 0xEE, 0x0A, 0x89},
-            {0x55, 0x00, 0xEE, 0x14, 0x93}, {0x55, 0x00, 0xEE, 0x1E, 0x9D}, {0x55, 0x00, 0xAA, 0x28, 0xA7},
-            {0x55, 0x00, 0xAA, 0x00, 0x63}, {0x55, 0x00, 0xEE, 0x26, 0x34}, {0x55, 0x00, 0xEE, 0x00, 0x5F},
-            {0x55, 0x00, 0xFF, 0x11, 0xe6}, {0x55, 0x00, 0xFF, 0x09, 0xDE}, {0x55, 0x00, 0xff, 0x15, 0xEA},
-            {0x55, 0x00, 0xFF, 0x08, 0xDD}, {0x55, 0x00, 0xFF, 0x00, 0xAD}, {0x55, 0x00, 0xff, 0x04, 0xD9},
-            {0x55, 0x00, 0xFF, 0x0C, 0xE1}, {0x55, 0x00, 0xFF, 0x0A, 0x8B}, {0x55, 0x00, 0xFF, 0x0A, 0x8B},
-            {0x55, 0x00, 0xFF, 0x0A, 0x8B}, {0x55, 0x00, 0xFF, 0x0A, 0x8B}, {0x55, 0x00, 0xFF, 0x0A, 0x8B},
-            {0x55, 0x00, 0xFF, 0x0A, 0x8B}, {0x55, 0x00, 0xFF, 0x0A, 0x8B}, {0x55, 0x00, 0xFF, 0x0A, 0x8B},
-            {0x55, 0x00, 0xAA, 0x14, 0x95}, {0x55, 0x00, 0xFF, 0x1E, 0x9F}, {0x55, 0x00, 0xFF, 0x1E, 0x9F},
-            {0x55, 0x00, 0xFF, 0x1E, 0x9F}, {0x55, 0x00, 0xFF, 0x1E, 0x9F}, {0x55, 0x00, 0xAA, 0x28, 0xA7},
-            {0x55, 0x00, 0xAA, 0x00, 0x63}, {0x55, 0x00, 0xAA, 0x3A, 0x00}, {0x55, 0x00, 0xFF, 0x00, 0xFF},
-            {0x55, 0x00, 0xFF, 0x00, 0xE3}, {0x55, 0x00, 0xFF, 0x46, 0xC7}, {0x55, 0x00, 0xFF, 0x46, 0xC7},
-            {0x55, 0x00, 0xFF, 0x46, 0x88}, {0x55, 0x00, 0xFF, 0x46, 0xD3}, {0x99, 0x23, 0x80, 0x01, 0x7F}};
-    private static String[] cmdSendStr1 = {"{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_10:1}"};
-    private static char[] cmdRecvChar1[] = {{0x00, 0x55, 0xEE, 0x50, 0xD1}, {0x00, 0x55, 0xEE, 0x00, 0xD5},
-            {0x00, 0x55, 0xEE, 0x01, 0x56}, {0x00, 0x55, 0xEE, 0x02, 0x57}, {0x00, 0x55, 0xEE, 0x03, 0x58},
-            {0x00, 0x55, 0xEE, 0x04, 0x59}, {0x00, 0x55, 0xEE, 0x00, 0x55}, {0x00, 0x55, 0xEE, 0x00, 0x69},
-            {0x00, 0x55, 0xEE, 0x00, 0x6B}, {0x00, 0x55, 0xAA, 0x00, 0x6F}, {0x00, 0x55, 0xEE, 0x0A, 0x89},
-            {0x00, 0x55, 0xEE, 0x14, 0x93}, {0x00, 0x55, 0xEE, 0x1E, 0x9D}, {0x00, 0x55, 0xAA, 0x28, 0xA7},
-            {0x00, 0x55, 0xAA, 0x00, 0x63}, {0x00, 0x55, 0xEE, 0x26, 0x34}, {0x00, 0x55, 0xEE, 0x00, 0x5F},
-            {0x00, 0x55, 0xFF, 0x11, 0xE6}, {0x00, 0x55, 0xFF, 0x09, 0xDE}, {0x00, 0x55, 0xFF, 0x15, 0xEA},
-            {0x00, 0x55, 0xFF, 0x08, 0xDD}, {0x00, 0x55, 0xFF, 0x00, 0xAD}, {0x00, 0x55, 0xFF, 0x04, 0xD9},
-            {0x00, 0x55, 0xFF, 0x0C, 0xE1}, {0x00, 0x55, 0xFF, 0x11, 0xE6}, {0x00, 0x55, 0xFF, 0x09, 0xDE},
-            {0x00, 0x55, 0xFF, 0x15, 0xEA}, {0x00, 0x55, 0xFF, 0x08, 0xDD}, {0x00, 0x55, 0xFF, 0x00, 0xAD},
-            {0x00, 0x55, 0xFF, 0x04, 0xD9}, {0x00, 0x55, 0xFF, 0x0C, 0xE1}, {0x00, 0x55, 0xFF, 0x0F, 0xE4},
-            {0x00, 0x55, 0xAA, 0x3A, 0x00}, {0x00, 0x55, 0xFF, 0x1E, 0x9F}, {0x00, 0x55, 0xFF, 0x1E, 0x8F},
-            {0x00, 0x55, 0xFF, 0x1E, 0x7F}, {0x00, 0x55, 0xFF, 0x1E, 0x6F}, {0x00, 0x55, 0xAA, 0x28, 0xA7},
-            {0x00, 0x55, 0xAA, 0x00, 0x63}, {0x00, 0x55, 0xAA, 0x3A, 0x00}, {0x00, 0x55, 0xFF, 0x00, 0xFF},
-            {0x00, 0x55, 0xFF, 0x00, 0xE3}, {0x00, 0x55, 0xFF, 0x00, 0xFF}, {0x00, 0x55, 0xFF, 0x00, 0xE3},
-            {0x00, 0x55, 0xFF, 0x46, 0x88}, {0x00, 0x55, 0xFF, 0x46, 0xD3}, {0xAA}};
-    private static String cmdRecvStr1[] = {"{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}",
-            "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_xx:x}", "{ch_10:1}"};
 
     private static final Logger logger = LoggerFactory.getLogger(CmdAnalyze.class);
 }

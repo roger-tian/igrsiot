@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,7 +24,7 @@ import java.util.HashMap;
 public class MachineController {
     @RequestMapping("/machine")
     public JSONObject machineSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
-            String room, String index, String onOff) throws ParseException {
+            String room, String index, String onOff) throws ParseException, UnsupportedEncodingException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -52,15 +54,10 @@ public class MachineController {
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
         logger.debug("jsonObject: {}", jsonObject);
         if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
-            deviceName = jsonObject.getString("name");
-            String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
-            if (jsonObject.getString("ctype").equals("0")) {
-                SocketService.cmdSend(jsonObject.getString("cip"), cmd);
-            } else {
-                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("type"), jsonObject.getString("ctype"), cmd);
-                logger.debug("{}-{}", cmd, c);
-                SocketService.cmdSend(jsonObject.getString("cip"), c);
-            }
+            String strCmd = CmdAnalyze.encode(jsonObject, "switch", onOff);
+            Charset charset = Charset.forName("UTF-8");
+            logger.debug("---------------{}-------------", charset.encode(strCmd));
+            SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
 
         igrsTokenService.updateExpired(igrsToken);
@@ -116,7 +113,7 @@ public class MachineController {
 
     @RequestMapping("/machineSig")
     public JSONObject machineSigSource(@RequestHeader(value="igrs-token", defaultValue = "") String token,
-            String room, String index, String sigSource) throws ParseException {
+            String room, String index, String sigSource) throws ParseException, UnsupportedEncodingException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -141,14 +138,8 @@ public class MachineController {
         HashMap<String, String> result = igrsDeviceStatusService.getByRoomTypeIndexAttr(map);
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
         if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
-            deviceName = jsonObject.getString("name");
-            String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + sigSource + "}";
-            if (jsonObject.getString("ctype").equals("0")) {
-                SocketService.cmdSend(jsonObject.getString("cip"), cmd);
-            } else {
-                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("type"), jsonObject.getString("ctype"), cmd);
-                SocketService.cmdSend(jsonObject.getString("cip"), c);
-            }
+            String strCmd = CmdAnalyze.encode(jsonObject, "switch", sigSource);
+            SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
 
         igrsTokenService.updateExpired(igrsToken);
@@ -203,7 +194,7 @@ public class MachineController {
 
     @RequestMapping("/machineVol")
     public JSONObject machineVolume(@RequestHeader(value="igrs-token", defaultValue = "") String token,
-            String room, String index, String volume) throws ParseException {
+            String room, String index, String volume) throws ParseException, UnsupportedEncodingException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -228,14 +219,8 @@ public class MachineController {
         HashMap<String, String> result = igrsDeviceStatusService.getByRoomTypeIndexAttr(map);
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
         if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
-            deviceName = jsonObject.getString("name");
-            String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + volume + "}";
-            if (jsonObject.getString("ctype").equals("0")) {
-                SocketService.cmdSend(jsonObject.getString("cip"), cmd);
-            } else {
-                char[] c = CmdAnalyze.doAnalyze(jsonObject.getString("type"), jsonObject.getString("ctype"), cmd);
-                SocketService.cmdSend(jsonObject.getString("cip"), c);
-            }
+            String strCmd = CmdAnalyze.encode(jsonObject, "switch", volume);
+            SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
 
         igrsTokenService.updateExpired(igrsToken);

@@ -81,7 +81,6 @@ public class SocketService implements ServletContextListener {
                                             ctype = device.getString("ctype");
                                             if ((cip.length()!=0) && remoteAddress.contains(cip)) {
                                                 if ((ctype.length()!=0 && !ctype.equals("0"))) {
-//                                                    buf = CmdAnalyze.doAnalyze(device, data);
                                                     CmdAnalyze.decode(device, buf, data);
                                                 }
                                                 logger.debug("rip: {}, cip: {}", remoteAddress, cip);
@@ -129,7 +128,11 @@ public class SocketService implements ServletContextListener {
     }
 
     public static int cmdSend(String cip, String buf) {
-        logger.debug("cmd: {}", buf);
+        if ((buf == null) || (buf.length() == 0)) {
+            return 1;
+        }
+
+        logger.debug("cmd: {}, cip: {}", buf, cip);
 
         try {
             for (SelectionKey key : selector.keys()) {
@@ -137,6 +140,7 @@ public class SocketService implements ServletContextListener {
                 if (targetChannel instanceof SocketChannel) {
                     SocketChannel dest = (SocketChannel) targetChannel;
                     String remoteAddress = String.valueOf(dest.getRemoteAddress());
+                    logger.debug("remoteAddress: {}", remoteAddress);
                     if (remoteAddress.contains(cip)) {
                         logger.debug("send command {} to {}", buf, cip);
                         dest.write(charset.encode(buf));
@@ -200,8 +204,7 @@ public class SocketService implements ServletContextListener {
                         type = device.getString("type");
                         if ((cip.length()!=0) && type.equals("machine")) {
                             try {
-                                String strCmd = CmdAnalyze.encode(device, "query", "");
-                                cmdSend(cip, strCmd);
+                                String strCmd = CmdAnalyze.encode(device, "query", null);
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -241,8 +244,8 @@ public class SocketService implements ServletContextListener {
 
     }
 
-    private static Charset charset = Charset.forName("UTF-8");
-//    private static Charset charset = Charset.forName("ISO_8859_1");
+//    private static Charset charset = Charset.forName("UTF-8");
+    private static Charset charset = Charset.forName("ISO_8859_1");
     private ServerSocketChannel server;
     private static Selector selector;
     private SocketChannel sc;

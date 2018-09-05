@@ -21,11 +21,9 @@ public class CmdAnalyze {
                     case "1":
                         break;
                     case "2":
-                        byte[] cmd = {(byte) 0x99, 0x23, 0x01, 0x11, 0x2e, 0x01, 0x40, (byte) 0xaa};    // power off
-                        byte[] cmd1 = {(byte) 0x99, 0x23, 0x02, 0x11, 0x2e, 0x01, 0x40, (byte) 0xaa};   // power on
-                        if (cmd.toString().equals(data)) {
-                            result = "{ch_" + cchannel + ":" + "0" + "}";
-                        } else if (cmd1.toString().equals(data)) {
+                        byte[] cmd = {(byte) 0x99, 0x23, 0x01, 0x11, 0x2e, 0x01, 0x40, (byte) 0xaa};
+                        byte[] cmd1 = {(byte) 0x99, 0x23, 0x02, 0x11, 0x2e, 0x01, 0x40, (byte) 0xaa};
+                        if (cmd.toString().equals(data) || cmd1.toString().equals(data)) {
                             result = "{ch_" + cchannel + ":" + "1" + "}";
                         }
                         break;
@@ -43,12 +41,15 @@ public class CmdAnalyze {
         String result = null;
         String type = jsonObject.getString("type");
         String ctype = jsonObject.getString("ctype");
+        String cchannel = jsonObject.getString("cchannel");
 
         switch (type) {
             case "machine":
                 switch (ctype) {
                     case "0":   //
-                        result = "{ch_" + jsonObject.getString("cchannel") + ":" + param + "}";
+                        if ((cchannel.length() != 0) && ((param != null) && (param.length() != 0))) {
+                            result = "{ch_" + jsonObject.getString("cchannel") + ":" + param + "}";
+                        }
                         break;
                     case "1":   // 75 inch machine
                         switch (command) {
@@ -101,7 +102,7 @@ public class CmdAnalyze {
                         switch (command) {
                             case "switch":
                                 if (param.equals("0")) {    // power off
-                                    byte[] cmd = {(byte) 0x99, 0x23, 0x00, 0x01, (byte) 0xff, (byte) 0xaa};
+                                    byte[] cmd = {(byte) 0x99, 0x23, 0x01, 0x01, (byte) 0xfe, (byte) 0xaa};
                                     result = new String(cmd, CharEncoding.ISO_8859_1);
                                 } else if (param.equals("1")) {    // power on
                                     byte[] cmd = {(byte) 0x99, 0x23, (byte) 0x80, 0x01, 0x7f, (byte) 0xaa};

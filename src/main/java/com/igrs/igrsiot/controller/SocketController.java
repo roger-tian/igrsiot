@@ -112,11 +112,9 @@ public class SocketController {
                 obj.put("room", room);
                 IgrsWebSocketService.sendAllMessage(obj.toString());
             }
-        }
-        else if (buf.contains("ch_2:")) {        //device return "ok"
+        } else if (buf.contains("ch_2:")) {        //device return "ok"
 
-        }
-        else if (buf.contains("ch_")) {
+        } else if (buf.contains("ch_")) {
             buf = buf.substring(1, buf.length()-1);
             String[] str = buf.split(",");
             String[] str1;
@@ -187,8 +185,7 @@ public class SocketController {
                     }
                 }
             }
-        }
-        else if (buf.contains("pm25")) {
+        } else if (buf.contains("pm25")) {
             String results[];
             String cells[];
             String pm25 = "";
@@ -260,8 +257,7 @@ public class SocketController {
             obj.put("room", room);
             logger.debug("jsonObject: {}", obj);
             IgrsWebSocketService.sendAllMessage(obj.toString());
-        }
-        else {
+        } else {
 
         }
 

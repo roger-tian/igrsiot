@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,8 +54,6 @@ public class MachineController {
         logger.debug("jsonObject: {}", jsonObject);
         if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
             String strCmd = CmdAnalyze.encode(jsonObject, "switch", onOff);
-            Charset charset = Charset.forName("UTF-8");
-            logger.debug("---------------{}-------------", charset.encode(strCmd));
             SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
 
@@ -138,7 +135,7 @@ public class MachineController {
         HashMap<String, String> result = igrsDeviceStatusService.getByRoomTypeIndexAttr(map);
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
         if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
-            String strCmd = CmdAnalyze.encode(jsonObject, "switch", sigSource);
+            String strCmd = CmdAnalyze.encode(jsonObject, "sigSource", sigSource);
             SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
 
@@ -219,7 +216,7 @@ public class MachineController {
         HashMap<String, String> result = igrsDeviceStatusService.getByRoomTypeIndexAttr(map);
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
         if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
-            String strCmd = CmdAnalyze.encode(jsonObject, "switch", volume);
+            String strCmd = CmdAnalyze.encode(jsonObject, "volume", volume);
             SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
 

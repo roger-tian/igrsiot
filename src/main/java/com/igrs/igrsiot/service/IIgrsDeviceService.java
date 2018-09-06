@@ -8,9 +8,13 @@ import java.util.List;
 public interface IIgrsDeviceService {
     List<IgrsDevice> getAllDevices();
 
+    IgrsDevice getDeviceById(Long id);
+
     List<IgrsDevice> getDevicesByRoom(String room);
 
     List<String> getTypesByRoom(String room);
+
+    List<String> getAllTypes();
 
     List<HashMap<String, String>> getDeviceDetail();
 

@@ -17,6 +17,11 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     }
 
     @Override
+    public IgrsDevice getDeviceById(Long id) {
+        return igrsDeviceDao.getDeviceById(id);
+    }
+
+    @Override
     public List<IgrsDevice> getDevicesByRoom(String room) {
         return igrsDeviceDao.getDevicesByRoom(room);
     }
@@ -24,6 +29,11 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     @Override
     public List<String> getTypesByRoom(String room) {
         return igrsDeviceDao.getTypesByRoom(room);
+    }
+
+    @Override
+    public List<String> getAllTypes() {
+        return igrsDeviceDao.getAllTypes();
     }
 
     @Override

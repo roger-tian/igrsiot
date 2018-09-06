@@ -258,7 +258,34 @@ public class SocketController {
             logger.debug("jsonObject: {}", obj);
             IgrsWebSocketService.sendAllMessage(obj.toString());
         } else {
+            JSONObject jsonObj = (JSONObject) JSONObject.toJSON(buf);
+            String cmdType = jsonObj.getString("cmdType");
+            String onOff;
+            if (cmdType != null) {
+                switch (cmdType) {
+                    case "query":
+                        onOff = jsonObj.getString("switch");
+                        Long device = jsonObj.getLong("device");
 
+                        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+                        igrsDeviceStatus.setDevice(device);
+                        igrsDeviceStatus.setAttribute("switch");
+                        IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                        if ((status != null) && !status.getValue().equals(onOff)) {
+                            IgrsDevice igrsDevice = igrsDeviceService.getDeviceById(device);
+                            JSONObject obj = new JSONObject();
+                            obj.put("type", "machine");
+                            obj.put("index", igrsDevice.getIndex());
+                            obj.put("attribute", "switch");
+                            obj.put("value", onOff);
+                            obj.put("room", room);
+                            IgrsWebSocketService.sendAllMessage(obj.toString());
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         return "SUCCESS";

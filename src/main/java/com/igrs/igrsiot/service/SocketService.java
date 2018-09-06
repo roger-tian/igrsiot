@@ -63,7 +63,6 @@ public class SocketService implements ServletContextListener {
                                     sk.interestOps(SelectionKey.OP_READ);
 
                                     final String data = content;
-                                    String buf = data;
                                     new Thread(() -> {
                                         String remoteAddress = null;
                                         try {
@@ -72,6 +71,7 @@ public class SocketService implements ServletContextListener {
                                             e.printStackTrace();
                                         }
 
+                                        String buf = data;
                                         JSONObject device;
                                         String cip;
                                         String ctype;
@@ -81,7 +81,12 @@ public class SocketService implements ServletContextListener {
                                             ctype = device.getString("ctype");
                                             if ((cip.length()!=0) && remoteAddress.contains(cip)) {
                                                 if ((ctype.length()!=0 && !ctype.equals("0"))) {
-                                                    CmdAnalyze.decode(device, buf, data);
+                                                    try {
+                                                        JSONObject jsonDecode = CmdAnalyze.decode(device, data);
+                                                        buf = jsonDecode.toString();
+                                                    } catch (UnsupportedEncodingException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
                                                 logger.debug("rip: {}, cip: {}", remoteAddress, cip);
                                                 String url = "http://localhost:8080/igrsiot/control/socketdata/handle";

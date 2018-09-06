@@ -8,10 +8,11 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 
 public class CmdAnalyze {
-    public static String decode(JSONObject jsonObject, String result, String data) {
+//    public static JSONObject decode(JSONObject jsonObject, JSONObject result, String data) throws UnsupportedEncodingException {
+    public static JSONObject decode(JSONObject jsonObject, String data) throws UnsupportedEncodingException {
+        JSONObject result = new JSONObject();
         String type = jsonObject.getString("type");
         String ctype = jsonObject.getString("ctype");
-        String cchannel = jsonObject.getString("cchannel");
 
         switch (type) {
             case "machine":
@@ -21,10 +22,34 @@ public class CmdAnalyze {
                     case "1":
                         break;
                     case "2":
-                        byte[] cmd = {(byte) 0x99, 0x23, 0x01, 0x11, 0x2e, 0x01, 0x40, (byte) 0xaa};
-                        byte[] cmd1 = {(byte) 0x99, 0x23, 0x02, 0x11, 0x2e, 0x01, 0x40, (byte) 0xaa};
-                        if (cmd.toString().equals(data) || cmd1.toString().equals(data)) {
-                            result = "{ch_" + cchannel + ":" + "1" + "}";
+                        byte[] cmd = data.getBytes(CharEncoding.ISO_8859_1);
+                        if (cmd.length == 8) {  // query response
+                            String onOff = String.valueOf(cmd[2]);
+                            String sigSource;
+                            switch (cmd[3]) {
+                                case 0x0b:
+                                    sigSource = "1";
+                                    break;
+                                case 0x0e:
+                                    sigSource = "2";
+                                    break;
+                                case 0x0f:
+                                    sigSource = "3";
+                                    break;
+                                case 0x11:
+                                    sigSource = "4";
+                                    break;
+                                default:
+                                    sigSource = "1";
+                                    break;
+                            }
+                            String volume = String.valueOf(cmd[4]);
+                            String device = jsonObject.getString("id");
+                            result.put("cmdType", "query");
+                            result.put("device", device);
+                            result.put("switch", onOff);
+                            result.put("sigSource", sigSource);
+                            result.put("volume", volume);
                         }
                         break;
                     default:
@@ -37,7 +62,7 @@ public class CmdAnalyze {
         return result;
     }
 
-    public static String encode(JSONObject jsonObject, String command, String param) throws UnsupportedEncodingException {
+    public static String encode(JSONObject jsonObject, String cmdType, String param) throws UnsupportedEncodingException {
         String result = null;
         String type = jsonObject.getString("type");
         String ctype = jsonObject.getString("ctype");
@@ -52,7 +77,7 @@ public class CmdAnalyze {
                         }
                         break;
                     case "1":   // 75 inch machine
-                        switch (command) {
+                        switch (cmdType) {
                             case "swtich":
                                 if (param.equals("0")) {    // power off
                                     byte[] cmd = {(byte) 0x99, 0x23, (byte) 0x80, 0x01, (byte) 0x7f, (byte) 0xaa};
@@ -99,7 +124,7 @@ public class CmdAnalyze {
                         }
                         break;
                     case "2":   // 65 inch capacitance machine
-                        switch (command) {
+                        switch (cmdType) {
                             case "switch":
                                 if (param.equals("0")) {    // power off
                                     byte[] cmd = {(byte) 0x99, 0x23, 0x01, 0x01, (byte) 0xfe, (byte) 0xaa};

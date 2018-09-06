@@ -2,10 +2,7 @@ package com.igrs.igrsiot.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.igrs.igrsiot.model.IgrsRoom;
-import com.igrs.igrsiot.model.IgrsToken;
-import com.igrs.igrsiot.model.IgrsUser;
-import com.igrs.igrsiot.model.IgrsUserRoom;
+import com.igrs.igrsiot.model.*;
 import com.igrs.igrsiot.service.*;
 import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import org.slf4j.Logger;
@@ -370,6 +367,8 @@ public class UserController {
             jsonResult.put("result", "FAIL");
         }
 
+        logger.debug("jsonResult: {}", jsonResult);
+
         return jsonResult;
     }
 
@@ -397,9 +396,14 @@ public class UserController {
         jsonResult.put("realName", igrsUser.getName());
         jsonResult.put("phone", igrsUser.getPhone());
         jsonResult.put("roles", igrsUser.getRole());
+        List<String> typeList = igrsDeviceService.getAllTypes();
+        String[] deviceArray = new String[typeList.size()];
+        for (int j=0; j<typeList.size(); j++) {
+            deviceArray[j] = typeList.get(j);
+        }
+        jsonResult.put("device", deviceArray);
 
         List<IgrsRoom> roomList;
-
         if (igrsUser.getRole().equals("admin")) {
             roomList = igrsRoomService.getAllRooms();
         } else {
@@ -413,12 +417,74 @@ public class UserController {
             roomItem.put("roomId", roomList.get(i).getRoom());
             roomItem.put("roomName", roomList.get(i).getName());
 
-            List<String> typeList = igrsDeviceService.getTypesByRoom(roomList.get(i).getRoom());
-            String[] deviceArray = new String[typeList.size()];
+            typeList = igrsDeviceService.getTypesByRoom(roomList.get(i).getRoom());
+            deviceArray = new String[typeList.size()];
             for (int j=0; j<typeList.size(); j++) {
                 deviceArray[j] = typeList.get(j);
             }
             roomItem.put("device", deviceArray);
+            roomArray.add(roomItem);
+        }
+
+        jsonResult.put("roomList", roomArray);
+
+        return jsonResult;
+    }
+
+    @RequestMapping("/user/devices")
+    JSONObject getDeviceList(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
+            String type) throws ParseException {
+        JSONObject jsonResult;
+
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        logger.debug("token: {}", token);
+        jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
+        igrsTokenService.updateExpired(igrsToken);
+
+        IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
+
+        jsonResult.put("result", "SUCCESS");
+        jsonResult.put("name", igrsUser.getUser());
+        jsonResult.put("realName", igrsUser.getName());
+        jsonResult.put("phone", igrsUser.getPhone());
+        jsonResult.put("roles", igrsUser.getRole());
+        jsonResult.put("type", type);
+
+        List<IgrsRoom> roomList;
+        if (igrsUser.getRole().equals("admin")) {
+            roomList = igrsRoomService.getAllRooms();
+        } else {
+            roomList = igrsUserService.getUserRooms(igrsUser);
+        }
+
+        JSONArray roomArray = new JSONArray();
+        for (int i=0; i<roomList.size(); i++) {
+            JSONObject roomItem = new JSONObject();
+
+            JSONArray deviceArray = new JSONArray();
+            roomItem.put("deviceList", deviceArray);
+            roomItem.put("roomId", roomList.get(i).getRoom());
+            roomItem.put("roomName", roomList.get(i).getName());
+
+            IgrsDevice igrsDevice = new IgrsDevice();
+            igrsDevice.setRoom(roomList.get(i).getRoom());
+            igrsDevice.setType(type);
+            List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
+            for (int j=0; j<list.size(); j++) {
+                JSONObject deviceItem = new JSONObject();
+                deviceItem.put("type", list.get(j).getType());
+                deviceItem.put("index", list.get(j).getIndex());
+                deviceItem.put("name", list.get(j).getName());
+
+                deviceArray.add(deviceItem);
+            }
+
             roomArray.add(roomItem);
         }
 

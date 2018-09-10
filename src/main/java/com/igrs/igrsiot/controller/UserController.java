@@ -434,9 +434,6 @@ public class UserController {
             String type, String flag) throws ParseException {
         JSONObject jsonResult;
 
-        type = "machine";
-        flag = "1";
-
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         logger.debug("token: {}", token);
         jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);

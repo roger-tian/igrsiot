@@ -34,6 +34,8 @@ public class AllController {
             jsonResult = new JSONObject();
         }
 
+        igrsTokenService.updateExpired(igrsToken);
+
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
             jsonResult.put("result", "FAIL");
             return jsonResult;
@@ -52,19 +54,8 @@ public class AllController {
 
         for (int i=0; i<list.size(); i++) {
             jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
-            if (jsonObject.getString("ctype").equals("0")) {
-                if ((jsonObject.getString("cip") != null) && (jsonObject.getString("attribute").equals("switch")) &&
-                        (jsonObject.getString("cchannel") != null) && (jsonObject.getString("cchannel").length() != 0)) {
-                    cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
-                    SocketService.cmdSend(jsonObject.getString("cip"), cmd);
-                }
-            }
-            else if (jsonObject.getString("ctype").equals("1")) {
-                // todo
-            }
+            cmdSend(jsonObject, onOff);
         }
-
-        igrsTokenService.updateExpired(igrsToken);
 
         JSONObject obj = new JSONObject();
         obj.put("type", "allSwitch");
@@ -76,21 +67,7 @@ public class AllController {
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         IgrsDeviceStatus status;
 
-        //update db
-        igrsDeviceStatus.setAttribute("switch");
-        igrsDeviceStatus.setValue(onOff);
-        for (int i=0; i<list.size(); i++) {
-            jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
-            if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
-                igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
-                status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
-                if (status != null) {
-                    igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                } else {
-                    igrsDeviceStatusService.insert(igrsDeviceStatus);
-                }
-            }
-        }
+        updateDbByList(list, onOff);
 
         IgrsOperate igrsOperate = new IgrsOperate();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -111,6 +88,98 @@ public class AllController {
         return jsonResult;
     }
 
+    @RequestMapping("/all/type")
+    JSONObject allSwitchByType(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
+            String type, String onOff) throws ParseException {
+        JSONObject jsonResult;
+
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
+        igrsTokenService.updateExpired(igrsToken);
+
+        if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
+            jsonResult.put("result", "FAIL");
+            return jsonResult;
+        }
+
+        IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("type", type);
+        map.put("user", igrsUser.getUser());
+        List<HashMap<String, String>> list = igrsDeviceService.getDetailByUserType(map);
+        JSONObject jsonObject;
+        for (int i=0; i<list.size(); i++) {
+            jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
+            cmdSend(jsonObject, onOff);
+
+            JSONObject obj = new JSONObject();
+            obj.put("type", type);
+            obj.put("attribute", "switch");
+            obj.put("value", onOff);
+            obj.put("room", jsonObject.getString("room"));
+            IgrsWebSocketService.sendAllMessage(obj.toString());
+        }
+
+        updateDbByList(list, onOff);
+
+        IgrsOperate igrsOperate = new IgrsOperate();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = df.format(new Date());
+        igrsOperate.setTime(time);
+        String instruction = onOff.equals("1") ? "同类型设备打开" : "同类型设备关闭";
+        igrsOperate.setInstruction(instruction);
+        igrsOperate.setUser(igrsUser.getId());
+        igrsOperate.setRoom("");
+        igrsOperate.setDevice("同类型设备");
+        igrsOperateService.insert(igrsOperate);
+
+        jsonResult.put("result", "SUCCESS");
+
+        return jsonResult;
+    }
+
+    private void cmdSend(JSONObject jsonObject, String onOff) {
+        String cmd;
+        if (jsonObject.getString("ctype").equals("0")) {
+            if ((jsonObject.getString("cip") != null) && (jsonObject.getString("attribute").equals("switch")) &&
+                    (jsonObject.getString("cchannel") != null) && (jsonObject.getString("cchannel").length() != 0)) {
+                cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
+                SocketService.cmdSend(jsonObject.getString("cip"), cmd);
+            }
+        } else if (jsonObject.getString("ctype").equals("1")) {
+            // todo
+        }
+    }
+
+    private void updateDbByList(List<HashMap<String, String>> list, String onOff) {
+        JSONObject jsonObject;
+        IgrsDeviceStatus status;
+        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+        igrsDeviceStatus.setAttribute("switch");
+        igrsDeviceStatus.setValue(onOff);
+        for (int i=0; i<list.size(); i++) {
+            jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
+            if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+                igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
+                status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                if (status != null) {
+                    igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
+                } else {
+                    igrsDeviceStatusService.insert(igrsDeviceStatus);
+                }
+            }
+        }
+    }
+
+    @Autowired
+    private IIgrsUserService igrsUserService;
     @Autowired
     private IIgrsTokenService igrsTokenService;
     @Autowired

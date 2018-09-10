@@ -20,6 +20,8 @@ public interface IIgrsDeviceService {
 
     List<HashMap<String, String>> getDetailByRoom(String room);
 
+    List<HashMap<String, String>> getDetailByUserType(HashMap<String, String> map);
+
     List<IgrsDevice> getByRoomAndType(IgrsDevice igrsDevice);
 
     List<IgrsDevice> getByRoomAndCType(IgrsDevice igrsDevice);

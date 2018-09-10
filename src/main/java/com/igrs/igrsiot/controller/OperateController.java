@@ -37,6 +37,8 @@ public class OperateController {
             jsonResult = new JSONObject();
         }
 
+        igrsTokenService.updateExpired(igrsToken);
+
         String room = request.getParameter("room");
         String pageNo = request.getParameter("pageNo");
         String totalPage;

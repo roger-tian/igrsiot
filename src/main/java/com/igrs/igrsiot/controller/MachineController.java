@@ -32,6 +32,8 @@ public class MachineController {
             jsonResult = new JSONObject();
         }
 
+        igrsTokenService.updateExpired(igrsToken);
+
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
             jsonResult.put("result", "FAIL");
             return jsonResult;
@@ -56,8 +58,6 @@ public class MachineController {
             String strCmd = CmdAnalyze.encode(jsonObject, "switch", onOff);
             SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
-
-        igrsTokenService.updateExpired(igrsToken);
 
         JSONObject obj = new JSONObject();
         obj.put("type", "machine");
@@ -119,6 +119,8 @@ public class MachineController {
             jsonResult = new JSONObject();
         }
 
+        igrsTokenService.updateExpired(igrsToken);
+
         if (sigSource == null) {
             jsonResult.put("result", "FAIL");
             return jsonResult;
@@ -138,8 +140,6 @@ public class MachineController {
             String strCmd = CmdAnalyze.encode(jsonObject, "sigSource", sigSource);
             SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
-
-        igrsTokenService.updateExpired(igrsToken);
 
         JSONObject obj = new JSONObject();
         obj.put("type", "machine");
@@ -200,6 +200,8 @@ public class MachineController {
             jsonResult = new JSONObject();
         }
 
+        igrsTokenService.updateExpired(igrsToken);
+
         if (volume == null) {
             jsonResult.put("result", "FAIL");
             return jsonResult;
@@ -219,8 +221,6 @@ public class MachineController {
             String strCmd = CmdAnalyze.encode(jsonObject, "volume", volume);
             SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
-
-        igrsTokenService.updateExpired(igrsToken);
 
         int vol = 0;
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();

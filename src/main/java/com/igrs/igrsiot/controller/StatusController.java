@@ -154,6 +154,8 @@ public class StatusController {
             jsonResult = new JSONObject();
         }
 
+        igrsTokenService.updateExpired(igrsToken);
+
         String instruction;
         String deviceName = "";
 
@@ -165,8 +167,6 @@ public class StatusController {
         jsonObject.put("room", room);
         logger.debug("jsonObject: {}", jsonObject.toString());
         IgrsWebSocketService.sendAllMessage(jsonObject.toString());
-
-        igrsTokenService.updateExpired(igrsToken);
 
         IgrsDevice igrsDevice = new IgrsDevice();
         igrsDevice.setType("welcome");

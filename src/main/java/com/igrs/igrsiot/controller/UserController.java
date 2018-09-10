@@ -367,7 +367,7 @@ public class UserController {
         return jsonResult;
     }
 
-    @RequestMapping("/user/rooms1")
+    @RequestMapping("/user/rooms")
     JSONObject getRoomList(@RequestHeader(value = "igrs-token", defaultValue = "") String token)
             throws ParseException {
         JSONObject jsonResult;
@@ -429,7 +429,7 @@ public class UserController {
         return jsonResult;
     }
 
-    @RequestMapping("/user/rooms")
+    @RequestMapping("/user/devices")
     JSONObject getDeviceList(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
             String type, String flag) throws ParseException {
         JSONObject jsonResult;

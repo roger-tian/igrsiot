@@ -47,6 +47,11 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     }
 
     @Override
+    public List<HashMap<String, String>> getDetailByUserType(HashMap<String, String> map) {
+        return igrsDeviceDao.getDetailByUserType(map);
+    }
+
+    @Override
     public List<IgrsDevice> getByRoomAndType(IgrsDevice igrsDevice) {
         return igrsDeviceDao.getByRoomAndType(igrsDevice);
     }

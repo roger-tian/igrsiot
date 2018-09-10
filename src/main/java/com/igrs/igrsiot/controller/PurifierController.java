@@ -33,6 +33,8 @@ public class PurifierController {
             jsonResult = new JSONObject();
         }
 
+        igrsTokenService.updateExpired(igrsToken);
+
         String param;
         String instruction;
 

@@ -33,6 +33,8 @@ public class LedController {
             jsonResult = new JSONObject();
         }
 
+        igrsTokenService.updateExpired(igrsToken);
+
         if ((onOff == null) || (!onOff.equals("0") && !onOff.equals("1"))) {
             jsonResult.put("result", "FAIL");
             return jsonResult;
@@ -54,8 +56,6 @@ public class LedController {
             String cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
             SocketService.cmdSend(jsonObject.getString("cip"), cmd);
         }
-
-        igrsTokenService.updateExpired(igrsToken);
 
         JSONObject obj = new JSONObject();
         obj.put("type", "led");

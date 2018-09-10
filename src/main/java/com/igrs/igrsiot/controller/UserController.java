@@ -480,6 +480,13 @@ public class UserController {
                     deviceItem.put("type", list.get(j).getType());
                     deviceItem.put("index", list.get(j).getIndex());
                     deviceItem.put("name", list.get(j).getName());
+
+                    IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+                    igrsDeviceStatus.setDevice(list.get(j).getId());
+                    igrsDeviceStatus.setAttribute("switch");
+                    IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                    deviceItem.put("switch", status.getValue());
+
                     deviceArray.add(deviceItem);
                 }
                 roomArray.add(roomItem);
@@ -502,6 +509,13 @@ public class UserController {
                     deviceItem.put("type", list.get(j).getType());
                     deviceItem.put("index", list.get(j).getIndex());
                     deviceItem.put("name", list.get(j).getName());
+
+                    IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+                    igrsDeviceStatus.setDevice(list.get(j).getId());
+                    igrsDeviceStatus.setAttribute("switch");
+                    IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                    deviceItem.put("switch", status.getValue());
+
                     roomItem.put("device", deviceItem);
                 }
                 roomArray.add(roomItem);
@@ -522,6 +536,8 @@ public class UserController {
     private IIgrsRoomService igrsRoomService;
     @Autowired
     private IIgrsDeviceService igrsDeviceService;
+    @Autowired
+    private IIgrsDeviceStatusService igrsDeviceStatusService;
     @Value("${deviceType}")
     private String deviceType;
 

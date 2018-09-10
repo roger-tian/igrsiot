@@ -57,6 +57,14 @@ public class IgrsDevice {
         this.room = room;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     private Long id;
     private String type;
     private String index;
@@ -64,4 +72,5 @@ public class IgrsDevice {
     private String clientType;
     private String clientIp;
     private String room;
+    private String remark;
 }

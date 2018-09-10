@@ -23,8 +23,8 @@
     select type from igrs_device where room=#{room} group by type
   </select>
 
-  <select id="getAllTypes" resultType="String">
-    select type from igrs_device group by type
+  <select id="getDevicesByType" resultMap="BaseResultMap" >
+    select * from igrs_device group by type
   </select>
 
   <select id="getDeviceById" resultMap="BaseResultMap" parameterType="Long" >

@@ -74,6 +74,7 @@ CREATE TABLE `igrs_device` (
   `ctype` varchar(10) DEFAULT NULL,
   `cip` varchar(16) DEFAULT NULL,
   `room` varchar(10) DEFAULT NULL,
+  `remark` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 

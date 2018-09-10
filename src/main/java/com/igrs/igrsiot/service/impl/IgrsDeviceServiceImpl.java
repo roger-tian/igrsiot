@@ -32,8 +32,8 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     }
 
     @Override
-    public List<String> getAllTypes() {
-        return igrsDeviceDao.getAllTypes();
+    public List<IgrsDevice> getDevicesByType() {
+        return igrsDeviceDao.getDevicesByType();
     }
 
     @Override

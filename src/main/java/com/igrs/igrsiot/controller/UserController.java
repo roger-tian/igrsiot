@@ -8,6 +8,7 @@ import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/control")
@@ -171,15 +175,12 @@ public class UserController {
         }
 
         igrsToken = igrsTokenService.getTokenByUser(userName);
-        if (igrsToken == null) {
-            jsonResult.put("result", "FAIL");
-            return jsonResult;
+        if (igrsToken != null) {
+            igrsTokenService.deleteByToken(igrsToken.getToken());
         }
 
         igrsUser.setPassword(password);
         igrsUserService.userPassword(igrsUser);
-
-        igrsTokenService.deleteByToken(igrsToken.getToken());
 
         JSONObject obj = new JSONObject();
         obj.put("user", userName);
@@ -205,14 +206,11 @@ public class UserController {
         igrsTokenService.updateExpired(igrsToken);
 
         igrsToken = igrsTokenService.getTokenByUser(userName);
-        if (igrsToken == null) {
-            jsonResult.put("result", "FAIL");
-            return jsonResult;
+        if (igrsToken != null) {
+            igrsTokenService.deleteByToken(igrsToken.getToken());
         }
 
         igrsUserService.userDelete(userName);
-
-        igrsTokenService.deleteByToken(igrsToken.getToken());
 
         JSONObject obj = new JSONObject();
         obj.put("user", userName);
@@ -300,9 +298,8 @@ public class UserController {
         igrsTokenService.updateExpired(igrsToken);
 
         igrsToken = igrsTokenService.getTokenByUser(userName);
-        if (igrsToken == null) {
-            jsonResult.put("result", "FAIL");
-            return jsonResult;
+        if (igrsToken != null) {
+            igrsTokenService.deleteByToken(igrsToken.getToken());
         }
 
         IgrsUser igrsUser = igrsUserService.getUserByName(userName);
@@ -319,8 +316,6 @@ public class UserController {
                 igrsUserRoomService.insert(igrsUserRoom);
             }
         }
-
-        igrsTokenService.deleteByToken(igrsToken.getToken());
 
         JSONObject obj = new JSONObject();
         obj.put("user", userName);
@@ -372,13 +367,13 @@ public class UserController {
         return jsonResult;
     }
 
-    @RequestMapping("/user/rooms")
+    @RequestMapping("/user/rooms1")
     JSONObject getRoomList(@RequestHeader(value = "igrs-token", defaultValue = "") String token)
             throws ParseException {
         JSONObject jsonResult;
 
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
-        logger.debug("token: {}", token);
+        logger.debug("token: {}, deviceType: {}", token, deviceType);
         jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
             return jsonResult;
@@ -396,12 +391,16 @@ public class UserController {
         jsonResult.put("realName", igrsUser.getName());
         jsonResult.put("phone", igrsUser.getPhone());
         jsonResult.put("roles", igrsUser.getRole());
-        List<String> typeList = igrsDeviceService.getAllTypes();
-        String[] deviceArray = new String[typeList.size()];
-        for (int j=0; j<typeList.size(); j++) {
-            deviceArray[j] = typeList.get(j);
+
+        List<IgrsDevice> list = igrsDeviceService.getDevicesByType();
+        JSONArray deviceJSONArray = new JSONArray();
+        for (int i=0; i<list.size(); i++) {
+            JSONObject itemDevice = new JSONObject();
+            itemDevice.put("type", list.get(i).getType());
+            itemDevice.put("remark", list.get(i).getRemark());
+            deviceJSONArray.add(itemDevice);
         }
-        jsonResult.put("device", deviceArray);
+        jsonResult.put("deviceList", deviceJSONArray);
 
         List<IgrsRoom> roomList;
         if (igrsUser.getRole().equals("admin")) {
@@ -411,14 +410,13 @@ public class UserController {
         }
 
         JSONArray roomArray = new JSONArray();
-
         for (int i=0; i<roomList.size(); i++) {
             JSONObject roomItem = new JSONObject();
             roomItem.put("roomId", roomList.get(i).getRoom());
             roomItem.put("roomName", roomList.get(i).getName());
 
-            typeList = igrsDeviceService.getTypesByRoom(roomList.get(i).getRoom());
-            deviceArray = new String[typeList.size()];
+            List<String> typeList = igrsDeviceService.getTypesByRoom(roomList.get(i).getRoom());
+            String[] deviceArray = new String[typeList.size()];
             for (int j=0; j<typeList.size(); j++) {
                 deviceArray[j] = typeList.get(j);
             }
@@ -431,10 +429,13 @@ public class UserController {
         return jsonResult;
     }
 
-    @RequestMapping("/user/devices")
+    @RequestMapping("/user/rooms")
     JSONObject getDeviceList(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
-            String type) throws ParseException {
+            String type, String flag) throws ParseException {
         JSONObject jsonResult;
+
+        type = "machine";
+        flag = "1";
 
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         logger.debug("token: {}", token);
@@ -463,32 +464,53 @@ public class UserController {
             roomList = igrsUserService.getUserRooms(igrsUser);
         }
 
-        JSONArray roomArray = new JSONArray();
-        for (int i=0; i<roomList.size(); i++) {
-            JSONObject roomItem = new JSONObject();
+        if (flag.equals("0")) {
+            JSONArray roomArray = new JSONArray();
+            for (int i=0; i<roomList.size(); i++) {
+                JSONObject roomItem = new JSONObject();
 
-            JSONArray deviceArray = new JSONArray();
-            roomItem.put("deviceList", deviceArray);
-            roomItem.put("roomId", roomList.get(i).getRoom());
-            roomItem.put("roomName", roomList.get(i).getName());
+                JSONArray deviceArray = new JSONArray();
+                roomItem.put("deviceList", deviceArray);
+                roomItem.put("roomId", roomList.get(i).getRoom());
+                roomItem.put("roomName", roomList.get(i).getName());
 
-            IgrsDevice igrsDevice = new IgrsDevice();
-            igrsDevice.setRoom(roomList.get(i).getRoom());
-            igrsDevice.setType(type);
-            List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
-            for (int j=0; j<list.size(); j++) {
-                JSONObject deviceItem = new JSONObject();
-                deviceItem.put("type", list.get(j).getType());
-                deviceItem.put("index", list.get(j).getIndex());
-                deviceItem.put("name", list.get(j).getName());
-
-                deviceArray.add(deviceItem);
+                IgrsDevice igrsDevice = new IgrsDevice();
+                igrsDevice.setRoom(roomList.get(i).getRoom());
+                igrsDevice.setType(type);
+                List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
+                for (int j=0; j<list.size(); j++) {
+                    JSONObject deviceItem = new JSONObject();
+                    deviceItem.put("type", list.get(j).getType());
+                    deviceItem.put("index", list.get(j).getIndex());
+                    deviceItem.put("name", list.get(j).getName());
+                    deviceArray.add(deviceItem);
+                }
+                roomArray.add(roomItem);
             }
+            jsonResult.put("roomList", roomArray);
+        } else {
+            JSONArray roomArray = new JSONArray();
+            for (int i=0; i<roomList.size(); i++) {
+                JSONObject roomItem = new JSONObject();
 
-            roomArray.add(roomItem);
+                IgrsDevice igrsDevice = new IgrsDevice();
+                igrsDevice.setRoom(roomList.get(i).getRoom());
+                igrsDevice.setType(type);
+                List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
+                for (int j=0; j<list.size(); j++) {
+                    roomItem.put("roomId", roomList.get(i).getRoom());
+                    roomItem.put("roomName", roomList.get(i).getName());
+
+                    JSONObject deviceItem = new JSONObject();
+                    deviceItem.put("type", list.get(j).getType());
+                    deviceItem.put("index", list.get(j).getIndex());
+                    deviceItem.put("name", list.get(j).getName());
+                    roomItem.put("device", deviceItem);
+                }
+                roomArray.add(roomItem);
+            }
+            jsonResult.put("roomList", roomArray);
         }
-
-        jsonResult.put("roomList", roomArray);
 
         return jsonResult;
     }
@@ -503,6 +525,8 @@ public class UserController {
     private IIgrsRoomService igrsRoomService;
     @Autowired
     private IIgrsDeviceService igrsDeviceService;
+    @Value("${deviceType}")
+    private String deviceType;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 }

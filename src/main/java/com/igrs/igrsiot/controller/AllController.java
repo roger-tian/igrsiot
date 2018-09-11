@@ -24,7 +24,6 @@ import java.util.List;
 @RequestMapping("/control")
 public class AllController {
     @RequestMapping("/all")
-
     public JSONObject allSwitch(@RequestHeader(value="igrs-token", defaultValue = "") String token,
             String room, String onOff) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);

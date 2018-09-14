@@ -53,6 +53,8 @@ public class MachineController {
         map.put("room", room);
         HashMap<String, String> result = igrsDeviceStatusService.getByRoomTypeIndexAttr(map);
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
+        deviceName = jsonObject.getString("name");
+        deviceName = deviceName !=null ? deviceName : "";
         logger.debug("jsonObject: {}", jsonObject);
         if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
             String strCmd = CmdAnalyze.encode(jsonObject, "switch", onOff);

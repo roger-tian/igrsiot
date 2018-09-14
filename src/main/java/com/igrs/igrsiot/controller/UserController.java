@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/control")
@@ -488,23 +485,27 @@ public class UserController {
         } else {
             JSONArray roomArray = new JSONArray();
             for (int i=0; i<roomList.size(); i++) {
-                JSONObject roomItem = new JSONObject();
-
                 IgrsDevice igrsDevice = new IgrsDevice();
                 igrsDevice.setRoom(roomList.get(i).getRoom());
-                igrsDevice.setType(type);
+                igrsDevice.setType(type); // 设备类型
                 List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
                 for (int j=0; j<list.size(); j++) {
+                    JSONObject roomItem = new JSONObject();
                     roomItem.put("roomId", roomList.get(i).getRoom());
                     roomItem.put("roomName", roomList.get(i).getName());
-
                     JSONObject deviceItem = new JSONObject();
                     deviceItem.put("type", list.get(j).getType());
                     deviceItem.put("index", list.get(j).getIndex());
                     deviceItem.put("name", list.get(j).getName());
+                    // 查询设备状态
+                    IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+                    igrsDeviceStatus.setAttribute("switch");
+                    igrsDeviceStatus.setDevice(list.get(j).getId());
+                    IgrsDeviceStatus deviceStatus = iIgrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                    deviceItem.put("switch", deviceStatus.getValue());
                     roomItem.put("device", deviceItem);
+                    roomArray.add(roomItem);
                 }
-                roomArray.add(roomItem);
             }
             jsonResult.put("roomList", roomArray);
         }
@@ -512,6 +513,61 @@ public class UserController {
         return jsonResult;
     }
 
+
+    @RequestMapping("/user/getAllRoomStatus")
+    JSONObject getAllStatus(@RequestHeader(value = "igrs-token", defaultValue = "") String token) throws ParseException {
+        JSONObject jsonResult;
+        IgrsToken igrsToken = igrsTokenService.getByToken(token);
+        logger.debug("token: {}", token);
+        jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
+        if (jsonResult != null) {
+            return jsonResult;
+        } else {
+            jsonResult = new JSONObject();
+        }
+
+        igrsTokenService.updateExpired(igrsToken);
+
+        IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
+
+        jsonResult.put("result", "SUCCESS");
+        List<IgrsRoom> roomList;
+        if (igrsUser.getRole().equals("admin")) {
+            roomList = igrsRoomService.getAllRooms();
+        } else {
+            roomList = igrsUserService.getUserRooms(igrsUser);
+        }
+        JSONArray roomArray = new JSONArray();
+        for (int i = 0; i < roomList.size(); i++) {
+            IgrsRoom igrsRoom =roomList.get(i);
+            List<Map<String, String>> list = iIgrsDeviceStatusService.getStatusByRoom(igrsRoom.getRoom());
+            String toggleFlag = "0";
+            for (int j=0;j<list.size();j++){
+                Map<String,String> map = list.get(j);
+                String attr = map.get("attribute");
+                if("switch".equals(attr) && "1".equals(map.get("value"))) {
+                    toggleFlag = "1";
+                    break;
+                }
+            }
+            // device: {name: "智能灯二", index: "1", type: "led", switch: "0"}, roomId: "100", roomName: "100"
+            JSONObject roomObj = new JSONObject();
+            JSONObject deviceObj = new JSONObject();
+            // device
+            deviceObj.put("type","suppertoggle");
+            deviceObj.put("switch", toggleFlag);
+
+            roomObj.put("device",deviceObj);
+            roomObj.put("roomName", igrsRoom.getName());
+            roomObj.put("roomId", igrsRoom.getRoom());
+            roomArray.add(roomObj);
+            System.out.println("********************************************");
+            System.out.println(list);
+            System.out.println("********************************************");
+        }
+        jsonResult.put("roomList",roomArray);
+        return jsonResult;
+    }
     @Autowired
     private IIgrsUserService igrsUserService;
     @Autowired
@@ -522,6 +578,8 @@ public class UserController {
     private IIgrsRoomService igrsRoomService;
     @Autowired
     private IIgrsDeviceService igrsDeviceService;
+    @Autowired
+    private IIgrsDeviceStatusService iIgrsDeviceStatusService;
     @Value("${deviceType}")
     private String deviceType;
 

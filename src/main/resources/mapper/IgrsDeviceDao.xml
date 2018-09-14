@@ -50,6 +50,10 @@
     where d.id=s.device and d.type=#{type} and d.room in
     (select room from igrs_user_room where user=(select id from igrs_user where user=#{user}))
   </select>
+  <!--根据类型查询这一类型的全部设备的状态-->
+  <select id="getAllDetailByType" resultType="java.util.HashMap" parameterType="String" >
+    select a.* ,b.* from igrs_device_status a,igrs_device b where a.device = b.id and a.attribute = 'switch' and b.type = #{type}
+  </select>
 
   <select id="getByRoomAndType" resultMap="BaseResultMap" parameterType="com.igrs.igrsiot.model.IgrsDevice" >
     select * from igrs_device where room=#{room} and type=#{type}

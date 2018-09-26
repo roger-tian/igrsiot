@@ -87,8 +87,9 @@ public class AllController {
 
         return jsonResult;
     }
+
     @RequestMapping("/toggleAllRoom")
-    JSONObject toggleAllRoom(@RequestHeader(value="igrs-token", defaultValue = "") String token,String onOff) throws ParseException {
+    JSONObject toggleAllRoom(@RequestHeader(value="igrs-token", defaultValue = "") String token, String onOff) throws ParseException {
         IgrsToken igrsToken = igrsTokenService.getByToken(token);
         JSONObject jsonResult = IgrsTokenServiceImpl.genTokenErrorMsg(igrsToken);
         if (jsonResult != null) {
@@ -110,24 +111,25 @@ public class AllController {
             // 管理员查询所有房间
             list = igrsRoomService.getAllRooms();
         }
-        int size = list == null? 0 : list.size();
+        int size = list == null ? 0 : list.size();
         int num = 0;
         for (int i = 0; i < size; i++) {
             IgrsRoom igrsRoom = list.get(i);
-            if(toggleRoomSwitch(igrsRoom.getRoom(),onOff)){
+            if (toggleRoomSwitch(igrsRoom.getRoom(), onOff)) {
                 num++;
             }
-            String msg = "1".equals(onOff)? "总开关打开" : "总开关关闭";
+            String msg = "1".equals(onOff) ? "总开关打开" : "总开关关闭";
             String deviceName = "总开关";
-            insertOperateLog(msg, igrsUser.getId(), deviceName,igrsRoom.getRoom());
+            insertOperateLog(msg, igrsUser.getId(), deviceName, igrsRoom.getRoom());
         }
-        if (num == 0){
+        if (num == 0) {
             jsonResult.put("result", "FAIL");
         } else {
             jsonResult.put("result", "SUCCESS");
         }
         return jsonResult;
     }
+
     @RequestMapping("/all/type")
     JSONObject allSwitchByType(@RequestHeader(value = "igrs-token", defaultValue = "") String token,
             String type, String onOff) throws ParseException {
@@ -224,6 +226,7 @@ public class AllController {
             e.printStackTrace();
         }
     }
+
     private void cmdSend(JSONObject jsonObject, String onOff) {
         String cmd;
         if (jsonObject.getString("ctype").equals("0")) {
@@ -263,7 +266,7 @@ public class AllController {
      * @param onOff
      * @return
      */
-    private boolean toggleRoomSwitch(String room,String onOff) {
+    private boolean toggleRoomSwitch(String room, String onOff) {
         List<HashMap<String, String>> list = igrsDeviceService.getDetailByRoom(room);
         logger.debug("list: {}", list);
         JSONObject jsonObject;
@@ -278,6 +281,19 @@ public class AllController {
         for (int i=0; i<list.size(); i++) {
             jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
             cmdSend(jsonObject, onOff);
+
+//            logger.debug("size: {}, i: {}", list.size(), i);
+            String type = jsonObject.getString("type");
+            if (!type.equals("machine")) {
+                JSONObject obj = new JSONObject();
+                obj.put("type", type);
+                obj.put("index", jsonObject.getString("dindex"));
+                obj.put("attribute", "switch");
+                obj.put("value", onOff);
+                obj.put("room", room);
+                IgrsWebSocketService.sendAllMessage(obj.toString());
+            }
+
             // 更新数据库
             if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
                 igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
@@ -290,14 +306,9 @@ public class AllController {
             }
         }
 
-        JSONObject obj = new JSONObject();
-        obj.put("type", "allSwitch");
-        obj.put("attribute", "switch");
-        obj.put("value", onOff);
-        obj.put("room", room);
-        IgrsWebSocketService.sendAllMessage(obj.toString());
         return true;
     }
+
     @Autowired
     private IIgrsUserService igrsUserService;
     @Autowired

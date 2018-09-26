@@ -10,7 +10,7 @@
     <result column="query" property="query" jdbcType="VARCHAR" />
     <result column="cip" property="clientIp" jdbcType="VARCHAR" />
     <result column="room" property="room" jdbcType="VARCHAR" />
-    <result column="remark" property="room" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List" >

@@ -468,16 +468,28 @@ public class UserController {
                 roomItem.put("roomId", roomList.get(i).getRoom());
                 roomItem.put("roomName", roomList.get(i).getName());
 
-                IgrsDevice igrsDevice = new IgrsDevice();
-                igrsDevice.setRoom(roomList.get(i).getRoom());
-                igrsDevice.setType(type);
-                List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
+                List<IgrsDevice> list;
+                if (type.equals("suppertoggle")) {
+                    list = igrsDeviceService.getDevicesByRoom(roomList.get(i).getRoom());
+                } else {
+                    IgrsDevice igrsDevice = new IgrsDevice();
+                    igrsDevice.setRoom(roomList.get(i).getRoom());
+                    igrsDevice.setType(type); // 设备类型
+                    list = igrsDeviceService.getByRoomAndType(igrsDevice);
+                }
+
                 for (int j=0; j<list.size(); j++) {
                     JSONObject deviceItem = new JSONObject();
                     deviceItem.put("type", list.get(j).getType());
                     deviceItem.put("index", list.get(j).getIndex());
                     deviceItem.put("name", list.get(j).getName());
+                    IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+                    igrsDeviceStatus.setAttribute("switch");
+                    igrsDeviceStatus.setDevice(list.get(j).getId());
+                    IgrsDeviceStatus deviceStatus = iIgrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                    deviceItem.put("switch", deviceStatus.getValue());
                     deviceArray.add(deviceItem);
+                    logger.debug("deviceArray: {}, deviceItem: {}", deviceArray, deviceItem);
                 }
                 roomArray.add(roomItem);
             }
@@ -485,10 +497,16 @@ public class UserController {
         } else {
             JSONArray roomArray = new JSONArray();
             for (int i=0; i<roomList.size(); i++) {
-                IgrsDevice igrsDevice = new IgrsDevice();
-                igrsDevice.setRoom(roomList.get(i).getRoom());
-                igrsDevice.setType(type); // 设备类型
-                List<IgrsDevice> list = igrsDeviceService.getByRoomAndType(igrsDevice);
+                List<IgrsDevice> list;
+                if (type.equals("suppertoggle")) {
+                    list = igrsDeviceService.getDevicesByRoom(roomList.get(i).getRoom());
+                } else {
+                    IgrsDevice igrsDevice = new IgrsDevice();
+                    igrsDevice.setRoom(roomList.get(i).getRoom());
+                    igrsDevice.setType(type); // 设备类型
+                    list = igrsDeviceService.getByRoomAndType(igrsDevice);
+                }
+
                 for (int j=0; j<list.size(); j++) {
                     JSONObject roomItem = new JSONObject();
                     roomItem.put("roomId", roomList.get(i).getRoom());
@@ -512,7 +530,6 @@ public class UserController {
 
         return jsonResult;
     }
-
 
     @RequestMapping("/user/getAllRoomStatus")
     JSONObject getAllStatus(@RequestHeader(value = "igrs-token", defaultValue = "") String token) throws ParseException {
@@ -539,13 +556,13 @@ public class UserController {
         }
         JSONArray roomArray = new JSONArray();
         for (int i = 0; i < roomList.size(); i++) {
-            IgrsRoom igrsRoom =roomList.get(i);
+            IgrsRoom igrsRoom = roomList.get(i);
             List<Map<String, String>> list = iIgrsDeviceStatusService.getStatusByRoom(igrsRoom.getRoom());
             String toggleFlag = "0";
             for (int j=0;j<list.size();j++){
-                Map<String,String> map = list.get(j);
+                Map<String, String> map = list.get(j);
                 String attr = map.get("attribute");
-                if("switch".equals(attr) && "1".equals(map.get("value"))) {
+                if ("switch".equals(attr) && "1".equals(map.get("value"))) {
                     toggleFlag = "1";
                     break;
                 }
@@ -568,6 +585,7 @@ public class UserController {
         jsonResult.put("roomList",roomArray);
         return jsonResult;
     }
+
     @Autowired
     private IIgrsUserService igrsUserService;
     @Autowired

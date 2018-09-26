@@ -110,10 +110,16 @@ public class AllController {
 
         IgrsUser igrsUser = igrsUserService.getUserById(igrsToken.getUser());
 
+        List<HashMap<String, String>> list;
         HashMap<String, String> map = new HashMap<>();
         map.put("type", type);
-        map.put("user", igrsUser.getUser());
-        List<HashMap<String, String>> list = igrsDeviceService.getDetailByUserType(map);
+        if (igrsUser.getRole().equals("admin")) {
+            list = igrsDeviceService.getDetailByType(map);
+        } else {
+            map.put("user", igrsUser.getUser());
+            list = igrsDeviceService.getDetailByUserType(map);
+        }
+
         JSONObject jsonObject;
         for (int i=0; i<list.size(); i++) {
             jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));

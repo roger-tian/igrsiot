@@ -22,6 +22,8 @@ public interface IIgrsDeviceDao {
 
     List<HashMap<String, String>> getDetailByUserType(HashMap<String, String> map);
 
+    List<HashMap<String, String>> getDetailByType(HashMap<String, String> map);
+
     List<IgrsDevice> getByRoomAndType(IgrsDevice igrsDevice);
 
     List<IgrsDevice> getByRoomAndCType(IgrsDevice igrsDevice);

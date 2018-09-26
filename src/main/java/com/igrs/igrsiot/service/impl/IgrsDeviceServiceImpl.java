@@ -37,7 +37,7 @@ public class IgrsDeviceServiceImpl implements IIgrsDeviceService {
     }
 
     @Override
-    public List<HashMap<String, String>> getDeviceDetail() {
+    public List<HashMap<String, Object>> getDeviceDetail() {
         return igrsDeviceDao.getDeviceDetail();
     }
 

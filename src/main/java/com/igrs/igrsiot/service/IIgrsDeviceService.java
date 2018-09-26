@@ -16,7 +16,7 @@ public interface IIgrsDeviceService {
 
     List<IgrsDevice> getDevicesByType();
 
-    List<HashMap<String, String>> getDeviceDetail();
+    List<HashMap<String, Object>> getDeviceDetail();
 
     List<HashMap<String, String>> getDetailByRoom(String room);
 

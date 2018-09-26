@@ -277,13 +277,13 @@ public class SocketController {
                             // 设备反馈的状态与数据库不一致更新数据库
                             igrsDeviceStatus.setValue(onOff);
                             igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-//                            JSONObject obj = new JSONObject();
-//                            obj.put("type", igrsDevice.getType());
-//                            obj.put("index", igrsDevice.getIndex());
-//                            obj.put("attribute", "switch");
-//                            obj.put("value", onOff);
-//                            obj.put("room", room);
-//                            IgrsWebSocketService.sendAllMessage(obj.toString());
+                            JSONObject obj = new JSONObject();
+                            obj.put("type", igrsDevice.getType());
+                            obj.put("index", igrsDevice.getIndex());
+                            obj.put("attribute", "switch");
+                            obj.put("value", onOff);
+                            obj.put("room", room);
+                            IgrsWebSocketService.sendAllMessage(obj.toString());
                         }
                         break;
                     default:

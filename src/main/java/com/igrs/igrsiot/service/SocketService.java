@@ -6,6 +6,7 @@ import com.igrs.igrsiot.utils.CmdAnalyze;
 import com.igrs.igrsiot.utils.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -125,7 +126,9 @@ public class SocketService implements ServletContextListener {
             selector = Selector.open();
             server = ServerSocketChannel.open();
             InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
-//            InetSocketAddress isa = new InetSocketAddress("127.0.0.1", 8086);
+//            logger.debug("sIp: {}, sPort: {}", sIp, sPort);
+//            InetSocketAddress isa = new InetSocketAddress(sIp, Integer.parseInt(sPort));
+
             server.socket().bind(isa);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT);
@@ -211,6 +214,7 @@ public class SocketService implements ServletContextListener {
                         if ((cip.length()!=0) && "1".equals(query)) {
                             try {
                                 String strCmd = CmdAnalyze.encode(device, "query", null);
+                                cmdSend(cip, strCmd);
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -249,6 +253,11 @@ public class SocketService implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent sce) {
 
     }
+
+    @Value("${server.ip}")
+    private String sIp;
+    @Value("${server.port}")
+    private String sPort;
 
 //    private static Charset charset = Charset.forName("UTF-8");
     private static Charset charset = Charset.forName("ISO_8859_1");

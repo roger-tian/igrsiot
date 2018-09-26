@@ -15,6 +15,8 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+create database if not exists igrsiot;
+
 use igrsiot;
 
 DROP TABLE IF EXISTS `igrs_user`;
@@ -72,6 +74,7 @@ CREATE TABLE `igrs_device` (
   `dindex` varchar(10) DEFAULT NULL,
   `name` varchar(20) DEFAULT NULL,
   `ctype` varchar(10) DEFAULT NULL,
+  `query` varchar(20) DEFAULT '0',
   `cip` varchar(16) DEFAULT NULL,
   `room` varchar(10) DEFAULT NULL,
   `remark` varchar(20) DEFAULT NULL,

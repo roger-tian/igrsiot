@@ -20,7 +20,7 @@ public class DeviceController {
     }
 
     @RequestMapping("/device/detail")
-    public List<HashMap<String, String>> getDeviceDetail() {
+    public List<HashMap<String, Object>> getDeviceDetail() {
         return igrsDeviceService.getDeviceDetail();
     }
 

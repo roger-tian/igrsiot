@@ -41,6 +41,10 @@ public class IgrsDevice {
         this.clientType = clientType;
     }
 
+    public void setQuery(String query) { this.query = query; }
+
+    public String getQuery() { return query; }
+
     public String getClientIp() {
         return clientIp;
     }
@@ -65,16 +69,13 @@ public class IgrsDevice {
         this.remark = remark;
     }
 
-    public void setQuery(String query) { this.query = query; }
-    public String getQuery() { return query; }
-
     private Long id;
     private String type;
     private String index;
     private String name;
     private String clientType;
+    private String query;
     private String clientIp;
     private String room;
     private String remark;
-    private String query;
 }

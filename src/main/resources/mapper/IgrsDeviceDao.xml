@@ -7,12 +7,14 @@
     <result column="dindex" property="index" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="ctype" property="clientType" jdbcType="VARCHAR" />
+    <result column="query" property="query" jdbcType="VARCHAR" />
     <result column="cip" property="clientIp" jdbcType="VARCHAR" />
     <result column="room" property="room" jdbcType="VARCHAR" />
+    <result column="remark" property="room" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, type, dindex, name, ctype, cip, room
+    id, type, dindex, name, ctype, query, cip, room, remark
   </sql>
 
   <select id="getAllDevices" resultMap="BaseResultMap" >
@@ -36,7 +38,7 @@
   </select>
 
   <select id="getDeviceDetail" resultType="java.util.HashMap" >
-    select d.type,d.dindex,d.ctype,d.cip,d.room,s.attribute,s.value,s.cchannel,s.device,d.query from igrs_device_status s,igrs_device d
+    select d.type,d.dindex,d.ctype,d.cip,d.room,s.attribute,d.query,s.value,s.cchannel,s.device from igrs_device_status s,igrs_device d
     where s.device in (select id from igrs_device) and d.id=s.device
   </select>
 

@@ -180,7 +180,8 @@ public class SocketController {
                         obj.put("attribute", "switch");
                         obj.put("value", value);
                         obj.put("room", room);
-                        logger.debug("jsonObject: {}", obj);
+//                        logger.debug("jsonObject: {}", obj);
+                        logger.debug("chix-jsonObject: {}", obj);
                         IgrsWebSocketService.sendAllMessage(obj.toString());
                     }
                 }
@@ -258,28 +259,31 @@ public class SocketController {
             logger.debug("jsonObject: {}", obj);
             IgrsWebSocketService.sendAllMessage(obj.toString());
         } else {
-            JSONObject jsonObj = (JSONObject) JSONObject.toJSON(buf);
+//            JSONObject jsonObj = (JSONObject) JSONObject.toJSON(buf);
+            JSONObject jsonObj = JSONObject.parseObject(buf);
             String cmdType = jsonObj.getString("cmdType");
             String onOff;
             if (cmdType != null) {
                 switch (cmdType) {
-                    case "query":
+                    case "query":// 查询开关机状态
                         onOff = jsonObj.getString("switch");
                         Long device = jsonObj.getLong("device");
-
                         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
                         igrsDeviceStatus.setDevice(device);
                         igrsDeviceStatus.setAttribute("switch");
                         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                         if ((status != null) && !status.getValue().equals(onOff)) {
                             IgrsDevice igrsDevice = igrsDeviceService.getDeviceById(device);
-                            JSONObject obj = new JSONObject();
-                            obj.put("type", "machine");
-                            obj.put("index", igrsDevice.getIndex());
-                            obj.put("attribute", "switch");
-                            obj.put("value", onOff);
-                            obj.put("room", room);
-                            IgrsWebSocketService.sendAllMessage(obj.toString());
+                            // 设备反馈的状态与数据库不一致更新数据库
+                            igrsDeviceStatus.setValue(onOff);
+                            igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
+//                            JSONObject obj = new JSONObject();
+//                            obj.put("type", igrsDevice.getType());
+//                            obj.put("index", igrsDevice.getIndex());
+//                            obj.put("attribute", "switch");
+//                            obj.put("value", onOff);
+//                            obj.put("room", room);
+//                            IgrsWebSocketService.sendAllMessage(obj.toString());
                         }
                         break;
                     default:

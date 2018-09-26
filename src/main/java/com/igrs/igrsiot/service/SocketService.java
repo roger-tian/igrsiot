@@ -206,8 +206,9 @@ public class SocketService implements ServletContextListener {
                     for (int i=0; i<deviceList.size(); i++) {
                         device = (JSONObject) deviceList.get(i);
                         cip = device.getString("cip");
-                        type = device.getString("type");
-                        if ((cip.length()!=0) && type.equals("machine")) {
+                        type = device.getString("type");// 设备类型
+                        String query = device.getString("query");// 设备带有查询功能 1-有 0-无
+                        if ((cip.length()!=0) && "1".equals(query)) {
                             try {
                                 String strCmd = CmdAnalyze.encode(device, "query", null);
                             } catch (UnsupportedEncodingException e) {

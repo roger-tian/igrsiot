@@ -36,7 +36,7 @@
   </select>
 
   <select id="getDeviceDetail" resultType="java.util.HashMap" >
-    select d.type,d.dindex,d.ctype,d.cip,d.room,s.attribute,s.value,s.cchannel from igrs_device_status s,igrs_device d
+    select d.type,d.dindex,d.ctype,d.cip,d.room,s.attribute,s.value,s.cchannel,s.device,d.query from igrs_device_status s,igrs_device d
     where s.device in (select id from igrs_device) and d.id=s.device
   </select>
 

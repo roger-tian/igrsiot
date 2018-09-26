@@ -65,6 +65,9 @@ public class IgrsDevice {
         this.remark = remark;
     }
 
+    public void setQuery(String query) { this.query = query; }
+    public String getQuery() { return query; }
+
     private Long id;
     private String type;
     private String index;
@@ -73,4 +76,5 @@ public class IgrsDevice {
     private String clientIp;
     private String room;
     private String remark;
+    private String query;
 }

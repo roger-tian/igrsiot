@@ -125,7 +125,8 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+//            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+            InetSocketAddress isa = new InetSocketAddress("192.168.182.250", 8086);
 //            logger.debug("sIp: {}, sPort: {}", sIp, sPort);
 //            InetSocketAddress isa = new InetSocketAddress(sIp, Integer.parseInt(sPort));
 
@@ -140,15 +141,13 @@ public class SocketService implements ServletContextListener {
             return 1;
         }
 
-        logger.debug("cmd: {}, cip: {}", buf, cip);
-
         try {
             for (SelectionKey key : selector.keys()) {
                 Channel targetChannel = key.channel();
                 if (targetChannel instanceof SocketChannel) {
                     SocketChannel dest = (SocketChannel) targetChannel;
                     String remoteAddress = String.valueOf(dest.getRemoteAddress());
-                    logger.debug("remoteAddress: {}", remoteAddress);
+//                    logger.debug("remoteAddress: {}, cip: {}", remoteAddress, cip);
                     if (remoteAddress.contains(cip)) {
                         logger.debug("send command {} to {}", buf, cip);
                         dest.write(charset.encode(buf));
@@ -211,9 +210,11 @@ public class SocketService implements ServletContextListener {
                         cip = device.getString("cip");
                         type = device.getString("type");// 设备类型
                         String query = device.getString("query");// 设备带有查询功能 1-有 0-无
+//                        logger.debug("cip: {}, query: {}", cip, query);
                         if ((cip.length()!=0) && "1".equals(query)) {
                             try {
                                 String strCmd = CmdAnalyze.encode(device, "query", null);
+//                                logger.debug("----------strCmd: {}", strCmd);
                                 cmdSend(cip, strCmd);
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();

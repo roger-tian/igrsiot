@@ -273,16 +273,18 @@ public class SocketController {
                         igrsDeviceStatus.setAttribute("switch");
                         IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                         if ((status != null) && !status.getValue().equals(onOff)) {
-                            IgrsDevice igrsDevice = igrsDeviceService.getDeviceById(device);
                             // 设备反馈的状态与数据库不一致更新数据库
                             igrsDeviceStatus.setValue(onOff);
                             igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
+
+                            IgrsDevice igrsDevice = igrsDeviceService.getDeviceById(device);
                             JSONObject obj = new JSONObject();
                             obj.put("type", igrsDevice.getType());
                             obj.put("index", igrsDevice.getIndex());
                             obj.put("attribute", "switch");
                             obj.put("value", onOff);
                             obj.put("room", room);
+                            logger.debug("send to web: {}", obj.toString());
                             IgrsWebSocketService.sendAllMessage(obj.toString());
                         }
                         break;

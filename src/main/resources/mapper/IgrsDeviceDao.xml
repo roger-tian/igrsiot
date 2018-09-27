@@ -48,7 +48,7 @@
   </select>
 
   <select id="getDetailByUserType" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select d.id,d.type,d.dindex,d.ctype,d.cip,d.room,s.attribute,s.value,s.cchannel from igrs_device_status s,igrs_device d
+    select d.id,d.type,d.dindex,d.ctype,d.cip,d.room,d.query,s.attribute,s.value,s.cchannel from igrs_device_status s,igrs_device d
     where d.id=s.device and d.type=#{type} and d.room in
     (select room from igrs_user_room where user=(select id from igrs_user where user=#{user}))
   </select>

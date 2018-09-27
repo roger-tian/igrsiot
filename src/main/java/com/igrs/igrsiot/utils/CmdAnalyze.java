@@ -44,7 +44,7 @@ public class CmdAnalyze {
                                     break;
                             }
                             String volume = String.valueOf(cmd[4]);
-                            String device = jsonObject.getString("id");
+                            String device = jsonObject.getString("device");
                             result.put("cmdType", "query");
                             result.put("device", device);
                             result.put("switch", onOff);
@@ -55,8 +55,11 @@ public class CmdAnalyze {
                     case "3":   // 86 inch
                         byte[] cmdResp = {0x00, 0x55, (byte) 0xaa, 0x3a};
                         cmd = data.getBytes(CharEncoding.ISO_8859_1);
-                        if (cmd.equals(cmdResp)) {
-                            String device = jsonObject.getString("id");
+                        logger.debug("cmd: {}, cmdResp: {}", cmd, cmdResp);
+                        if ((cmd.length == 5) && (cmd[0] == cmdResp[0]) && (cmd[1] == cmdResp[1]) && (cmd[2] == cmdResp[2]) && (cmd[3] == cmdResp[3])) {
+//                        if (cmd.equals(cmdResp)) {
+                            String device = jsonObject.getString("device");
+                            logger.debug("device: {}", device);
                             result.put("cmdType", "query");
                             result.put("device", device);
                             result.put("switch", "1");
@@ -77,6 +80,7 @@ public class CmdAnalyze {
         String type = jsonObject.getString("type");
         String ctype = jsonObject.getString("ctype");
         String cchannel = jsonObject.getString("cchannel");
+//        logger.debug("type: {}, ctype: {}, cchannel: {}, cmdType: {}", type, ctype, cchannel, cmdType);
 
         switch (type) {
             case "machine":

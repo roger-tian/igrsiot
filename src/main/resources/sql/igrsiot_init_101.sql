@@ -1,0 +1,148 @@
+-- 系统缺省用户admin
+insert into igrs_user(id, user, name, phone, password, role) values(1, 'admin', 'admin', '', 'password', 'admin');
+-- 教室
+insert into igrs_room(id, room, name) values(1, '3102', '3102');
+insert into igrs_room(id, room, name) values(2, '3104', '3104');
+insert into igrs_room(id, room, name) values(3, '3106', '3106');
+insert into igrs_room(id, room, name) values(4, '3108', '3108');
+insert into igrs_room(id, room, name) values(5, '3110', '3110');
+insert into igrs_room(id, room, name) values(6, '3112', '3112');
+
+insert into igrs_room(id, room, name) values(7, '3202', '3202');
+insert into igrs_room(id, room, name) values(8, '3204', '3204');
+insert into igrs_room(id, room, name) values(9, '3206', '3206');
+insert into igrs_room(id, room, name) values(10, '3208', '3208');
+insert into igrs_room(id, room, name) values(11, '3210', '3210');
+insert into igrs_room(id, room, name) values(12, '3212', '3212');
+
+insert into igrs_room(id, room, name) values(13, '2302', '2302');
+insert into igrs_room(id, room, name) values(14, '2304', '2304');
+insert into igrs_room(id, room, name) values(15, '2306', '2306');
+insert into igrs_room(id, room, name) values(16, '2308', '2308');
+insert into igrs_room(id, room, name) values(17, '3302', '3302');
+insert into igrs_room(id, room, name) values(18, '3304', '3304');
+insert into igrs_room(id, room, name) values(19, '3306', '3306');
+insert into igrs_room(id, room, name) values(20, '3308', '3308');
+insert into igrs_room(id, room, name) values(21, '3310', '3310');
+insert into igrs_room(id, room, name) values(22, '3312', '3312');
+insert into igrs_room(id, room, name) values(23, '3314', '3314');
+
+insert into igrs_room(id, room, name) values(24, '2402', '2402');
+insert into igrs_room(id, room, name) values(25, '2404', '2404');
+insert into igrs_room(id, room, name) values(26, '2406', '2406');
+insert into igrs_room(id, room, name) values(27, '2408', '2408');
+insert into igrs_room(id, room, name) values(28, '3402', '3402');
+insert into igrs_room(id, room, name) values(29, '3404', '3404');
+insert into igrs_room(id, room, name) values(30, '3406', '3406');
+insert into igrs_room(id, room, name) values(31, '3408', '3408');
+insert into igrs_room(id, room, name) values(32, '3410', '3410');
+insert into igrs_room(id, room, name) values(33, '3412', '3412');
+insert into igrs_room(id, room, name) values(34, '3414', '3414');
+
+insert into igrs_room(id, room, name) values(35, '5504', '5504');
+
+insert into igrs_room(id, room, name) values(36, '4402', '4402');
+insert into igrs_room(id, room, name) values(37, '4404', '4404');
+insert into igrs_room(id, room, name) values(38, '4108', '4108');
+insert into igrs_room(id, room, name) values(39, '4208', '4208');
+insert into igrs_room(id, room, name) values(40, '4308', '4308');
+-- 用户授权初始化
+-- insert into igrs_user_room(user, room) values(2, '100');
+-- insert into igrs_user_room(user, room) values(2, '101');
+
+
+-- 设备
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(1, 'machine', '0', '触控一体机', '0', '192.168.1.199', '3102', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(2, 'led', '0', '黑板灯', '0', '192.168.1.199', '3102', '智能灯');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(3, 'led', '1', '照明灯', '0', '192.168.1.199', '3102', '智能灯');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(4, 'curtain', '0', '电动窗帘', '0', '192.168.1.199', '3102', '电动窗帘');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(5, 'machine', '0', '触控一体机', '0', '192.168.1.200', '3104', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(6, 'led', '0', '黑板灯', '0', '192.168.1.200', '3104', '智能灯');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(7, 'led', '1', '照明灯', '0', '192.168.1.200', '3104', '智能灯');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(8, 'curtain', '0', '电动窗帘', '0', '192.168.1.200', '3104', '电动窗帘');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(9, 'machine', '0', '触控一体机', '0', '192.168.1.201', '3106', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(10, 'machine', '0', '触控一体机', '0', '192.168.1.202', '3108', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(11, 'machine', '0', '触控一体机', '0', '192.168.1.203', '3110', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(12, 'machine', '0', '触控一体机', '0', '192.168.1.204', '3112', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(13, 'machine', '0', '触控一体机', '0', '192.168.1.205', '3202', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(14, 'machine', '0', '触控一体机', '0', '192.168.1.206', '3204', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(15, 'machine', '0', '触控一体机', '0', '192.168.1.207', '3206', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(16, 'machine', '0', '触控一体机', '0', '192.168.1.208', '3208', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(17, 'machine', '0', '触控一体机', '0', '192.168.1.209', '3210', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(18, 'machine', '0', '触控一体机', '0', '192.168.1.210', '3212', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(19, 'machine', '0', '触控一体机', '0', '192.168.1.211', '2302', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(20, 'machine', '0', '触控一体机', '0', '192.168.1.212', '2304', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(21, 'machine', '0', '触控一体机', '0', '192.168.1.213', '2306', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(22, 'machine', '0', '触控一体机', '0', '192.168.1.214', '2308', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(23, 'machine', '0', '触控一体机', '0', '192.168.1.215', '3302', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(24, 'machine', '0', '触控一体机', '0', '192.168.1.216', '3304', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(25, 'machine', '0', '触控一体机', '0', '192.168.1.217', '3306', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(26, 'machine', '0', '触控一体机', '0', '192.168.1.218', '3308', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(27, 'machine', '0', '触控一体机', '0', '192.168.1.219', '3310', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(28, 'machine', '0', '触控一体机', '0', '192.168.1.220', '3312', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(29, 'machine', '0', '触控一体机', '0', '192.168.1.221', '3314', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(30, 'machine', '0', '触控一体机', '0', '192.168.1.222', '2402', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(31, 'machine', '0', '触控一体机', '0', '192.168.1.223', '2404', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(32, 'machine', '0', '触控一体机', '0', '192.168.1.224', '2406', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(33, 'machine', '0', '触控一体机', '0', '192.168.1.225', '2408', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(34, 'machine', '0', '触控一体机', '0', '192.168.1.226', '3402', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(35, 'machine', '0', '触控一体机', '0', '192.168.1.227', '3404', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(36, 'machine', '0', '触控一体机', '0', '192.168.1.228', '3406', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(37, 'machine', '0', '触控一体机', '0', '192.168.1.229', '3408', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(38, 'machine', '0', '触控一体机', '0', '192.168.1.230', '3410', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(39, 'machine', '0', '触控一体机', '0', '192.168.1.231', '3412', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(40, 'machine', '0', '触控一体机', '0', '192.168.1.232', '3414', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(41, 'machine', '0', '触控一体机', '0', '192.168.1.233', '5504', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(42, 'machine', '0', '触控一体机', '0', '192.168.1.234', '4402', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(43, 'machine', '0', '触控一体机', '0', '192.168.1.235', '4404', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(44, 'machine', '0', '触控一体机', '0', '192.168.1.236', '4108', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(45, 'machine', '0', '触控一体机', '0', '192.168.1.237', '4208', '触控一体机');
+insert into igrs_device(id, type, dindex, name, ctype, cip, room, remark) values(46, 'machine', '0', '触控一体机', '0', '192.168.1.238', '4308', '触控一体机');
+
+-- 设备状态
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(1, 1, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(2, 2, 'switch', '0', '20');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(3, 3, 'switch', '0', '21');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(4, 4, 'switch', '0', '60');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(5, 5, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(6, 6, 'switch', '0', '20');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(7, 7, 'switch', '0', '21');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(8, 8, 'switch', '0', '60');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(9, 9, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(10, 10, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(11, 11, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(12, 12, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(13, 13, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(14, 14, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(15, 15, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(16, 16, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(17, 17, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(18, 18, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(19, 19, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(20, 20, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(21, 21, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(22, 22, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(23, 23, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(24, 24, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(25, 25, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(26, 26, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(27, 27, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(28, 28, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(29, 29, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(30, 30, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(31, 31, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(32, 32, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(33, 33, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(34, 34, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(35, 35, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(36, 36, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(37, 37, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(38, 38, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(39, 39, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(40, 40, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(41, 41, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(42, 42, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(43, 43, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(44, 44, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(45, 45, 'switch', '0', '10');
+insert into igrs_device_status(id, device, attribute, value, cchannel) values(46, 46, 'switch', '0', '10');

@@ -248,7 +248,10 @@ public class AllController {
         igrsDeviceStatus.setValue(onOff);
         for (int i=0; i<list.size(); i++) {
             jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
-            if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+            String query = jsonObject.getString("query");
+            String cip = jsonObject.getString("cip");
+            String cchannel = jsonObject.getString("cchannel");
+            if (query.equals("0") && (cip != null) && (cchannel != null)) {
                 igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("device")));
                 status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                 if (status != null) {

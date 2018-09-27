@@ -69,11 +69,10 @@ public class MachineController {
         obj.put("room", room);
         IgrsWebSocketService.sendAllMessage(obj.toString());
 
-        IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
-        igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
-
         String query = jsonObject.getString("query");
         if (query.equals("0")) {
+            IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
+            igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
             igrsDeviceStatus.setAttribute("switch");
             igrsDeviceStatus.setValue(onOff);
             IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);

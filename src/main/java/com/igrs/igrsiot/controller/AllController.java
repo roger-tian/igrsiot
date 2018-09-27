@@ -282,7 +282,6 @@ public class AllController {
             jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
             cmdSend(jsonObject, onOff);
 
-//            logger.debug("size: {}, i: {}", list.size(), i);
             String type = jsonObject.getString("type");
             if (!type.equals("machine")) {
                 JSONObject obj = new JSONObject();
@@ -294,8 +293,10 @@ public class AllController {
                 IgrsWebSocketService.sendAllMessage(obj.toString());
             }
 
-            // 更新数据库
-            if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+            String query = jsonObject.getString("query");
+            String cip = jsonObject.getString("query");
+            String cchannel = jsonObject.getString("query");
+            if ((query.equals("0")) && (cip != null) && (cchannel != null)) {
                 igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
                 status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
                 if (status != null) {

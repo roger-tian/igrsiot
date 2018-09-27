@@ -13,16 +13,17 @@ public class CmdAnalyze {
         JSONObject result = new JSONObject();
         String type = jsonObject.getString("type");
         String ctype = jsonObject.getString("ctype");
+        byte[] cmd;
 
         switch (type) {
             case "machine":
                 switch (ctype) {
                     case "0":   // no need to analyze
                         break;
-                    case "1":
+                    case "1":   // 75 inch
                         break;
-                    case "2":
-                        byte[] cmd = data.getBytes(CharEncoding.ISO_8859_1);
+                    case "2":   // 65 inch
+                        cmd = data.getBytes(CharEncoding.ISO_8859_1);
                         if (cmd.length == 8) {  // query response
                             String onOff = String.valueOf(cmd[2]);
                             String sigSource;
@@ -50,6 +51,16 @@ public class CmdAnalyze {
                             result.put("switch", onOff);
                             result.put("sigSource", sigSource);
                             result.put("volume", volume);
+                        }
+                        break;
+                    case "3":   // 86 inch
+                        byte[] cmdResp = {0x55, 0x55, (byte) 0xaa, 0x3a};
+                        cmd = data.getBytes(CharEncoding.ISO_8859_1);
+                        if (cmd.equals(cmdResp)) {
+                            String device = jsonObject.getString("id");
+                            result.put("cmdType", "query");
+                            result.put("device", device);
+                            result.put("switch", "1");
                         }
                         break;
                     default:
@@ -173,6 +184,27 @@ public class CmdAnalyze {
                             case "menu":
                                 {
                                     byte[] cmd = {(byte) 0x99, 0x23, 0x12, 0x01, (byte) 0xed, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case "3":   // 86 inch
+                        switch (cmdType) {
+                            case "switch":
+                                if (param.equals("0")) {    // power off
+                                    byte[] cmd = {0x55, 0x00, (byte) 0xff, 0x46, (byte) 0xd3};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                } else if (param.equals("1")) {    // power on
+                                    byte[] cmd = {(byte) 0x99, 0x23, (byte) 0x80, 0x01, 0x7f, (byte) 0xaa};
+                                    result = new String(cmd, CharEncoding.ISO_8859_1);
+                                }
+                                break;
+                            case "query":
+                                {
+                                    byte[] cmd = {0x55, 0x00, (byte) 0xaa, 0x14, (byte) 0x95};
                                     result = new String(cmd, CharEncoding.ISO_8859_1);
                                 }
                                 break;

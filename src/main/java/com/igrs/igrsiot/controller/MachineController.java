@@ -71,23 +71,27 @@ public class MachineController {
 
         IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
         igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
-        igrsDeviceStatus.setAttribute("switch");
-        igrsDeviceStatus.setValue(onOff);
-        IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
-        if (status != null) {
-            igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-        } else {
-            igrsDeviceStatusService.insert(igrsDeviceStatus);
-        }
 
-        if (onOff.equals("0")) {
-            igrsDeviceStatus.setAttribute("sig_source");
-            igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
-            status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+        String query = jsonObject.getString("query");
+        if (query.equals("0")) {
+            igrsDeviceStatus.setAttribute("switch");
+            igrsDeviceStatus.setValue(onOff);
+            IgrsDeviceStatus status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
             if (status != null) {
                 igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
             } else {
                 igrsDeviceStatusService.insert(igrsDeviceStatus);
+            }
+
+            if (onOff.equals("0")) {
+                igrsDeviceStatus.setAttribute("sig_source");
+                igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
+                status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+                if (status != null) {
+                    igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
+                } else {
+                    igrsDeviceStatusService.insert(igrsDeviceStatus);
+                }
             }
         }
 

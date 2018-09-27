@@ -42,7 +42,7 @@ public class IgrsWebSocketService {
     }
 
     @OnError
-    public void onError (Session session, Throwable error) {
+    public void onError(Session session, Throwable error) {
         logger.debug("Error occur");
         error.printStackTrace();
     }

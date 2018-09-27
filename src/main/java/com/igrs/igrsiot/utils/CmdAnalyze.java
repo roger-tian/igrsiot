@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 
 public class CmdAnalyze {
-//    public static JSONObject decode(JSONObject jsonObject, JSONObject result, String data) throws UnsupportedEncodingException {
     public static JSONObject decode(JSONObject jsonObject, String data) throws UnsupportedEncodingException {
         JSONObject result = new JSONObject();
         String type = jsonObject.getString("type");
@@ -54,7 +53,7 @@ public class CmdAnalyze {
                         }
                         break;
                     case "3":   // 86 inch
-                        byte[] cmdResp = {0x55, 0x55, (byte) 0xaa, 0x3a};
+                        byte[] cmdResp = {0x00, 0x55, (byte) 0xaa, 0x3a};
                         cmd = data.getBytes(CharEncoding.ISO_8859_1);
                         if (cmd.equals(cmdResp)) {
                             String device = jsonObject.getString("id");

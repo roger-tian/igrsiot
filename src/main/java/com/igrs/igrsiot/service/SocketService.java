@@ -16,7 +16,10 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,6 +34,12 @@ public class SocketService implements ServletContextListener {
                         String result = HttpRequest.sendPost(url, param);
                         if (!result.isEmpty()) {
                             deviceList = JSONArray.parseArray(result);
+                            for (int i=0; i<deviceList.size(); i++) {
+                                JSONObject jsonObject = deviceList.getJSONObject(i);
+                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                Timestamp time = Timestamp.valueOf(df.format(new Date()));
+                                jsonObject.put("timeStamp", time);
+                            }
                             logger.debug("deviceList: {}", deviceList);
                         }
                     } else {
@@ -40,84 +49,135 @@ public class SocketService implements ServletContextListener {
                     Thread.sleep(1000);
                 }
 
-                while (selector.select() > 0) {
-                    for (SelectionKey sk : selector.selectedKeys()) {
-                        selector.selectedKeys().remove(sk);
-                        if (sk.isAcceptable()) {
-                            SocketChannel sc = server.accept();
-                            sc.configureBlocking(false);
-                            sc.register(selector, SelectionKey.OP_READ);
-                            logger.debug("client ip: {}", sc.getRemoteAddress());
-                            sk.interestOps(SelectionKey.OP_ACCEPT);
-                        }
-                        if (sk.isReadable()) {
-                            sc = (SocketChannel) sk.channel();
-                            ByteBuffer buff = ByteBuffer.allocate(1024);
-                            String content = "";
-                            try {
-                                int len = sc.read(buff);
-                                if (len > 0) {
-                                    buff.flip();
-                                    content += charset.decode(buff);
-                                    logger.info("recv: {}", content);
+                while (true) {
+                    int nReady = selector.select(1000);
+                    if (nReady > 0) {
+                        for (SelectionKey sk : selector.selectedKeys()) {
+                            selector.selectedKeys().remove(sk);
+                            if (sk.isAcceptable()) {
+                                SocketChannel sc = server.accept();
+                                sc.configureBlocking(false);
+                                sc.register(selector, SelectionKey.OP_READ);
+                                logger.debug("client ip: {}", sc.getRemoteAddress());
+                                sk.interestOps(SelectionKey.OP_ACCEPT);
+                            }
+                            if (sk.isReadable()) {
+                                sc = (SocketChannel) sk.channel();
+                                ByteBuffer buff = ByteBuffer.allocate(1024);
+                                String content = "";
+                                try {
+                                    int len = sc.read(buff);
+                                    if (len > 0) {
+                                        buff.flip();
+                                        content += charset.decode(buff);
+                                        logger.info("recv: {}", content);
 
-                                    sk.interestOps(SelectionKey.OP_READ);
+                                        sk.interestOps(SelectionKey.OP_READ);
 
-                                    final String data = content;
-                                    new Thread(() -> {
-                                        String remoteAddress = null;
-                                        try {
-                                            remoteAddress = String.valueOf(sc.getRemoteAddress());
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        String buf = data;
-                                        JSONObject device;
-                                        String cip;
-                                        String ctype;
-                                        for (int i=0; i<deviceList.size(); i++) {
-                                            device = (JSONObject) deviceList.get(i);
-                                            cip = device.getString("cip");
-                                            ctype = device.getString("ctype");
-                                            if ((cip.length()!=0) && remoteAddress.contains(cip)) {
-                                                if ((ctype.length()!=0 && !ctype.equals("0"))) {
-                                                    try {
-                                                        JSONObject jsonDecode = CmdAnalyze.decode(device, data);
-                                                        buf = jsonDecode.toString();
-                                                    } catch (UnsupportedEncodingException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                                logger.debug("rip: {}, cip: {}", remoteAddress, cip);
-                                                String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
-                                                String param = "room=" + device.getString("room") + "&" +
-                                                        "cip=" + cip + "&" + "buf=" + buf;
-                                                logger.debug("param: {}", param);
-                                                String result = HttpRequest.sendPost(url, param);
-                                                break;
+                                        final String data = content;
+                                        new Thread(() -> {
+                                            String remoteAddress = null;
+                                            try {
+                                                remoteAddress = String.valueOf(sc.getRemoteAddress());
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
                                             }
-                                        }
-                                    }).start();
-                                }
-                                else if (len == -1) {
-                                    logger.info("client closed socket");
-                                    sc.close();
-                                } else {
 
+                                            String buf = data;
+                                            JSONObject device;
+                                            String cip;
+                                            String ctype;
+                                            for (int i=0; i<deviceList.size(); i++) {
+                                                device = (JSONObject) deviceList.get(i);
+                                                cip = device.getString("cip");
+                                                ctype = device.getString("ctype");
+                                                if ((cip.length()!=0) && remoteAddress.contains(cip)) {
+                                                    if ((ctype.length()!=0 && !ctype.equals("0"))) {
+                                                        try {
+                                                            JSONObject jsonDecode = CmdAnalyze.decode(device, data);
+                                                            buf = jsonDecode.toString();
+                                                        } catch (UnsupportedEncodingException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                    logger.debug("rip: {}, cip: {}", remoteAddress, cip);
+                                                    String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
+                                                    String param = "room=" + device.getString("room") + "&" +
+                                                            "cip=" + cip + "&" + "buf=" + buf;
+                                                    logger.debug("param: {}", param);
+                                                    String result = HttpRequest.sendPost(url, param);
+
+                                                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                    String time = df.format(new Date());
+                                                    device.put("timeStamp", time);
+                                                    break;
+                                                }
+                                            }
+                                        }).start();
+                                    } else if (len == -1) {
+                                        logger.info("client closed socket");
+                                        sc.close();
+                                    } else {
+
+                                    }
+                                } catch (IOException e) {
+                                    sk.cancel();
+                                    if (sc != null) {
+                                        sc.close();
+                                    }
                                 }
-                            }
-                            catch (IOException e) {
-                                sk.cancel();
-                                if (sc != null) {
-                                    sc.close();
+                            } else {    // whether timeout?
+                                JSONObject device;
+                                for (int i=0; i<deviceList.size(); i++) {
+                                    device = (JSONObject) deviceList.get(i);
+                                    String timeStamp = device.getString("timeStamp");
+
+                                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    String time = df.format(new Date());
+                                    if (Timestamp.valueOf(time).getTime() > Timestamp.valueOf(timeStamp).getTime() + 2000) {
+//                                    if (time.getTime() > timeStamp.getTime() + 2000) {
+                                        device.put("timeStamp", time);
+
+                                        String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
+                                        JSONObject jsonObject = new JSONObject();
+                                        jsonObject.put("cmdType", "query");
+                                        String deviceId = device.getString("device");
+                                        jsonObject.put("device", deviceId);
+                                        jsonObject.put("switch", "0");
+                                        String param = "room=" + device.getString("room") + "&" +
+                                                "cip=" + device.getString("cip") + "&" + "buf=" + jsonObject.toString();
+                                        logger.debug("param: {}", param);
+                                        String result = HttpRequest.sendPost(url, param);
+                                    }
                                 }
                             }
                         }
+                    } else if (nReady == 0) {
+                        JSONObject device;
+                        for (int i=0; i<deviceList.size(); i++) {
+                            device = (JSONObject) deviceList.get(i);
+                            String timeStamp = device.getString("timeStamp");
+
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String time = df.format(new Date());
+                            if (Timestamp.valueOf(time).getTime() > Timestamp.valueOf(timeStamp).getTime() + 2000) {
+                                device.put("timeStamp", time);
+
+                                String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("cmdType", "query");
+                                jsonObject.put("device", device.getString("device"));
+                                jsonObject.put("switch", "0");
+                                String param = "room=" + device.getString("room") + "&" +
+                                        "cip=" + device.getString("cip") + "&" + "buf=" + jsonObject.toString();
+                                logger.debug("param: {}", param);
+                                String result = HttpRequest.sendPost(url, param);
+                            }
+                        }
+                    } else {
                     }
                 }
-            }
-            catch (IOException | InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -125,8 +185,8 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-//            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
-            InetSocketAddress isa = new InetSocketAddress("192.168.182.250", 8086);
+            InetSocketAddress isa = new InetSocketAddress("192.168.1.200", 8086);
+//            InetSocketAddress isa = new InetSocketAddress("192.168.182.250", 8086);
 //            logger.debug("sIp: {}, sPort: {}", sIp, sPort);
 //            InetSocketAddress isa = new InetSocketAddress(sIp, Integer.parseInt(sPort));
 
@@ -214,8 +274,11 @@ public class SocketService implements ServletContextListener {
                         if ((cip.length()!=0) && "1".equals(query)) {
                             try {
                                 String strCmd = CmdAnalyze.encode(device, "query", null);
-//                                logger.debug("----------strCmd: {}", strCmd);
                                 cmdSend(cip, strCmd);
+
+                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                String time = df.format(new Date());
+                                device.put("timeStamp", time);
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }

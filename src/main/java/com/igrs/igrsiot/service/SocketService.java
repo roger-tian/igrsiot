@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.utils.CmdAnalyze;
 import com.igrs.igrsiot.utils.HttpRequest;
+import org.apache.commons.codec.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,7 +51,7 @@ public class SocketService implements ServletContextListener {
                 }
 
                 while (true) {
-                    int nReady = selector.select(1000);
+                    int nReady = selector.select(10000);
                     if (nReady > 0) {
                         for (SelectionKey sk : selector.selectedKeys()) {
                             selector.selectedKeys().remove(sk);
@@ -70,12 +71,17 @@ public class SocketService implements ServletContextListener {
                                     if (len > 0) {
                                         buff.flip();
                                         content += charset.decode(buff);
-                                        logger.info("recv: {}", content);
+                                        byte[] tmpBuf = content.getBytes(CharEncoding.ISO_8859_1);
+                                        String resBuf = "";
+                                        for (int i=0; i<tmpBuf.length; i++) {
+                                            resBuf += String.format("%02x ", tmpBuf[i]);
+                                        }
+                                        logger.info("recv: {}", resBuf);
 
                                         sk.interestOps(SelectionKey.OP_READ);
 
                                         final String data = content;
-                                        new Thread(() -> {
+//                                        new Thread(() -> {
                                             String remoteAddress = null;
                                             try {
                                                 remoteAddress = String.valueOf(sc.getRemoteAddress());
@@ -100,6 +106,7 @@ public class SocketService implements ServletContextListener {
                                                             e.printStackTrace();
                                                         }
                                                     }
+                                                    logger.debug("ok: {}------------------", device);
                                                     logger.debug("rip: {}, cip: {}", remoteAddress, cip);
                                                     String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
                                                     String param = "room=" + device.getString("room") + "&" +
@@ -110,10 +117,11 @@ public class SocketService implements ServletContextListener {
                                                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                                     String time = df.format(new Date());
                                                     device.put("timeStamp", time);
+                                                    logger.debug("ok, time: {}-{}------------------++++++++++++", time, device);
                                                     break;
                                                 }
                                             }
-                                        }).start();
+//                                        }).start();
                                     } else if (len == -1) {
                                         logger.info("client closed socket");
                                         sc.close();
@@ -134,9 +142,12 @@ public class SocketService implements ServletContextListener {
 
                                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     String time = df.format(new Date());
-                                    if (Timestamp.valueOf(time).getTime() > Timestamp.valueOf(timeStamp).getTime() + 2000) {
+                                    if (Timestamp.valueOf(time).getTime() > Timestamp.valueOf(timeStamp).getTime() + 10000) {
 //                                    if (time.getTime() > timeStamp.getTime() + 2000) {
                                         device.put("timeStamp", time);
+                                        if (device.getString("cip").equals("192.168.1.201")) {
+                                            logger.debug("timeout, time: {}-{}+++++++++++++++++++++", time, timeStamp);
+                                        }
 
                                         String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
                                         JSONObject jsonObject = new JSONObject();
@@ -160,8 +171,11 @@ public class SocketService implements ServletContextListener {
 
                             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             String time = df.format(new Date());
-                            if (Timestamp.valueOf(time).getTime() > Timestamp.valueOf(timeStamp).getTime() + 2000) {
+//                            if (Timestamp.valueOf(time).getTime() > Timestamp.valueOf(timeStamp).getTime() + 8000) {
                                 device.put("timeStamp", time);
+                                if (device.getString("cip").equals("192.168.1.201")) {
+                                    logger.debug("timeout, time: {}-{}-{}======================", time, timeStamp, device);
+                                }
 
                                 String url = "http://localhost:8080/igrsiot/control/socketdata/handle";
                                 JSONObject jsonObject = new JSONObject();
@@ -172,9 +186,10 @@ public class SocketService implements ServletContextListener {
                                         "cip=" + device.getString("cip") + "&" + "buf=" + jsonObject.toString();
                                 logger.debug("param: {}", param);
                                 String result = HttpRequest.sendPost(url, param);
-                            }
+//                            }
                         }
                     } else {
+                        logger.debug("************************************************");
                     }
                 }
             } catch (IOException | InterruptedException e) {
@@ -185,7 +200,7 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-            InetSocketAddress isa = new InetSocketAddress("192.168.1.200", 8086);
+            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
 //            InetSocketAddress isa = new InetSocketAddress("192.168.182.250", 8086);
 //            logger.debug("sIp: {}, sPort: {}", sIp, sPort);
 //            InetSocketAddress isa = new InetSocketAddress(sIp, Integer.parseInt(sPort));

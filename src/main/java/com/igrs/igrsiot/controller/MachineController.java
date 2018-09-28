@@ -61,14 +61,6 @@ public class MachineController {
             SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
 
-        JSONObject obj = new JSONObject();
-        obj.put("type", "machine");
-        obj.put("index", index);
-        obj.put("attribute", "switch");
-        obj.put("value", onOff);
-        obj.put("room", room);
-        IgrsWebSocketService.sendAllMessage(obj.toString());
-
         String query = jsonObject.getString("query");
         if (query.equals("0")) {
             IgrsDeviceStatus igrsDeviceStatus = new IgrsDeviceStatus();
@@ -82,16 +74,24 @@ public class MachineController {
                 igrsDeviceStatusService.insert(igrsDeviceStatus);
             }
 
-            if (onOff.equals("0")) {
-                igrsDeviceStatus.setAttribute("sig_source");
-                igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
-                status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
-                if (status != null) {
-                    igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
-                } else {
-                    igrsDeviceStatusService.insert(igrsDeviceStatus);
-                }
-            }
+//            if (onOff.equals("0")) {
+//                igrsDeviceStatus.setAttribute("sig_source");
+//                igrsDeviceStatus.setValue("1"); // set to 'main page' when power off
+//                status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
+//                if (status != null) {
+//                    igrsDeviceStatusService.updateByDeviceAndAttr(igrsDeviceStatus);
+//                } else {
+//                    igrsDeviceStatusService.insert(igrsDeviceStatus);
+//                }
+//            }
+
+            JSONObject obj = new JSONObject();
+            obj.put("type", "machine");
+            obj.put("index", index);
+            obj.put("attribute", "switch");
+            obj.put("value", onOff);
+            obj.put("room", room);
+            IgrsWebSocketService.sendAllMessage(obj.toString());
         }
 
         IgrsOperate igrsOperate = new IgrsOperate();

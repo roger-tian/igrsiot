@@ -24,7 +24,10 @@ public class CmdAnalyze {
                     case "2":   // 65 inch
                         cmd = data.getBytes(CharEncoding.ISO_8859_1);
                         if (cmd.length == 8) {  // query response
-                            String onOff = String.valueOf(cmd[2]);
+                            String onOff = "0";
+                            if ((cmd[2] == 0x01) || (cmd[2] == 0x02)) {
+                                onOff = "1";
+                            }
                             String sigSource;
                             switch (cmd[3]) {
                                 case 0x0b:

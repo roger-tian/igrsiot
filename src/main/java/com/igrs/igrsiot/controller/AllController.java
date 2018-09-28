@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.igrs.igrsiot.model.*;
 import com.igrs.igrsiot.service.*;
 import com.igrs.igrsiot.service.impl.IgrsTokenServiceImpl;
+import com.igrs.igrsiot.utils.CmdAnalyze;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -228,15 +230,14 @@ public class AllController {
     }
 
     private void cmdSend(JSONObject jsonObject, String onOff) {
-        String cmd;
-        if (jsonObject.getString("ctype").equals("0")) {
-            if ((jsonObject.getString("cip") != null) && (jsonObject.getString("attribute").equals("switch")) &&
-                    (jsonObject.getString("cchannel") != null) && (jsonObject.getString("cchannel").length() != 0)) {
-                cmd = "{ch_" + jsonObject.getString("cchannel") + ":" + onOff + "}";
-                SocketService.cmdSend(jsonObject.getString("cip"), cmd);
+        if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
+            String strCmd = null;
+            try {
+                strCmd = CmdAnalyze.encode(jsonObject, "switch", onOff);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-        } else if (jsonObject.getString("ctype").equals("1")) {
-            // todo
+            SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
         }
     }
 

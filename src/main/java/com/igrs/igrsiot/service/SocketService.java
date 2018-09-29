@@ -200,8 +200,8 @@ public class SocketService implements ServletContextListener {
         public void init() throws IOException {
             selector = Selector.open();
             server = ServerSocketChannel.open();
-            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
-//            InetSocketAddress isa = new InetSocketAddress("192.168.182.250", 8086);
+//            InetSocketAddress isa = new InetSocketAddress("192.168.1.150", 8086);
+            InetSocketAddress isa = new InetSocketAddress("192.168.64.200", 8086);
 //            logger.debug("sIp: {}, sPort: {}", sIp, sPort);
 //            InetSocketAddress isa = new InetSocketAddress(sIp, Integer.parseInt(sPort));
 

@@ -165,9 +165,14 @@ public class AllController {
             list = igrsDeviceService.getAllDetailByType(map);
         }
         JSONObject jsonObject;
+
+        String ctype = null;
         for (int i=0; i<list.size(); i++) {
             jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
             cmdSend(jsonObject, onOff);
+
+            ctype = jsonObject.getString("ctype");
+
             JSONObject obj = new JSONObject();
             obj.put("type", type);
             obj.put("attribute", "switch");
@@ -185,6 +190,26 @@ public class AllController {
             String deviceName = jsonObject.getString("name");
             String deviceDes = deviceName == null ? "同类型设备": "所有"+deviceName;
             insertOperateLog(instruction,igrsUser.getId(),deviceDes,jsonObject.getString("room"));
+        }
+
+        if (ctype.equals("3")) {
+            if (onOff.equals("1")) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (int i=0; i<list.size(); i++) {
+                jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
+                cmdSend(jsonObject, onOff);
+            }
         }
 
         updateDbByList(list, onOff);
@@ -282,9 +307,28 @@ public class AllController {
         igrsDeviceStatus.setAttribute("switch");
         igrsDeviceStatus.setValue(onOff);
 
+        String ctype = null;
         for (int i=0; i<list.size(); i++) {
             jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
             cmdSend(jsonObject, onOff);
+
+            ctype = jsonObject.getString("ctype");
+            if (ctype.equals("3")) {
+                if (onOff.equals("1")) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                cmdSend(jsonObject, onOff);
+            }
 
             String type = jsonObject.getString("type");
             if (!type.equals("machine")) {
@@ -308,6 +352,26 @@ public class AllController {
                 } else {
                     igrsDeviceStatusService.insert(igrsDeviceStatus);
                 }
+            }
+        }
+
+        if (ctype.equals("3")) {
+            if (onOff.equals("1")) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (int i=0; i<list.size(); i++) {
+                jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
+                cmdSend(jsonObject, onOff);
             }
         }
 

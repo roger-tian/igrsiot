@@ -59,6 +59,24 @@ public class MachineController {
         if ((jsonObject.getString("cip") != null) && (jsonObject.getString("cchannel") != null)) {
             String strCmd = CmdAnalyze.encode(jsonObject, "switch", onOff);
             SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
+
+            String ctype = jsonObject.getString("ctype");
+            if (ctype.equals("3")) {
+                if (onOff.equals("1")) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                SocketService.cmdSend(jsonObject.getString("cip"), strCmd);
+            }
         }
 
         String query = jsonObject.getString("query");

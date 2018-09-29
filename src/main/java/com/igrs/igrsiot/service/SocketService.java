@@ -19,10 +19,7 @@ import java.nio.channels.*;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class SocketService implements ServletContextListener {
     public class socketThread extends Thread {
@@ -53,7 +50,12 @@ public class SocketService implements ServletContextListener {
                 while (true) {
                     int nReady = selector.select(10000);
                     if (nReady > 0) {
-                        for (SelectionKey sk : selector.selectedKeys()) {
+//                        for (SelectionKey sk : selector.selectedKeys()) {
+                        Iterator<SelectionKey> iter = selector.selectedKeys().iterator();
+                        while (iter.hasNext()) {
+                            SelectionKey sk = iter.next();
+                            iter.remove();
+
                             selector.selectedKeys().remove(sk);
                             if (sk.isAcceptable()) {
                                 SocketChannel sc = server.accept();
@@ -217,8 +219,13 @@ public class SocketService implements ServletContextListener {
         }
 
         try {
-            for (SelectionKey key : selector.keys()) {
-                Channel targetChannel = key.channel();
+            for (SelectionKey sk : selector.keys()) {
+//            Iterator<SelectionKey> iter = selector.selectedKeys().iterator();
+//            while (iter.hasNext()) {
+//                SelectionKey sk = iter.next();
+//                iter.remove();
+
+                Channel targetChannel = sk.channel();
                 if (targetChannel instanceof SocketChannel) {
                     SocketChannel dest = (SocketChannel) targetChannel;
                     String remoteAddress = String.valueOf(dest.getRemoteAddress());

@@ -312,24 +312,6 @@ public class AllController {
             jsonObject = (JSONObject) JSONObject.toJSON(list.get(i));
             cmdSend(jsonObject, onOff);
 
-            ctype = jsonObject.getString("ctype");
-            if (ctype.equals("3")) {
-                if (onOff.equals("1")) {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                cmdSend(jsonObject, onOff);
-            }
-
             String type = jsonObject.getString("type");
             if (!type.equals("machine")) {
                 JSONObject obj = new JSONObject();
@@ -342,8 +324,8 @@ public class AllController {
             }
 
             String query = jsonObject.getString("query");
-            String cip = jsonObject.getString("query");
-            String cchannel = jsonObject.getString("query");
+            String cip = jsonObject.getString("cip");
+            String cchannel = jsonObject.getString("cchannel");
             if ((query.equals("0")) && (cip != null) && (cchannel != null)) {
                 igrsDeviceStatus.setDevice(Long.parseLong(jsonObject.getString("id")));
                 status = igrsDeviceStatusService.getByDeviceAndAttr(igrsDeviceStatus);
